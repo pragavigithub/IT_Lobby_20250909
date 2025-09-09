@@ -13,11 +13,14 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 class SAPIntegration:
 
     def __init__(self):
-        # Use environment variables directly to avoid circular import
-        self.base_url = os.environ.get('SAP_B1_SERVER', '')
-        self.username = os.environ.get('SAP_B1_USERNAME', '')
-        self.password = os.environ.get('SAP_B1_PASSWORD', '')
-        self.company_db = os.environ.get('SAP_B1_COMPANY_DB', '')
+        # Load credentials from JSON file
+        from credential_loader import load_credentials_from_json, get_credential
+        credentials = load_credentials_from_json()
+        
+        self.base_url = get_credential(credentials, 'SAP_B1_SERVER', '')
+        self.username = get_credential(credentials, 'SAP_B1_USERNAME', '')
+        self.password = get_credential(credentials, 'SAP_B1_PASSWORD', '')
+        self.company_db = get_credential(credentials, 'SAP_B1_COMPANY_DB', '')
         self.session_id = None
         self.session = requests.Session()
         self.session.verify = False  # For development, in production use proper SSL
