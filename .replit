@@ -1,4 +1,4 @@
-modules = ["python-3.11", "web", "nodejs-20"]
+modules = ["web", "python-3.11", "nodejs-20"]
 
 [nix]
 channel = "stable-25_05"
@@ -6,7 +6,7 @@ packages = ["freetype", "lcms2", "libimagequant", "libjpeg", "libtiff", "libwebp
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["gunicorn", "--bind", "0.0.0.0:5000", "--reuse-port", "main:app"]
+run = ["gunicorn", "--bind", "0.0.0.0:5000", "--timeout", "120", "main:app"]
 
 [workflows]
 runButton = "Project"
@@ -26,7 +26,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "gunicorn --bind 0.0.0.0:5000 --reuse-port --reload main:app"
+args = "SESSION_SECRET=9381875308d645114b732d5d6fc9c71254e8f726bb401196de5913bf0ef4c54c SAP_B1_SERVER=https://10.112.253.173:50000 SAP_B1_USERNAME=manager SAP_B1_PASSWORD=1422 SAP_B1_COMPANY_DB=SBODemoUS gunicorn --bind 0.0.0.0:5000 --timeout 120 --reload main:app"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
