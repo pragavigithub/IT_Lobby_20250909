@@ -27,17 +27,17 @@ This is a Flask-based Warehouse Management System with SAP B1 integration. The a
 - GRPO (Goods Receipt PO) functionality
 
 ## Credential Configuration
-The application now supports reading credentials from a JSON file for better security and configuration management:
+The application now uses JSON-based credential management exclusively for better security and configuration management:
 
 ### JSON Credential File Format
-Location: `/tmp/sap_login/credential.json` (Linux) or `C:/tmp/sap_login/credential.json` (Windows)
+Location: `C:/tmp/sap_login/credential.json` (Primary) or `/tmp/sap_login/credential.json` (Linux fallback)
 
 ```json
 {
-   "SAP_B1_SERVER": "https://192.168.0.134:50000",
+   "SAP_B1_SERVER": "https://sap.itlobby.com:50000",
    "SAP_B1_USERNAME": "manager",
-   "SAP_B1_PASSWORD": "1422",
-   "SAP_B1_COMPANY_DB": "EINV-TESTDB-LIVE-HUST",
+   "SAP_B1_PASSWORD": "Ea@12345",
+   "SAP_B1_COMPANY_DB": "ZZZ_ITT_TEST_LIVE_DB",
    "MYSQL_HOST": "localhost",
    "MYSQL_PORT": "3306",
    "MYSQL_USER": "root",
@@ -47,10 +47,11 @@ Location: `/tmp/sap_login/credential.json` (Linux) or `C:/tmp/sap_login/credenti
 }
 ```
 
-### Fallback Behavior
-- If JSON file is not found, application falls back to environment variables
-- If MySQL connection fails, application automatically falls back to PostgreSQL (Replit environment)
-- All credentials support both JSON and environment variable configuration
+### Credential Loading Behavior
+- **Primary Source**: JSON file from `C:/tmp/sap_login/credential.json`
+- **Fallback**: Environment variables only if JSON file is not found
+- **Database**: MySQL from JSON credentials with PostgreSQL fallback for Replit environment
+- **SAP B1 Integration**: All credentials loaded from JSON file, including SAPIntegration class
 
 ## Setup Status
 ✅ PostgreSQL database configured and connected (migrated from MySQL)
@@ -80,6 +81,11 @@ Location: `/tmp/sap_login/credential.json` (Linux) or `C:/tmp/sap_login/credenti
 - Barcode generation utilities
 
 ## Recent Changes
+- **Updated JSON Credential System** (September 9, 2025)
+  - Updated SAP B1 credentials to use sap.itlobby.com server
+  - Modified SAPIntegration class to read credentials exclusively from JSON file
+  - Primary credential path: `C:/tmp/sap_login/credential.json`
+  - All SAP B1 and MySQL credentials now loaded from JSON file
 - **JSON Credential Loading System** (September 5, 2025)
   - Added support for reading SAP B1 and MySQL credentials from JSON file
   - Default credential path: `/tmp/sap_login/credential.json` (Linux) or `C:/tmp/sap_login/credential.json` (Windows)
