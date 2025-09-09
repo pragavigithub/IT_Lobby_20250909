@@ -1,0 +1,868 @@
+-- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 169, in add_serial_item
+    validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\sap_integration.py", line 2840, in validate_serial_item_for_transfer
+    logging.info(f"🔍 Validating serial {serial_number} in warehouse {warehouse_code} via SAP B1 SQL Query")
+Message: '🔍 Validating serial IP903 in warehouse 7000-FG via SAP B1 SQL Query'
+Arguments: ()
+2025-09-03 08:18:12,566 - root - INFO - 📡 Request URL: https://192.168.1.5:50000/b1s/v1/SQLQueries('Item_Validation')/List
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 169, in add_serial_item
+    validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\sap_integration.py", line 2840, in validate_serial_item_for_transfer
+    logging.info(f"🔍 Validating serial {serial_number} in warehouse {warehouse_code} via SAP B1 SQL Query")
+Message: '🔍 Validating serial IP903 in warehouse 7000-FG via SAP B1 SQL Query'
+Arguments: ()
+2025-09-03 08:18:12,583 - root - INFO - 📡 Request URL: https://192.168.1.5:50000/b1s/v1/SQLQueries('Item_Validation')/List
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4e1' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 169, in add_serial_item
+    validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\sap_integration.py", line 2841, in validate_serial_item_for_transfer
+    logging.info(f"📡 Request URL: {url}")
+Message: "📡 Request URL: https://192.168.1.5:50000/b1s/v1/SQLQueries('Item_Validation')/List"
+Arguments: ()
+2025-09-03 08:18:12,596 - root - INFO - 📦 Request Body: {'ParamList': "seriel_number='IP903'&whcode='7000-FG'"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4e1' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 169, in add_serial_item
+    validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\sap_integration.py", line 2841, in validate_serial_item_for_transfer
+    logging.info(f"📡 Request URL: {url}")
+Message: "📡 Request URL: https://192.168.1.5:50000/b1s/v1/SQLQueries('Item_Validation')/List"
+Arguments: ()
+2025-09-03 08:18:12,615 - root - INFO - 📦 Request Body: {'ParamList': "seriel_number='IP903'&whcode='7000-FG'"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4e6' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 169, in add_serial_item
+    validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\sap_integration.py", line 2842, in validate_serial_item_for_transfer
+    logging.info(f"📦 Request Body: {request_body}")
+Message: '📦 Request Body: {\'ParamList\': "seriel_number=\'IP903\'&whcode=\'7000-FG\'"}'
+Arguments: ()
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4e6' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 169, in add_serial_item
+    validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\sap_integration.py", line 2842, in validate_serial_item_for_transfer
+    logging.info(f"📦 Request Body: {request_body}")
+Message: '📦 Request Body: {\'ParamList\': "seriel_number=\'IP903\'&whcode=\'7000-FG\'"}'
+Arguments: ()
+2025-09-03 08:18:12,681 - root - INFO - 📡 Response Status: 200
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4e1' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 169, in add_serial_item
+    validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\sap_integration.py", line 2845, in validate_serial_item_for_transfer
+    logging.info(f"📡 Response Status: {response.status_code}")
+Message: '📡 Response Status: 200'
+Arguments: ()
+2025-09-03 08:18:12,683 - root - INFO - 📦 SAP B1 Response: {'odata.metadata': 'https://192.168.1.5:50000/b1s/v1/$metadata#SAPB1.SQLQueryResult', 'SqlText': "SELECT T0.[ItemCode],T0.[itemName], T0.[DistNumber], T1.[WhsCode] FROM [OSRN] T0  INNER JOIN [OSRQ] T1 ON T0.[AbsEntry] =T1.[MdAbsEntry] WHERE  T1.[Quantity] >'0' AND T0.[DistNumber]=:seriel_number AND T1.[WhsCode]=:whcode", 'value': [{'DistNumber': 'IP903', 'ItemCode': 'IPhone', 'WhsCode': '7000-FG', 'itemName': '12 Series 8GB RAM/250 GB ROM Black'}]}
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4e6' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 169, in add_serial_item
+    validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\sap_integration.py", line 2849, in validate_serial_item_for_transfer
+    logging.info(f"📦 SAP B1 Response: {data}")
+Message: '📦 SAP B1 Response: {\'odata.metadata\': \'https://192.168.1.5:50000/b1s/v1/$metadata#SAPB1.SQLQueryResult\', \'SqlText\': "SELECT T0.[ItemCode],T0.[itemName], T0.[DistNumber], T1.[WhsCode] FROM [OSRN] T0  INNER JOIN [OSRQ] T1 ON T0.[AbsEntry] =T1.[MdAbsEntry] WHERE  T1.[Quantity] >\'0\' AND T0.[DistNumber]=:seriel_number AND T1.[WhsCode]=:whcode", \'value\': [{\'DistNumber\': \'IP903\', \'ItemCode\': \'IPhone\', \'WhsCode\': \'7000-FG\', \'itemName\': \'12 Series 8GB RAM/250 GB ROM Black\'}]}'
+Arguments: ()
+2025-09-03 08:18:12,689 - root - INFO - 📡 Response Status: 200
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4e1' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 169, in add_serial_item
+    validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\sap_integration.py", line 2845, in validate_serial_item_for_transfer
+    logging.info(f"📡 Response Status: {response.status_code}")
+Message: '📡 Response Status: 200'
+Arguments: ()
+2025-09-03 08:18:12,707 - root - INFO - 📦 SAP B1 Response: {'odata.metadata': 'https://192.168.1.5:50000/b1s/v1/$metadata#SAPB1.SQLQueryResult', 'SqlText': "SELECT T0.[ItemCode],T0.[itemName], T0.[DistNumber], T1.[WhsCode] FROM [OSRN] T0  INNER JOIN [OSRQ] T1 ON T0.[AbsEntry] =T1.[MdAbsEntry] WHERE  T1.[Quantity] >'0' AND T0.[DistNumber]=:seriel_number AND T1.[WhsCode]=:whcode", 'value': [{'DistNumber': 'IP903', 'ItemCode': 'IPhone', 'WhsCode': '7000-FG', 'itemName': '12 Series 8GB RAM/250 GB ROM Black'}]}
+2025-09-03 08:18:12,709 - root - INFO - ✅ Serial number IP903 validated successfully
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4e6' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 169, in add_serial_item
+    validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\sap_integration.py", line 2849, in validate_serial_item_for_transfer
+    logging.info(f"📦 SAP B1 Response: {data}")
+Message: '📦 SAP B1 Response: {\'odata.metadata\': \'https://192.168.1.5:50000/b1s/v1/$metadata#SAPB1.SQLQueryResult\', \'SqlText\': "SELECT T0.[ItemCode],T0.[itemName], T0.[DistNumber], T1.[WhsCode] FROM [OSRN] T0  INNER JOIN [OSRQ] T1 ON T0.[AbsEntry] =T1.[MdAbsEntry] WHERE  T1.[Quantity] >\'0\' AND T0.[DistNumber]=:seriel_number AND T1.[WhsCode]=:whcode", \'value\': [{\'DistNumber\': \'IP903\', \'ItemCode\': \'IPhone\', \'WhsCode\': \'7000-FG\', \'itemName\': \'12 Series 8GB RAM/250 GB ROM Black\'}]}'
+Arguments: ()
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 169, in add_serial_item
+    validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\sap_integration.py", line 2863, in validate_serial_item_for_transfer
+    logging.info(f"✅ Serial number {serial_number} validated successfully")
+Message: '✅ Serial number IP903 validated successfully'
+Arguments: ()
+2025-09-03 08:18:12,755 - root - INFO - 📋 Item Code: IPhone, Warehouse: 7000-FG
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4cb' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+2025-09-03 08:18:12,765 - root - INFO - ✅ Serial number IP903 validated successfully
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 169, in add_serial_item
+    validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\sap_integration.py", line 2864, in validate_serial_item_for_transfer
+    logging.info(f"📋 Item Code: {item_code}, Warehouse: {whs_code}")
+Message: '📋 Item Code: IPhone, Warehouse: 7000-FG'
+Arguments: ()
+2025-09-03 08:18:12,769 - root - INFO - SAP B1 validation result for IP903: {'valid': True, 'item_code': 'IPhone', 'item_description': '12 Series 8GB RAM/250 GB ROM Black', 'warehouse_code': '7000-FG', 'dist_number': 'IP903', 'source': 'sap_b1', 'sql_text': "SELECT T0.[ItemCode],T0.[itemName], T0.[DistNumber], T1.[WhsCode] FROM [OSRN] T0  INNER JOIN [OSRQ] T1 ON T0.[AbsEntry] =T1.[MdAbsEntry] WHERE  T1.[Quantity] >'0' AND T0.[DistNumber]=:seriel_number AND T1.[WhsCode]=:whcode"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 169, in add_serial_item
+    validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\sap_integration.py", line 2863, in validate_serial_item_for_transfer
+    logging.info(f"✅ Serial number {serial_number} validated successfully")
+Message: '✅ Serial number IP903 validated successfully'
+Arguments: ()
+2025-09-03 08:18:12,777 - root - INFO - 📋 Item Code: IPhone, Warehouse: 7000-FG
+--- Logging error ---
+Traceback (most recent call last):
+2025-09-03 08:18:12,779 - root - INFO - Serial item IP903 added to transfer 29
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4cb' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 169, in add_serial_item
+    validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\sap_integration.py", line 2864, in validate_serial_item_for_transfer
+    logging.info(f"📋 Item Code: {item_code}, Warehouse: {whs_code}")
+Message: '📋 Item Code: IPhone, Warehouse: 7000-FG'
+Arguments: ()
+2025-09-03 08:18:12,789 - root - INFO - SAP B1 validation result for IP903: {'valid': True, 'item_code': 'IPhone', 'item_description': '12 Series 8GB RAM/250 GB ROM Black', 'warehouse_code': '7000-FG', 'dist_number': 'IP903', 'source': 'sap_b1', 'sql_text': "SELECT T0.[ItemCode],T0.[itemName], T0.[DistNumber], T1.[WhsCode] FROM [OSRN] T0  INNER JOIN [OSRQ] T1 ON T0.[AbsEntry] =T1.[MdAbsEntry] WHERE  T1.[Quantity] >'0' AND T0.[DistNumber]=:seriel_number AND T1.[WhsCode]=:whcode"}
+2025-09-03 08:18:12,804 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:12] "POST /serial-item-transfer/29/add_serial_item HTTP/1.1" 200 -
+2025-09-03 08:18:12,810 - root - ERROR - Error adding serial item: (pymysql.err.IntegrityError) (1062, "Duplicate entry '29-IP903' for key 'serial_item_transfer_items.unique_serial_per_transfer'")
+[SQL: INSERT INTO serial_item_transfer_items (serial_item_transfer_id, serial_number, item_code, item_description, warehouse_code, quantity, unit_of_measure, from_warehouse_code, to_warehouse_code, qc_status, validation_status, validation_error, created_at, updated_at) VALUES (%(serial_item_transfer_id)s, %(serial_number)s, %(item_code)s, %(item_description)s, %(warehouse_code)s, %(quantity)s, %(unit_of_measure)s, %(from_warehouse_code)s, %(to_warehouse_code)s, %(qc_status)s, %(validation_status)s, %(validation_error)s, %(created_at)s, %(updated_at)s)]
+[parameters: {'serial_item_transfer_id': 29, 'serial_number': 'IP903', 'item_code': 'IPhone', 'item_description': '12 Series 8GB RAM/250 GB ROM Black', 'warehouse_code': '7000-FG', 'quantity': 1, 'unit_of_measure': 'EA', 'from_warehouse_code': '7000-FG', 'to_warehouse_code': '7000-QFG', 'qc_status': 'pending', 'validation_status': 'validated', 'validation_error': None, 'created_at': datetime.datetime(2025, 9, 3, 2, 48, 12, 803015), 'updated_at': datetime.datetime(2025, 9, 3, 2, 48, 12, 803015)}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-09-03 08:18:12,813 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:12] "POST /serial-item-transfer/29/add_serial_item HTTP/1.1" 500 -
+2025-09-03 08:18:12,949 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:12] "GET /serial-item-transfer/29 HTTP/1.1" 200 -
+2025-09-03 08:18:13,028 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:13] "GET /static/css/style.css HTTP/1.1" 304 -
+2025-09-03 08:18:13,042 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:13] "GET /static/icons/icon.png HTTP/1.1" 304 -
+2025-09-03 08:18:13,050 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:13] "GET /static/js/barcode-scanner.js HTTP/1.1" 304 -
+2025-09-03 08:18:13,068 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:13] "GET /static/js/app.js HTTP/1.1" 304 -
+2025-09-03 08:18:13,182 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:13] "GET /static/icons/icon.png HTTP/1.1" 304 -
+2025-09-03 08:18:13,190 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:13] "GET /api/notifications/pending-approvals HTTP/1.1" 200 -
+2025-09-03 08:18:13,207 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:13] "GET /static/icons/icon.png HTTP/1.1" 304 -
+2025-09-03 08:18:17,978 - root - INFO - 📤 Serial Item Transfer 29 submitted for QC approval
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4e4' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 306, in submit_transfer
+    logging.info(f"📤 Serial Item Transfer {transfer_id} submitted for QC approval")
+Message: '📤 Serial Item Transfer 29 submitted for QC approval'
+Arguments: ()
+2025-09-03 08:18:17,982 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:17] "POST /serial-item-transfer/29/submit HTTP/1.1" 200 -
+2025-09-03 08:18:19,046 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:19] "GET /serial-item-transfer/29 HTTP/1.1" 200 -
+2025-09-03 08:18:19,065 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:19] "GET /static/css/style.css HTTP/1.1" 304 -
+2025-09-03 08:18:19,081 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:19] "GET /static/js/barcode-scanner.js HTTP/1.1" 304 -
+2025-09-03 08:18:19,091 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:19] "GET /static/icons/icon.png HTTP/1.1" 304 -
+2025-09-03 08:18:19,092 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:19] "GET /static/js/app.js HTTP/1.1" 304 -
+2025-09-03 08:18:19,128 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:19] "GET /static/icons/icon.png HTTP/1.1" 304 -
+2025-09-03 08:18:19,146 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:19] "GET /api/notifications/pending-approvals HTTP/1.1" 200 -
+2025-09-03 08:18:19,157 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:19] "GET /static/icons/icon.png HTTP/1.1" 304 -
+2025-09-03 08:18:22,800 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:22] "GET /qc_dashboard HTTP/1.1" 200 -
+2025-09-03 08:18:22,818 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:22] "GET /static/css/style.css HTTP/1.1" 304 -
+2025-09-03 08:18:22,827 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:22] "GET /static/js/barcode-scanner.js HTTP/1.1" 304 -
+2025-09-03 08:18:22,832 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:22] "GET /static/js/app.js HTTP/1.1" 304 -
+2025-09-03 08:18:22,833 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:22] "GET /static/icons/icon.png HTTP/1.1" 304 -
+2025-09-03 08:18:22,871 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:22] "GET /api/notifications/pending-approvals HTTP/1.1" 200 -
+2025-09-03 08:18:26,635 - root - INFO - Serial Item Transfer 29 approved by admin
+2025-09-03 08:18:27,763 - root - INFO - Successfully logged in to SAP B1
+2025-09-03 08:18:27,763 - root - INFO - Serial Item Transfer 29 ready for SAP posting
+2025-09-03 08:18:27,766 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:27] "POST /serial-item-transfer/29/approve HTTP/1.1" 302 -
+2025-09-03 08:18:27,794 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:18:27] "GET /qc_dashboard HTTP/1.1" 200 -
+2025-09-03 08:18:28,736 - root - INFO - Successfully logged in to SAP B1
+<Response [200]>
+{'odata.metadata': 'https://192.168.1.5:50000/b1s/v1/$metadata#SerialNumberDetails', 'value': [{'SystemNumber': 903}]}
+Serial: IP903 -> SystemNumber: 903
+sap_transfer_data (repr) --> {'DocDate': '2025-09-03', 'DueDate': '2025-09-03', 'CardCode': '', 'CardName': '', 'Address': '', 'U_EA_CREATEDBy': 'admin', 'U_EA_Approved': 'admin', 'Comments': 'Serial Number Item Transfer from WMS - admin', 'JournalMemo': 'Serial Number Item Transfer - DOC-0029-2025', 'PriceList': -1, 'SalesPersonCode': -1, 'FromWarehouse': '7000-FG', 'ToWarehouse': '7000-QFG', 'AuthorizationStatus': 'sasWithout', 'StockTransferLines': [{'LineNum': 0, 'ItemCode': 'IPhone', 'Quantity': 1, 'WarehouseCode': '7000-QFG', 'FromWarehouseCode': '7000-FG', 'UoMCode': '', 'SerialNumbers': [{'SystemSerialNumber': 903, 'InternalSerialNumber': 'IP903', 'ManufacturerSerialNumber': 'IP903', 'Location': None, 'Notes': None}]}]}
+2025-09-03 08:18:28,747 - root - INFO - SAP response for IP903: {'odata.metadata': 'https://192.168.1.5:50000/b1s/v1/$metadata#SerialNumberDetails', 'value': [{'SystemNumber': 903}]}
+2025-09-03 08:18:29,211 - root - INFO - 📤 Serial Item Transfer 29 posted to SAP B1: 5000109
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4e4' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\12\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 757, in post_to_sap
+    logging.info(f"📤 Serial Item Transfer {transfer_id} posted to SAP B1: {sap_result.get('document_number')}")
+Message: '📤 Serial Item Transfer 29 posted to SAP B1: 5000109'

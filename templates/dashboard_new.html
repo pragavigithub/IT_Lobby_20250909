@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - WMS{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-8">
+            <h1>Welcome, {{ current_user.first_name }}!</h1>
+            <p class="text-muted">{{ current_user.role|title }} Dashboard</p>
+        </div>
+    </div>
+
+    <!-- Three Module Statistics Cards -->
+    {% if current_user.has_permission('serial_item_transfer')%}
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card dashboard-card" onclick="window.location.href='/serial-item-transfer/'">
+                <div class="card-body text-center">
+                    <div class="stat-icon">
+                        <i data-feather="shuffle" style="color: white; width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3>{{ stats.serial_item_transfer_count }}</h3>
+                    <p class="mb-0">Line Item Transfers</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% if current_user.has_permission('serial_item_transfer')%}
+        <div class="col-md-3 mb-3">
+            <div class="card dashboard-card" onclick="window.location.href='/inventory_transfer/serial'">
+                <div class="card-body text-center">
+                    <div class="stat-icon">
+                        <i data-feather="arrow-right-circle" style="color: white; width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3>{{ stats.serial_transfer_count }}</h3>
+                    <p class="mb-0">Bulk Item Transfers</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% if current_user.has_permission('invoice_creation') %}
+        <div class="col-md-3 mb-3">
+            <div class="card dashboard-card" onclick="window.location.href='/invoice_creation'">
+                <div class="card-body text-center">
+                    <div class="stat-icon">
+                        <i data-feather="file-text" style="color: white; width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3>{{ stats.invoice_count }}</h3>
+                    <p class="mb-0">Invoice Creation</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% if current_user.has_permission('qc_dashboard') %}
+        <div class="col-md-3 mb-3">
+            <div class="card dashboard-card" onclick="window.location.href='/qc_dashboard'">
+                <div class="card-body text-center">
+                    <div class="stat-icon">
+                       <i data-feather="clipboard" style="color: white; width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3>{{ stats.qc_count }}</h3>
+                    <p class="mb-0">QC Dashboard</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- Analytics Charts Row -->
+    <div class="row mb-4">
+        <!-- Monthly Activity Chart -->
+        <div class="col-md-8">
+            <div class="card dashboard-card">
+                <div class="card-header">
+                    <h5 class="mb-0">Monthly Reports</h5>
+                    <small class="text-muted">Activity across three modules</small>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module Distribution Chart -->
+        <div class="col-md-4">
+            <div class="card dashboard-card">
+                <div class="card-header">
+                    <h5 class="mb-0">Module Distribution</h5>
+                    <small class="text-muted">Today</small>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% if recent_activities %}
+                        {% for activity in recent_activities %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ activity.type }}</strong>
+                                <small class="text-muted d-block">{{ activity.description }}</small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                {% if activity.status == 'draft' %}
+                                <span class="badge bg-secondary">Draft</span>
+                                {% elif activity.status == 'submitted' %}
+                                <span class="badge bg-warning text-dark">Submitted</span>
+                                {% elif activity.status == 'qc_approved' or activity.status == 'posted' %}
+                                <span class="badge bg-success">Completed</span>
+                                {% elif activity.status == 'rejected' %}
+                                <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                <span class="badge bg-info">{{ activity.status|title }}</span>
+                                {% endif %}
+                                <small class="text-muted">{{ activity.created_at.strftime('%m/%d %H:%M') }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="list-group-item">
+                            <div class="text-center text-muted py-3">
+                                <i data-feather="activity" class="mb-2"></i>
+                                <p class="mb-0">No recent activity found</p>
+                                <small>Start creating GRPO, transfers, or pick lists to see activity here</small>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    <div class="row">-->
+    <!--        <div class="col-12">-->
+    <!--            <div class="card dashboard-card">-->
+    <!--                <div class="card-header">-->
+    <!--                    <h5 class="mb-0">Recent Activity</h5>-->
+    <!--                    <small class="text-muted">Latest transactions</small>-->
+    <!--                </div>-->
+    <!--                <div class="card-body">-->
+    <!--                    {% if recent_activities %}-->
+    <!--                        {% for activity in recent_activities %}-->
+    <!--                        <div class="activity-item">-->
+    <!--                            <div class="d-flex justify-content-between align-items-center">-->
+    <!--                                <div>-->
+    <!--                                    <strong class="text-muted">{{ activity.type }}</strong>-->
+    <!--                                    <br>-->
+    <!--                                    <small class="text-muted">{{ activity.description }}</small>-->
+    <!--                                </div>-->
+    <!--                                <div class="text-right">-->
+    <!--                                    <span class="status-badge status-{{ activity.status }}">{{ activity.status|title }}</span>-->
+    <!--                                    <br>-->
+    <!--                                    <small class="text-muted">{{ activity.created_at.strftime('%m/%d %H:%M') }}</small>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                        {% endfor %}-->
+    <!--                    {% else %}-->
+    <!--                        <p class="text-muted text-center">No recent activities found.</p>-->
+    <!--                    {% endif %}-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+</div>
+
+<script>
+    // Monthly Activity Line Chart
+    const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+    const monthlyChart = new Chart(monthlyCtx, {
+        type: 'line',
+        data: {
+            labels: {{ stats.months|safe }},
+            datasets: [
+                {
+                    label: 'Line Item Transfer',
+                    data: {{ stats.serial_transfer_data|safe }},
+                    borderColor: '#4F46E5',
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: 'Bulk Item Transfer',
+                    data: {{ stats.serial_item_transfer_data|safe }},
+                    borderColor: '#10B981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: 'Invoice Creation',
+                    data: {{ stats.invoice_data|safe }},
+                    borderColor: '#F59E0B',
+                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)'
+                    }
+                }
+            }
+        }
+    });
+
+    // Module Distribution Doughnut Chart
+    const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+    const distributionChart = new Chart(distributionCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Line Item Transfer', 'Bulk Item Transfer', 'Invoice Creation'],
+            datasets: [{
+                data: [{{ stats.serial_transfer_count }}, {{ stats.serial_item_transfer_count }}, {{ stats.invoice_count }}],
+                backgroundColor: [
+                    '#4F46E5',
+                    '#10B981',
+                    '#F59E0B'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                }
+            }
+        }
+    });
+
+    // Initialize Feather icons
+    feather.replace();
+</script>
+{% endblock %}

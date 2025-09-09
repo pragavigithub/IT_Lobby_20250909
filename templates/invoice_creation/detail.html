@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+
+{% block title %}Invoice {{ invoice.invoice_number or invoice.id }} - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Invoice {{ invoice.invoice_number or 'Draft' }}</h2>
+                <div>
+                    <a href="{{ url_for('invoice_creation.index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Invoices
+                    </a>
+
+                    {% if invoice.status == 'draft' %}
+                    <!-- Draft Mode: Allow editing and submission for QC -->
+                    <button class="btn btn-success ml-2" onclick="submitForQC({{ invoice.id }})">
+                        <i class="fas fa-check-circle"></i> Submit for QC Approval
+                    </button>
+                    <!--                        <a href="{{ url_for('invoice_creation.create') }}?edit={{ invoice.id }}" class="btn btn-primary ml-2">-->
+                    <!--                            <i class="fas fa-edit"></i> Edit Invoice-->
+                    <!--                        </a>-->
+                    <button class="btn btn-danger ml-2" onclick="deleteInvoice({{ invoice.id }})">
+                        <i class="fas fa-trash"></i> Delete Draft
+                    </button>
+                    {% elif invoice.status == 'pending_qc' %}
+                    <!-- Pending QC: Show QC actions if user has permission -->
+                    {% if current_user.has_permission('qc_approval') %}
+                    <button class="btn btn-success ml-2" onclick="qcApprove({{ invoice.id }})">
+                        <i class="fas fa-thumbs-up"></i> QC Approve
+                    </button>
+                    <button class="btn btn-warning ml-2" onclick="qcReject({{ invoice.id }})">
+                        <i class="fas fa-thumbs-down"></i> QC Reject
+                    </button>
+                    {% else %}
+                    <span class="badge badge-warning ml-2">Pending QC Approval</span>
+                    {% endif %}
+                    {% elif invoice.status == 'posted' and invoice.sap_doc_entry %}
+                    <!-- Final Mode: Read-only, show print option -->
+                    <!--                        <a href="#" class="btn btn-primary ml-2" onclick="printInvoice()">-->
+                    <!--                            <i class="fas fa-print"></i> Print Invoice-->
+                    <!--                        </a>-->
+                    <span class="badge badge-success ml-2">Finalized & Posted</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Invoice Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>Invoice Number:</strong></td>
+                                            <td>{{ invoice.invoice_number or 'Draft' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Customer Code:</strong></td>
+                                            <td>{{ invoice.customer_code or 'None' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Customer Name:</strong></td>
+                                            <td>{{ invoice.customer_name or '-' }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>Status:</strong></td>
+                                            <td>
+                                                {% if invoice.status == 'draft' %}
+                                                <span class="badge badge-secondary">Draft</span>
+                                                {% elif invoice.status == 'pending_qc' %}
+                                                <span class="badge badge-warning">Pending QC</span>
+                                                {% elif invoice.status == 'posted' %}
+                                                <span class="badge badge-success">Posted</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Date Created:</strong></td>
+                                            <td>{{ invoice.doc_date.strftime('%Y-%m-%d %H:%M') if invoice.doc_date else
+                                                '-' }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>SAP DocNum:</strong></td>
+                                            <td>{{ invoice.sap_doc_num or '-' }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Created By</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>{{ invoice.user.role.title() if invoice.user and invoice.user.role else 'System
+                                Administrator' }}</strong><span
+                                    class="badge badge-success">{{ invoice.created_at.strftime('%Y-%m-%d %H:%M:%S') if
+                                invoice.created_at else '2025-08-30 17:42:51' }}</span></p>
+                        </div>
+                    </div>
+                    {% if invoice.status == 'posted' and invoice.sap_doc_entry %}
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">SAP Integration</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Document Entry:</strong> {{ invoice.sap_doc_entry }} <strong>Status:</strong>
+                                <span> {% if invoice.status == 'draft' %}
+                                                <span class="badge badge-secondary">Draft</span>
+                                                {% elif invoice.status == 'pending_qc' %}
+                                                <span class="badge badge-warning">Pending QC</span>
+                                                {% elif invoice.status == 'posted' %}
+                                                <span class="badge badge-success">Posted</span>
+                                                {% endif %}</span></p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <!-- Invoice Lines -->
+                <div class="card mt-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Invoice Lines</h5>
+                        {% if invoice.status == 'draft' %}
+                        <small class="text-muted">Editing allowed - Document in Draft Mode</small>
+                        {% else %}
+                        <small class="text-muted">Read-only</small>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        {% if invoice.lines %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Line #</th>
+                                    <th>Item Code</th>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                    <th>Warehouse</th>
+                                    <th>Serial Numbers</th>
+                                    <!--                                                {% if invoice.status == 'draft' %}-->
+                                    <!--                                                <th>Actions</th>-->
+                                    <!--                                                {% endif %}-->
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for line in invoice.lines %}
+                                <tr>
+                                    <td>{{ line.line_number }}</td>
+                                    <td>{{ line.item_code }}</td>
+                                    <td>{{ line.item_description }}</td>
+                                    <td>{{ line.quantity }}</td>
+                                    <td>{{ line.warehouse_code }}</td>
+                                    <td>
+                                        <span class="badge badge-info">{{ line.serial_numbers|length }} Serial(s)</span>
+                                        {% for serial in line.serial_numbers %}
+                                        <small class="d-block">{{ serial.serial_number }}</small>
+                                        {% endfor %}
+                                    </td>
+                                    <!--                                                {% if invoice.status == 'draft' %}-->
+                                    <!--                                                <td>-->
+                                    <!--                                                    <button class="btn btn-sm btn-danger" onclick="deleteLineItem({{ line.id }})">-->
+                                    <!--                                                        <i class="fas fa-trash"></i> Delete-->
+                                    <!--                                                    </button>-->
+                                    <!--                                                </td>-->
+                                    <!--                                                {% endif %}-->
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No line items added yet</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    function submitForQC(invoiceId) {
+        if (!confirm("Submit this invoice for QC approval? Once submitted, you cannot edit until approved or rejected.")) {
+            return;
+        }
+
+        fetch(`/invoice_creation/${invoiceId}/submit_for_qc`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Invoice submitted for QC approval successfully!");
+                location.reload();
+            } else {
+                alert("Error: " + (data.error || "Unknown error"));
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Failed to submit for QC");
+        });
+    }
+
+    function qcApprove(invoiceId) {
+        if (!confirm("Approve this invoice for posting to SAP?")) {
+            return;
+        }
+
+        fetch(`/invoice_creation/${invoiceId}/qc_approve`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Invoice approved and posted to SAP successfully!");
+                location.reload();
+            } else {
+                alert("Error: " + (data.error || "Unknown error"));
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Failed to approve invoice");
+        });
+    }
+
+    function qcReject(invoiceId) {
+        const reason = prompt("Please provide a reason for rejection:");
+        if (!reason) return;
+
+        fetch(`/invoice_creation/${invoiceId}/qc_reject`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ reason: reason })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Invoice rejected successfully!");
+                location.reload();
+            } else {
+                alert("Error: " + (data.error || "Unknown error"));
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Failed to reject invoice");
+        });
+    }
+
+    function deleteLineItem(lineId) {
+        if (!confirm("Delete this line item and all its serial numbers?")) {
+            return;
+        }
+
+        fetch(`/invoice_creation/lines/${lineId}/delete`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Line item deleted successfully!");
+                location.reload();
+            } else {
+                alert("Error: " + (data.error || "Unknown error"));
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Failed to delete line item");
+        });
+    }
+
+    function printInvoice() {
+        // This would typically open a print-friendly version or PDF
+        alert('Print functionality would be implemented here');
+    }
+    
+    function deleteInvoice(invoiceId) {
+        if (!confirm("Delete this entire invoice? This action cannot be undone.")) {
+            return;
+        }
+
+        fetch(`/invoice_creation/${invoiceId}/delete`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Invoice deleted successfully!");
+                window.location.href = "/invoice_creation/";
+            } else {
+                alert("Error: " + (data.error || "Unknown error"));
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Failed to delete invoice");
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,140 @@
+2025-09-03 10:29:17,734 - INFO - SAP B1 Response: {'odata.metadata': 'https://192.168.0.143:50000/b1s/v1/$metadata#SAPB1.SQLQueryResult', 'SqlText': "SELECT T0.[ItemCode],T0.[itemName], T0.[DistNumber], T1.[WhsCode] FROM [OSRN] T0  INNER JOIN [OSRQ] T1 ON T0.[AbsEntry] =T1.[MdAbsEntry] WHERE  T1.[Quantity] >'0' AND T0.[DistNumber]=:seriel_number AND T1.[WhsCode]=:whcode", 'value': [{'DistNumber': 'RDM430', 'ItemCode': 'RedmiNote4', 'WhsCode': '7000-FG', 'itemName': '8GBRAM/250GBROM Black'}]}
+2025-09-03 10:29:17,746 - INFO - ✅ Serial number RDM430 validated successfully
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\15\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 169, in add_serial_item
+    validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
+  File "E:\SAP_Integ\Git Change\20250903\15\IT_SAP_Login\sap_integration.py", line 2863, in validate_serial_item_for_transfer
+    logging.info(f"✅ Serial number {serial_number} validated successfully")
+Message: '✅ Serial number RDM430 validated successfully'
+Arguments: ()
+2025-09-03 10:29:17,747 - INFO - Item Code: RedmiNote4, Warehouse: 7000-FG
+2025-09-03 10:29:17,758 - INFO - SAP B1 validation result for RDM430: {'valid': True, 'item_code': 'RedmiNote4', 'item_description': '8GBRAM/250GBROM Black', 'warehouse_code': '7000-FG', 'dist_number': 'RDM430', 'source': 'sap_b1', 'sql_text': "SELECT T0.[ItemCode],T0.[itemName], T0.[DistNumber], T1.[WhsCode] FROM [OSRN] T0  INNER JOIN [OSRQ] T1 ON T0.[AbsEntry] =T1.[MdAbsEntry] WHERE  T1.[Quantity] >'0' AND T0.[DistNumber]=:seriel_number AND T1.[WhsCode]=:whcode"}
+2025-09-03 10:29:17,773 - ERROR - Error adding serial item: (pymysql.err.IntegrityError) (1062, "Duplicate entry '33-RDM430' for key 'serial_item_transfer_items.unique_serial_per_transfer'")
+[SQL: INSERT INTO serial_item_transfer_items (serial_item_transfer_id, serial_number, item_code, item_description, warehouse_code, quantity, unit_of_measure, from_warehouse_code, to_warehouse_code, qc_status, validation_status, validation_error, created_at, updated_at) VALUES (%(serial_item_transfer_id)s, %(serial_number)s, %(item_code)s, %(item_description)s, %(warehouse_code)s, %(quantity)s, %(unit_of_measure)s, %(from_warehouse_code)s, %(to_warehouse_code)s, %(qc_status)s, %(validation_status)s, %(validation_error)s, %(created_at)s, %(updated_at)s)]
+[parameters: {'serial_item_transfer_id': 33, 'serial_number': 'RDM430', 'item_code': 'RedmiNote4', 'item_description': '8GBRAM/250GBROM Black', 'warehouse_code': '7000-FG', 'quantity': 1, 'unit_of_measure': 'EA', 'from_warehouse_code': '7000-FG', 'to_warehouse_code': '7000-QFG', 'qc_status': 'pending', 'validation_status': 'validated', 'validation_error': None, 'created_at': datetime.datetime(2025, 9, 3, 4, 59, 17, 762056), 'updated_at': datetime.datetime(2025, 9, 3, 4, 59, 17, 762056)}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-09-03 10:29:17,776 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:17] "POST /serial-item-transfer/33/add_serial_item HTTP/1.1" 500 -
+2025-09-03 10:29:22,190 - INFO - Serial Item Transfer 33 submitted for QC approval
+2025-09-03 10:29:22,191 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:22] "POST /serial-item-transfer/33/submit HTTP/1.1" 200 -
+2025-09-03 10:29:23,219 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:23] "GET /serial-item-transfer/33 HTTP/1.1" 200 -
+2025-09-03 10:29:23,233 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:23] "GET /static/css/style.css HTTP/1.1" 304 -
+2025-09-03 10:29:23,251 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:23] "GET /static/js/barcode-scanner.js HTTP/1.1" 304 -
+2025-09-03 10:29:23,253 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:23] "GET /static/icons/icon.png HTTP/1.1" 304 -
+2025-09-03 10:29:23,254 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:23] "GET /static/js/app.js HTTP/1.1" 304 -
+2025-09-03 10:29:23,305 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:23] "GET /api/notifications/pending-approvals HTTP/1.1" 200 -
+2025-09-03 10:29:23,306 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:23] "GET /static/icons/icon.png HTTP/1.1" 304 -
+2025-09-03 10:29:23,321 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:23] "GET /static/icons/icon.png HTTP/1.1" 304 -
+2025-09-03 10:29:24,792 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:24] "GET /qc_dashboard HTTP/1.1" 200 -
+2025-09-03 10:29:24,813 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:24] "GET /static/css/style.css HTTP/1.1" 304 -
+2025-09-03 10:29:24,818 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:24] "GET /static/icons/icon.png HTTP/1.1" 304 -
+2025-09-03 10:29:24,820 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:24] "GET /static/js/barcode-scanner.js HTTP/1.1" 304 -
+2025-09-03 10:29:24,821 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:24] "GET /static/js/app.js HTTP/1.1" 304 -
+2025-09-03 10:29:24,905 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:24] "GET /api/notifications/pending-approvals HTTP/1.1" 200 -
+2025-09-03 10:29:27,878 - INFO - Serial Item Transfer 33 approved by admin
+2025-09-03 10:29:28,887 - INFO - Successfully logged in to SAP B1
+2025-09-03 10:29:28,888 - INFO - Serial Item Transfer 33 ready for SAP posting
+2025-09-03 10:29:28,891 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:28] "POST /serial-item-transfer/33/approve HTTP/1.1" 302 -
+2025-09-03 10:29:28,925 - INFO - 192.168.0.143 - - [03/Sep/2025 10:29:28] "GET /qc_dashboard HTTP/1.1" 200 -
+2025-09-03 10:29:29,775 - INFO - Successfully logged in to SAP B1
+2025-09-03 10:29:29,789 - INFO - SAP response for MI451: {'odata.metadata': 'https://192.168.0.143:50000/b1s/v1/$metadata#SerialNumberDetails', 'value': [{'SystemNumber': 462}, {'SystemNumber': 451}]}
+<Response [200]>
+{'odata.metadata': 'https://192.168.0.143:50000/b1s/v1/$metadata#SerialNumberDetails', 'value': [{'SystemNumber': 462}, {'SystemNumber': 451}]}
+Serial: MI451 -> SystemNumber: 462
+<Response [200]>
+{'odata.metadata': 'https://192.168.0.143:50000/b1s/v1/$metadata#SerialNumberDetails', 'value': [{'SystemNumber': 430}]}
+2025-09-03 10:29:29,796 - INFO - SAP response for RDM430: {'odata.metadata': 'https://192.168.0.143:50000/b1s/v1/$metadata#SerialNumberDetails', 'value': [{'SystemNumber': 430}]}
+Serial: RDM430 -> SystemNumber: 430
+sap_transfer_data (repr) --> {'DocDate': '2025-09-03', 'DueDate': '2025-09-03', 'CardCode': '', 'CardName': '', 'Address': '', 'U_EA_CREATEDBy': 'admin', 'U_EA_Approved': 'admin', 'Comments': 'Serial Number Item Transfer from WMS - admin', 'JournalMemo': 'Serial Number Item Transfer - DOC-0033-2025', 'PriceList': -1, 'SalesPersonCode': -1, 'FromWarehouse': '7000-FG', 'ToWarehouse': '7000-QFG', 'AuthorizationStatus': 'sasWithout', 'StockTransferLines': [{'LineNum': 0, 'ItemCode': 'MI Phone', 'Quantity': 1, 'WarehouseCode': '7000-QFG', 'FromWarehouseCode': '7000-FG', 'UoMCode': '', 'SerialNumbers': [{'SystemSerialNumber': 462, 'InternalSerialNumber': 'MI451', 'ManufacturerSerialNumber': 'MI451', 'Location': None, 'Notes': None}]}, {'LineNum': 1, 'ItemCode': 'RedmiNote4', 'Quantity': 1, 'WarehouseCode': '7000-QFG', 'FromWarehouseCode': '7000-FG', 'UoMCode': '', 'SerialNumbers': [{'SystemSerialNumber': 430, 'InternalSerialNumber': 'RDM430', 'ManufacturerSerialNumber': 'RDM430', 'Location': None, 'Notes': None}]}]}
+2025-09-03 10:29:30,262 - INFO - 📤 Serial Item Transfer 33 posted to SAP B1: 5000114
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4e4' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\15\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 766, in post_to_sap
+    logging.info(f"📤 Serial Item Transfer {transfer_id} posted to SAP B1: {sap_result.get('document_number')}")
+Message: '📤 Serial Item Transfer 33 posted to SAP B1: 5000114'

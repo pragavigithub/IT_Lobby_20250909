@@ -1,0 +1,133 @@
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f310' in position 40: character maps to <undefined>
+Call stack:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 390, in handle
+    super().handle()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 362, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\serving.py", line 325, in execute
+    for data in application_iter:
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\debug\__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\SAP_Integ\Git Change\20250903\11\IT_SAP_Login\modules\invoice_creation\routes.py", line 271, in get_business_partners
+    logging.info(f"🌐 SAP API URL: {url}")
+Message: "🌐 SAP API URL: https://192.168.1.5:50000/b1s/v1/BusinessPartners?$select=CardCode,CardName&$filter=CardType eq 'cCustomer'"
+Arguments: ()
+2025-09-03 08:04:35,024 - root - INFO - Retrieved 129 business partners from SAP
+2025-09-03 08:04:35,028 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:35] "GET /invoice_creation/api/business-partners HTTP/1.1" 200 -
+https://192.168.1.5:50000/b1s/v1/BusinessPartners?$select=CardCode,CardName&$filter=CardType eq 'cCustomer'
+2025-09-03 08:04:40,261 - root - INFO - Validating serial number: IP294
+3D SEALS
+2025-09-03 08:04:41,413 - root - INFO - Successfully logged in to SAP B1
+transfer_itemss (repr) --> {'odata.metadata': 'https://192.168.1.5:50000/b1s/v1/$metadata#SAPB1.SQLQueryResult', 'SqlText': "SELECT T0.[ItemCode],T0.[itemName], T0.[DistNumber], T2.[WhsCode],T2.[WhsName],T3.[BPLName],T2.[BPLid] FROM [OSRN] T0 INNER JOIN [OSRQ] T1 ON T0.[AbsEntry] =T1.[MdAbsEntry] INNER JOIN [OWHS] T2 ON T2.[WhsCode]=T1.[WhsCode] INNER JOIN [OBPL] T3 ON T3.[BPLId]=T2.[BPLid]WHERE  T1.[Quantity] >'0'AND T0.[DistNumber]=:serial_number", 'value': [{'BPLName': 'ORD-CHENNAI', 'BPLid': 5, 'DistNumber': 'IP294', 'ItemCode': 'IPhone', 'WhsCode': '7000-FG', 'WhsName': 'Finished Goods GST-ORD DC CHN - Assigned to AVS', 'itemName': '12 Series 8GB RAM/250 GB ROM Black'}]}
+2025-09-03 08:04:41,441 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:41] "GET /invoice_creation/api/validate-serial-number?serial_number=IP294&cusCode=3D%20SEALS HTTP/1.1" 200 -
+2025-09-03 08:04:42,010 - root - INFO -  Draft invoice 21 created for user admin
+2025-09-03 08:04:42,011 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:42] "POST /invoice_creation/create_draft HTTP/1.1" 200 -
+IP294
+2025-09-03 08:04:42,913 - root - INFO - Successfully logged in to SAP B1
+transfer_itemssssssss (repr) --> {'BPLName': 'ORD-CHENNAI', 'BPLid': 5, 'DistNumber': 'IP294', 'ItemCode': 'IPhone', 'WhsCode': '7000-FG', 'WhsName': 'Finished Goods GST-ORD DC CHN - Assigned to AVS', 'itemName': '12 Series 8GB RAM/250 GB ROM Black'}
+2025-09-03 08:04:42,937 - root - INFO -  Serial IP294 validated successfully with SAP
+2025-09-03 08:04:42,961 - root - INFO -  Added serial item IP294 to invoice 21
+2025-09-03 08:04:42,971 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:42] "POST /invoice_creation/21/add_line_item HTTP/1.1" 200 -
+2025-09-03 08:04:44,914 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:44] "GET /serial-item-transfer/ HTTP/1.1" 200 -
+2025-09-03 08:04:44,935 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:44] "GET /static/css/style.css HTTP/1.1" 304 -
+2025-09-03 08:04:44,944 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:44] "GET /static/icons/icon.png HTTP/1.1" 304 -
+2025-09-03 08:04:44,950 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:44] "GET /static/js/app.js HTTP/1.1" 304 -
+2025-09-03 08:04:44,951 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:44] "GET /static/js/barcode-scanner.js HTTP/1.1" 304 -
+2025-09-03 08:04:44,982 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:44] "GET /api/notifications/pending-approvals HTTP/1.1" 200 -
+2025-09-03 08:04:47,106 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:47] "GET /serial-item-transfer/create HTTP/1.1" 200 -
+2025-09-03 08:04:47,130 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:47] "GET /static/css/style.css HTTP/1.1" 304 -
+2025-09-03 08:04:47,132 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:47] "GET /static/icons/icon.png HTTP/1.1" 304 -
+2025-09-03 08:04:47,132 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:47] "GET /static/js/barcode-scanner.js HTTP/1.1" 304 -
+2025-09-03 08:04:47,133 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:47] "GET /static/js/app.js HTTP/1.1" 304 -
+2025-09-03 08:04:47,176 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:47] "GET /api/notifications/pending-approvals HTTP/1.1" 200 -
+2025-09-03 08:04:48,327 - root - INFO - Successfully logged in to SAP B1
+2025-09-03 08:04:48,349 - root - INFO - Retrieved 20 warehouses from SAP B1
+2025-09-03 08:04:48,355 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:48] "GET /api/get-warehouses HTTP/1.1" 200 -
+2025-09-03 08:04:54,480 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:54] "POST /serial-item-transfer/create HTTP/1.1" 302 -
+2025-09-03 08:04:54,568 - werkzeug - INFO - 192.168.1.5 - - [03/Sep/2025 08:04:54] "GET /serial-item-transfer/27 HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1458, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\SAP_Integ\Git Change\20250903\11\IT_SAP_Login\modules\serial_item_transfer\routes.py", line 130, in detail
+    return render_template('serial_item_transfer/detail.html', transfer=transfer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\templating.py", line 152, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\templating.py", line 133, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\jinja2\environment.py", line 1301, in render
+    self.environment.handle_exception()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\jinja2\environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "E:\SAP_Integ\Git Change\20250903\11\IT_SAP_Login\templates\serial_item_transfer\detail.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "E:\SAP_Integ\Git Change\20250903\11\IT_SAP_Login\templates\base.html", line 368, in top-level template code
+    {% block scripts %}{% endblock %}
+  File "E:\SAP_Integ\Git Change\20250903\11\IT_SAP_Login\templates\serial_item_transfer\detail.html", line 835, in block 'scripts'
+    url: '{{ url_for("inventory_transfer.validate_batch_serials") }}',
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1071, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1060, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\routing\map.py", line 919, in build
+    raise BuildError(endpoint, values, method, self)

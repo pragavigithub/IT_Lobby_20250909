@@ -1,0 +1,239 @@
+2025-09-03 05:02:45,843 - INFO - 📝 Logging initialized - Level: INFO, Path: C:/tmp/wms_logs
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4dd' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\main.py", line 1, in <module>
+    from app import app
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\app.py", line 239, in <module>
+    logger = setup_logging(app)
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\logging_config.py", line 90, in setup_logging
+    logging.info(f"📝 Logging initialized - Level: {LOG_LEVEL}, Path: {LOG_PATH}")
+Message: '📝 Logging initialized - Level: INFO, Path: C:/tmp/wms_logs'
+Arguments: ()
+2025-09-03 05:02:45,849 - INFO - 📁 Log files: C:/tmp/wms_logs/wms.log and C:/tmp/wms_logs/wms_error.log
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4c1' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\main.py", line 1, in <module>
+    from app import app
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\app.py", line 239, in <module>
+    logger = setup_logging(app)
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\logging_config.py", line 92, in setup_logging
+    logging.info(f"📁 Log files: {LOG_PATH}/{LOG_FILE_PREFIX}.log and {LOG_PATH}/{LOG_FILE_PREFIX}_error.log")
+Message: '📁 Log files: C:/tmp/wms_logs/wms.log and C:/tmp/wms_logs/wms_error.log'
+Arguments: ()
+2025-09-03 05:02:45,850 - INFO - 🚀 WMS Application starting with file-based logging
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f680' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\main.py", line 1, in <module>
+    from app import app
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\app.py", line 240, in <module>
+    logger.info("🚀 WMS Application starting with file-based logging")
+Message: '🚀 WMS Application starting with file-based logging'
+Arguments: ()
+2025-09-03 05:02:45,933 - INFO - ✅ MySQL engine configured and connected successfully
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\main.py", line 1, in <module>
+    from app import app
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\app.py", line 250, in <module>
+    dual_db = init_dual_database(app)
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\db_dual_support.py", line 125, in init_dual_database
+    dual_db_manager = DualDatabaseManager(app)
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\db_dual_support.py", line 20, in __init__
+    self.setup_engines()
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\db_dual_support.py", line 45, in setup_engines
+    logging.info("✅ MySQL engine configured and connected successfully")
+Message: '✅ MySQL engine configured and connected successfully'
+Arguments: ()
+2025-09-03 05:02:45,937 - INFO - ✅ Dual database support initialized for MySQL sync
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\main.py", line 1, in <module>
+    from app import app
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\app.py", line 252, in <module>
+    logging.info("✅ Dual database support initialized for MySQL sync")
+Message: '✅ Dual database support initialized for MySQL sync'
+Arguments: ()
+ * Serving Flask app 'app'
+ * Debug mode: on
+2025-09-03 05:02:47,413 - INFO - WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.5:5000
+2025-09-03 05:02:47,414 - INFO - Press CTRL+C to quit
+2025-09-03 05:02:47,418 - INFO -  * Restarting with stat
+2025-09-03 05:02:48,681 - INFO - 📝 Logging initialized - Level: INFO, Path: C:/tmp/wms_logs
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4dd' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\main.py", line 1, in <module>
+    from app import app
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\app.py", line 239, in <module>
+    logger = setup_logging(app)
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\logging_config.py", line 90, in setup_logging
+    logging.info(f"📝 Logging initialized - Level: {LOG_LEVEL}, Path: {LOG_PATH}")
+Message: '📝 Logging initialized - Level: INFO, Path: C:/tmp/wms_logs'
+Arguments: ()
+2025-09-03 05:02:48,685 - INFO - 📁 Log files: C:/tmp/wms_logs/wms.log and C:/tmp/wms_logs/wms_error.log
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4c1' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\main.py", line 1, in <module>
+    from app import app
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\app.py", line 239, in <module>
+    logger = setup_logging(app)
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\logging_config.py", line 92, in setup_logging
+    logging.info(f"📁 Log files: {LOG_PATH}/{LOG_FILE_PREFIX}.log and {LOG_PATH}/{LOG_FILE_PREFIX}_error.log")
+Message: '📁 Log files: C:/tmp/wms_logs/wms.log and C:/tmp/wms_logs/wms_error.log'
+Arguments: ()
+2025-09-03 05:02:48,686 - INFO - 🚀 WMS Application starting with file-based logging
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f680' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\main.py", line 1, in <module>
+    from app import app
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\app.py", line 240, in <module>
+    logger.info("🚀 WMS Application starting with file-based logging")
+Message: '🚀 WMS Application starting with file-based logging'
+Arguments: ()
+2025-09-03 05:02:48,733 - INFO - ✅ MySQL engine configured and connected successfully
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\main.py", line 1, in <module>
+    from app import app
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\app.py", line 250, in <module>
+    dual_db = init_dual_database(app)
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\db_dual_support.py", line 125, in init_dual_database
+    dual_db_manager = DualDatabaseManager(app)
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\db_dual_support.py", line 20, in __init__
+    self.setup_engines()
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\db_dual_support.py", line 45, in setup_engines
+    logging.info("✅ MySQL engine configured and connected successfully")
+Message: '✅ MySQL engine configured and connected successfully'
+Arguments: ()
+2025-09-03 05:02:48,734 - INFO - ✅ Dual database support initialized for MySQL sync
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\main.py", line 1, in <module>
+    from app import app
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "E:\SAP_Integ\Git Change\20250902\5\IT_SAP_Login\app.py", line 252, in <module>
+    logging.info("✅ Dual database support initialized for MySQL sync")
+Message: '✅ Dual database support initialized for MySQL sync'
+Arguments: ()
+2025-09-03 05:02:49,061 - WARNING -  * Debugger is active!
