@@ -111,7 +111,7 @@ app.config["DB_TYPE"] = db_type
 # Initialize extensions
 db.init_app(app)
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'login'  # type: ignore
 login_manager.login_message = 'Please log in to access this page.'
 
 # SAP B1 Configuration (from JSON credentials)
@@ -161,37 +161,35 @@ with app.app_context():
 
         default_branch = Branch.query.filter_by(id='BR001').first()
         if not default_branch:
-            default_branch = Branch(
-                id='BR001',
-                name='Main Branch',
-                branch_code='BR001',
-                branch_name='Main Branch',
-                description='Main Office Branch',
-                address='Main Office',
-                phone='123-456-7890',
-                email='main@company.com',
-                manager_name='Branch Manager',
-                active=True,
-                is_default=True
-            )
+            default_branch = Branch()
+            default_branch.id = 'BR001'
+            default_branch.name = 'Main Branch'
+            default_branch.branch_code = 'BR001'
+            default_branch.branch_name = 'Main Branch'
+            default_branch.description = 'Main Office Branch'
+            default_branch.address = 'Main Office'
+            default_branch.phone = '123-456-7890'
+            default_branch.email = 'main@company.com'
+            default_branch.manager_name = 'Branch Manager'
+            default_branch.active = True
+            default_branch.is_default = True
             db.session.add(default_branch)
             logging.info("✅ Default branch created")
 
         admin = User.query.filter_by(username='admin').first()
         if not admin:
-            admin = User(
-                username='admin',
-                email='admin@company.com',
-                password_hash=generate_password_hash('admin123'),
-                first_name='System',
-                last_name='Administrator',
-                role='admin',
-                branch_id='BR001',
-                branch_name='Main Branch',
-                default_branch_id='BR001',
-                active=True,
-                must_change_password=False
-            )
+            admin = User()
+            admin.username = 'admin'
+            admin.email = 'admin@company.com'
+            admin.password_hash = generate_password_hash('admin123')
+            admin.first_name = 'System'
+            admin.last_name = 'Administrator'
+            admin.role = 'admin'
+            admin.branch_id = 'BR001'
+            admin.branch_name = 'Main Branch'
+            admin.default_branch_id = 'BR001'
+            admin.active = True
+            admin.must_change_password = False
             db.session.add(admin)
             logging.info("✅ Default admin user created")
 

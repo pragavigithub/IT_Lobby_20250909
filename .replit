@@ -9,28 +9,6 @@ deploymentTarget = "autoscale"
 run = ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
 
 [workflows]
-runButton = "Project"
-
-[[workflows.workflow]]
-name = "Project"
-mode = "parallel"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Flask Web Server"
-
-[[workflows.workflow]]
-name = "Flask Web Server"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "SESSION_SECRET=9381875308d645114b732d5d6fc9c71254e8f726bb401196de5913bf0ef4c54c SAP_B1_SERVER=https://10.112.253.173:50000 SAP_B1_USERNAME=manager SAP_B1_PASSWORD=1422 SAP_B1_COMPANY_DB=SBODemoUS gunicorn --bind 0.0.0.0:5000 --timeout 120 --reload main:app"
-waitForPort = 5000
-
-[workflows.workflow.metadata]
-outputType = "webview"
 
 [[ports]]
 localPort = 5000
