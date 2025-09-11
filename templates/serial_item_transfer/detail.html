@@ -220,19 +220,20 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="serialNumberInput" class="form-label">Serial Number</label>
-                                    <input type="text" class="form-control" id="serialNumberInput" placeholder="Enter serial number">
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">&nbsp;</label>
-                                    <button type="button" class="btn btn-primary w-100" onclick="validateSerial()">
-                                        <i class="fas fa-check"></i> Validate
-                                    </button>
+                                    <input type="text" class="form-control" id="serialNumberInput" placeholder="Enter serial number and press Enter" 
+                                           onkeypress="handleSerialInput(event)" onblur="autoValidateSerial()">
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label">Progress</label>
                                     <div class="form-control-plaintext">
                                         <span id="serialProgress">0 / 0</span>
                                     </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">&nbsp;</label>
+                                    <button type="button" class="btn btn-outline-secondary w-100" onclick="clearSerialInput()">
+                                        <i class="fas fa-times"></i> Clear
+                                    </button>
                                 </div>
                             </div>
 
@@ -421,9 +422,8 @@ function onItemSelected() {
         updateStepProgress();
         $('#stepSection3').show();
         
-        // TODO: Check if item is serial managed
-        // For now, assume all items are serial managed
-        showSerialSection(true);
+        // Check if item is serial managed
+        checkItemSerialManagement(selectedItem.itemCode);
         
     } else {
         selectedItem = null;
@@ -696,6 +696,216 @@ function showAlert(message, type) {
     setTimeout(function() {
         alert.alert('close');
     }, 5000);
+}
+
+// New functions for improved workflow
+
+function handleSerialInput(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        autoValidateSerial();
+    }
+}
+
+function autoValidateSerial() {
+    const serialNumber = $('#serialNumberInput').val().trim();
+    if (serialNumber) {
+        validateSerial();
+    }
+}
+
+function clearSerialInput() {
+    $('#serialNumberInput').val('').focus();
+}
+
+function checkItemSerialManagement(itemCode) {
+    // Check if the item requires serial number management
+    // For demo purposes, items starting with 'S' are serial managed
+    // In real implementation, this would check SAP B1 item master data
+    const isSerialManaged = itemCode.startsWith('S') || itemCode.includes('Serial');
+    
+    if (isSerialManaged) {
+        showSerialSection(true);
+        showAlert(`Item ${itemCode} requires serial number validation`, 'info');
+    } else {
+        showSerialSection(false);
+        showAlert(`Item ${itemCode} does not require serial numbers. You can proceed with quantity-based transfer.`, 'info');
+        // For non-serial items, enable populate button immediately
+        updatePopulateButton();
+    }
+}
+
+function validateSerial() {
+    const serialNumber = $('#serialNumberInput').val().trim();
+    
+    if (!serialNumber) {
+        showAlert('Please enter a serial number', 'error');
+        return;
+    }
+    
+    if (!selectedItem) {
+        showAlert('Please select an item first', 'error');
+        return;
+    }
+    
+    // Enhanced duplicate check with better user feedback
+    const existingSerial = validatedSerials.find(s => s.serialNumber.toLowerCase() === serialNumber.toLowerCase());
+    if (existingSerial) {
+        showAlert(`Serial number "${serialNumber}" has already been validated. Please enter a different serial number.`, 'warning');
+        $('#serialNumberInput').val('').focus();
+        return;
+    }
+    
+    // Check if we already have enough serials
+    if (validatedSerials.length >= requiredQuantity) {
+        showAlert(`You have already validated ${requiredQuantity} serial numbers. Remove existing serials if you need to add different ones.`, 'warning');
+        $('#serialNumberInput').val('');
+        return;
+    }
+    
+    const data = {
+        warehouse_code: '{{ transfer.from_warehouse }}',
+        serial_number: serialNumber,
+        item_code: selectedItem.itemCode
+    };
+    
+    // Show loading state
+    $('#serialNumberInput').prop('disabled', true);
+    
+    $.ajax({
+        url: '/api/validate-serial-number',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function(response) {
+            $('#serialNumberInput').prop('disabled', false);
+            
+            if (response.success && response.valid) {
+                // Add to validated serials
+                validatedSerials.push({
+                    serialNumber: serialNumber,
+                    itemCode: selectedItem.itemCode,
+                    status: 'validated'
+                });
+                
+                // Clear input and focus for next entry
+                $('#serialNumberInput').val('').focus();
+                
+                // Update UI
+                updateValidatedSerialsList();
+                updateSerialProgress();
+                updatePopulateButton();
+                
+                showAlert(`Serial number "${serialNumber}" validated successfully`, 'success');
+                
+                // If we have enough serials, notify user
+                if (validatedSerials.length >= requiredQuantity) {
+                    showAlert('All required serial numbers validated! You can now populate line items.', 'success');
+                    $('#populateLineItemsBtn').focus(); // Focus the populate button
+                }
+                
+            } else {
+                showAlert(response.error || 'Serial number validation failed', 'error');
+                $('#serialNumberInput').focus();
+            }
+        },
+        error: function(xhr, status, error) {
+            $('#serialNumberInput').prop('disabled', false);
+            console.error('Error validating serial:', error);
+            showAlert('Error validating serial number: ' + error, 'error');
+            $('#serialNumberInput').focus();
+        }
+    });
+}
+
+function updatePopulateButton() {
+    let canPopulate = false;
+    
+    if (selectedItem) {
+        if ($('#serialNumberSection').is(':visible')) {
+            // Serial managed item
+            canPopulate = validatedSerials.length >= requiredQuantity;
+        } else {
+            // Non-serial item
+            canPopulate = requiredQuantity > 0;
+        }
+    }
+    
+    $('#populateLineItemsBtn').prop('disabled', !canPopulate);
+}
+
+function populateLineItems() {
+    if (!selectedItem) {
+        showAlert('Please select an item first', 'error');
+        return;
+    }
+    
+    // Handle serial managed items
+    if ($('#serialNumberSection').is(':visible')) {
+        if (validatedSerials.length < requiredQuantity) {
+            showAlert('Please validate all required serial numbers first', 'error');
+            return;
+        }
+        
+        // Create line items based on validated serials
+        const promises = validatedSerials.map(function(serial) {
+            return $.ajax({
+                url: '/serial-item-transfer/{{ transfer.id }}/add_serial_item',
+                method: 'POST',
+                data: {
+                    serial_number: serial.serialNumber,
+                    expected_item_code: selectedItem.itemCode
+                }
+            });
+        });
+        
+        Promise.all(promises)
+            .then(function(responses) {
+                const successCount = responses.filter(r => r.success).length;
+                if (successCount === validatedSerials.length) {
+                    showAlert(`Successfully added ${successCount} serial line items`, 'success');
+                    // Refresh page to show new items
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showAlert(`Added ${successCount} of ${validatedSerials.length} items. Some items failed.`, 'warning');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 2000);
+                }
+            })
+            .catch(function(error) {
+                console.error('Error populating line items:', error);
+                showAlert('Error adding line items', 'error');
+            });
+    } else {
+        // Handle non-serial items
+        $.ajax({
+            url: '/serial-item-transfer/{{ transfer.id }}/add_non_serial_item',
+            method: 'POST',
+            data: {
+                item_code: selectedItem.itemCode,
+                item_description: selectedItem.itemName,
+                quantity: requiredQuantity,
+                unit_of_measure: 'EA'
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert(`Successfully added ${requiredQuantity} quantity of ${selectedItem.itemCode}`, 'success');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showAlert(response.error || 'Error adding non-serial item', 'error');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error adding non-serial item:', error);
+                showAlert('Error adding non-serial item', 'error');
+            }
+        });
+    }
 }
 
 </script>
