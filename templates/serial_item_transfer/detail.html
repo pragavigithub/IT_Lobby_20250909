@@ -199,7 +199,7 @@
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="quantityInput" class="form-label">Quantity <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="quantityInput" min="1" value="1" onchange="onQuantityChanged()">
+                                <input type="number" class="form-control" id="quantityInput" min="0" value="0" onchange="onQuantityChanged()">
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Available Stock</label>
@@ -441,7 +441,7 @@ function onItemSelected() {
 }
 
 function onQuantityChanged() {
-    requiredQuantity = parseInt($('#quantityInput').val()) || 1;
+    requiredQuantity = parseInt($('#quantityInput').val());
     validatedSerials = [];
     updateSerialProgress();
     updatePopulateButton();
