@@ -97,15 +97,14 @@ def create():
             return render_template('serial_item_transfer/create.html')
 
         # Create new Serial Item Transfer - document is created but stays in draft until line items are added
-        transfer = SerialItemTransfer(
-            transfer_number=transfer_number,
-            user_id=current_user.id,
-            from_warehouse=from_warehouse,
-            to_warehouse=to_warehouse,
-            priority=priority,
-            notes=notes,
-            status='draft'  # Keep in draft until line items are added
-        )
+        transfer = SerialItemTransfer()
+        transfer.transfer_number = transfer_number
+        transfer.user_id = current_user.id
+        transfer.from_warehouse = from_warehouse
+        transfer.to_warehouse = to_warehouse
+        transfer.priority = priority
+        transfer.notes = notes
+        transfer.status = 'draft'  # Keep in draft until line items are added
 
         db.session.add(transfer)
         db.session.commit()
@@ -147,9 +146,13 @@ def add_serial_item(transfer_id):
 
         # Get form data
         serial_number = request.form.get('serial_number', '').strip()
+        expected_item_code = request.form.get('expected_item_code', '').strip()
 
         if not serial_number:
             return jsonify({'success': False, 'error': 'Serial number is required'}), 400
+
+        if not expected_item_code:
+            return jsonify({'success': False, 'error': 'Expected item code is required. Please select an item first.'}), 400
 
         # Check for duplicate serial number in this transfer
         existing_item = SerialItemTransferItem.query.filter_by(
@@ -168,53 +171,55 @@ def add_serial_item(transfer_id):
         sap = SAPIntegration()
         validation_result = sap.validate_serial_item_for_transfer(serial_number, transfer.from_warehouse)
 
-
-
-        # Always create line item immediately - even for failed validation
+        # Check if validation was successful
         if not validation_result.get('valid'):
-            # Create item with failed validation status
-            # transfer_item = SerialItemTransferItem(
-            #     serial_item_transfer_id=transfer.id,
-            #     serial_number=serial_number,
-            #     item_code='UNKNOWN',
-            #     item_description='Validation Failed',
-            #     warehouse_code=transfer.from_warehouse,
-            #     from_warehouse_code=transfer.from_warehouse,
-            #     to_warehouse_code=transfer.to_warehouse,
-            #     validation_status='failed',
-            #     validation_error=validation_result.get('error', 'Unknown validation error')
-            # )
-            #
-            # db.session.add(transfer_item)
-            # db.session.commit()
-
-            # Return item details for live table update
             return jsonify({
                 'success': False,
-                'error': validation_result.get('error',
-                                               'Serial number validation failed - invalid serial numbers are not added to the transfer'),
+                'error': validation_result.get('error', 'Serial number validation failed - invalid serial numbers are not added to the transfer'),
                 'item_added': False,
                 'validation_status': 'rejected'
             }), 400
 
-        # Create transfer item with validated data
-        transfer_item = SerialItemTransferItem(
-            serial_item_transfer_id=transfer.id,
-            serial_number=serial_number,
-            item_code=validation_result.get('item_code', ''),
-            item_description=validation_result.get('item_description', ''),
-            warehouse_code=validation_result.get('warehouse_code', transfer.from_warehouse),
-            from_warehouse_code=transfer.from_warehouse,
-            to_warehouse_code=transfer.to_warehouse,
-            quantity=1,  # Always 1 for serial items
-            validation_status='validated',
-            validation_error=None
-        )
+        # CRITICAL: Enforce that scanned serial matches the selected item
+        validated_item_code = validation_result.get('item_code', '')
+        if validated_item_code != expected_item_code:
+            return jsonify({
+                'success': False,
+                'error': f'Serial number {serial_number} belongs to item {validated_item_code}, but you selected {expected_item_code}. Please scan a serial number for the correct item.',
+                'item_mismatch': True,
+                'expected_item': expected_item_code,
+                'actual_item': validated_item_code,
+                'validation_status': 'item_mismatch'
+            }), 400
+
+
+
+        # Create transfer item with validated data (validation and item matching already passed)
+        transfer_item = SerialItemTransferItem()
+        transfer_item.serial_item_transfer_id = transfer.id
+        transfer_item.serial_number = serial_number
+        transfer_item.item_code = validation_result.get('item_code', '')
+        transfer_item.item_description = validation_result.get('item_description', '')
+        transfer_item.warehouse_code = validation_result.get('warehouse_code', transfer.from_warehouse)
+        transfer_item.from_warehouse_code = transfer.from_warehouse
+        transfer_item.to_warehouse_code = transfer.to_warehouse
+        transfer_item.quantity = 1  # Always 1 for serial items
+        transfer_item.validation_status = 'validated'
+        transfer_item.validation_error = None
+        
+        # Set enhanced metadata for serial items
+        transfer_item.is_serial_managed = True
+        transfer_item.item_type = 'serial'
+        transfer_item.expected_quantity = 1
+        transfer_item.scanned_quantity = 1
+        transfer_item.completion_status = 'completed'
+        transfer_item.parent_item_code = expected_item_code
+        transfer_item.line_group_id = f"srl_{expected_item_code}_{transfer.id}"
 
         db.session.add(transfer_item)
         db.session.commit()
 
-        logging.info(f"Serial item {serial_number} added to transfer {transfer_id}")
+        logging.info(f"Serial item {serial_number} (item: {expected_item_code}) added to transfer {transfer_id}")
 
         # Return complete item data for live table update
         return jsonify({
@@ -238,6 +243,118 @@ def add_serial_item(transfer_id):
 
     except Exception as e:
         logging.error(f"Error adding serial item: {str(e)}")
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@serial_item_bp.route('/<int:transfer_id>/add_non_serial_item', methods=['POST'])
+@login_required
+def add_non_serial_item(transfer_id):
+    """Add non-serial item to Serial Item Transfer with quantity confirmation"""
+
+    try:
+        transfer = SerialItemTransfer.query.get_or_404(transfer_id)
+
+        # Check permissions
+        if transfer.user_id != current_user.id and current_user.role not in ['admin', 'manager']:
+            return jsonify({'success': False, 'error': 'Access denied'}), 403
+
+        if transfer.status != 'draft':
+            return jsonify({'success': False, 'error': 'Cannot add items to non-draft transfer'}), 400
+
+        # Get form data
+        item_code = request.form.get('item_code', '').strip()
+        item_description = request.form.get('item_description', '').strip()
+        quantity = request.form.get('quantity', '0').strip()
+        unit_of_measure = request.form.get('unit_of_measure', 'EA').strip()
+
+        if not all([item_code, item_description, quantity]):
+            return jsonify({'success': False, 'error': 'Item code, description, and quantity are required'}), 400
+
+        try:
+            quantity = int(quantity)
+            if quantity <= 0:
+                return jsonify({'success': False, 'error': 'Quantity must be greater than 0'}), 400
+        except ValueError:
+            return jsonify({'success': False, 'error': 'Invalid quantity format'}), 400
+
+        # Check if this item is already added as a non-serial item in this transfer
+        existing_item = SerialItemTransferItem.query.filter_by(
+            serial_item_transfer_id=transfer.id,
+            item_code=item_code,
+            item_type='non_serial'
+        ).first()
+
+        if existing_item:
+            # Update the existing item's quantity
+            existing_item.quantity += quantity
+            existing_item.scanned_quantity += quantity
+            existing_item.updated_at = datetime.utcnow()
+            db.session.commit()
+
+            logging.info(f"Updated non-serial item {item_code} quantity to {existing_item.quantity}")
+            return jsonify({
+                'success': True,
+                'message': f'Updated {item_code} quantity to {existing_item.quantity}',
+                'item_updated': True,
+                'item_data': {
+                    'id': existing_item.id,
+                    'item_code': existing_item.item_code,
+                    'item_description': existing_item.item_description,
+                    'quantity': existing_item.quantity,
+                    'item_type': existing_item.item_type
+                }
+            })
+
+        # Create new non-serial transfer item
+        transfer_item = SerialItemTransferItem()
+        transfer_item.serial_item_transfer_id = transfer.id
+        transfer_item.serial_number = None  # No serial number for non-serial items
+        transfer_item.item_code = item_code
+        transfer_item.item_description = item_description
+        transfer_item.warehouse_code = transfer.from_warehouse
+        transfer_item.from_warehouse_code = transfer.from_warehouse
+        transfer_item.to_warehouse_code = transfer.to_warehouse
+        transfer_item.quantity = quantity
+        transfer_item.unit_of_measure = unit_of_measure
+        transfer_item.validation_status = 'validated'  # Non-serial items are automatically validated
+        transfer_item.is_serial_managed = False
+        transfer_item.is_batch_managed = False
+        transfer_item.item_type = 'non_serial'
+        transfer_item.expected_quantity = quantity
+        transfer_item.scanned_quantity = quantity
+        transfer_item.completion_status = 'completed'
+        transfer_item.parent_item_code = item_code
+        transfer_item.line_group_id = f"nonsrl_{item_code}_{transfer.id}"
+
+        db.session.add(transfer_item)
+        db.session.commit()
+
+        logging.info(f"Non-serial item {item_code} added to transfer {transfer_id} with quantity {quantity}")
+
+        # Return complete item data for live table update
+        return jsonify({
+            'success': True,
+            'message': f'Non-serial item {item_code} added successfully (Qty: {quantity})',
+            'item_added': True,
+            'validation_status': 'validated',
+            'item_data': {
+                'id': transfer_item.id,
+                'serial_number': transfer_item.serial_number,
+                'item_code': transfer_item.item_code,
+                'item_description': transfer_item.item_description,
+                'from_warehouse_code': transfer_item.from_warehouse_code,
+                'to_warehouse_code': transfer_item.to_warehouse_code,
+                'validation_status': transfer_item.validation_status,
+                'validation_error': transfer_item.validation_error,
+                'quantity': transfer_item.quantity,
+                'item_type': transfer_item.item_type,
+                'line_number': len(transfer.items)
+            }
+        })
+
+    except Exception as e:
+        logging.error(f"Error adding non-serial item: {str(e)}")
         db.session.rollback()
         return jsonify({'success': False, 'error': str(e)}), 500
 
@@ -570,18 +687,17 @@ def add_multiple_serials(transfer_id):
                     continue
 
                 # Create transfer item
-                transfer_item = SerialItemTransferItem(
-                    serial_item_transfer_id=transfer.id,
-                    serial_number=serial_number,
-                    item_code=serial_data.get('item_code', ''),
-                    item_description=serial_data.get('item_description', ''),
-                    warehouse_code=serial_data.get('warehouse_code', transfer.from_warehouse),
-                    from_warehouse_code=transfer.from_warehouse,
-                    to_warehouse_code=transfer.to_warehouse,
-                    quantity=1,  # Always 1 for serial items
-                    validation_status='validated',
-                    validation_error=None
-                )
+                transfer_item = SerialItemTransferItem()
+                transfer_item.serial_item_transfer_id = transfer.id
+                transfer_item.serial_number = serial_number
+                transfer_item.item_code = serial_data.get('item_code', '')
+                transfer_item.item_description = serial_data.get('item_description', '')
+                transfer_item.warehouse_code = serial_data.get('warehouse_code', transfer.from_warehouse)
+                transfer_item.from_warehouse_code = transfer.from_warehouse
+                transfer_item.to_warehouse_code = transfer.to_warehouse
+                transfer_item.quantity = 1  # Always 1 for serial items
+                transfer_item.validation_status = 'validated'
+                transfer_item.validation_error = None
 
                 db.session.add(transfer_item)
                 items_added += 1
@@ -610,6 +726,53 @@ def add_multiple_serials(transfer_id):
     except Exception as e:
         logging.error(f"Error adding multiple serial items: {str(e)}")
         db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@serial_item_bp.route('/<int:transfer_id>/get_warehouse_items', methods=['POST'])
+@login_required
+def get_warehouse_items(transfer_id):
+    """Get available items from warehouse via SAP B1 SQL Query"""
+    try:
+        transfer = SerialItemTransfer.query.get_or_404(transfer_id)
+
+        # Check permissions
+        if transfer.user_id != current_user.id and current_user.role not in ['admin', 'manager']:
+            return jsonify({'success': False, 'error': 'Access denied'}), 403
+
+        if transfer.status != 'draft':
+            return jsonify({'success': False, 'error': 'Cannot fetch items for non-draft transfer'}), 400
+
+        warehouse_code = request.form.get('warehouse_code', '').strip()
+        if not warehouse_code:
+            return jsonify({'success': False, 'error': 'Warehouse code is required'}), 400
+
+        # Use the from_warehouse as default if no warehouse_code provided
+        if not warehouse_code:
+            warehouse_code = transfer.from_warehouse
+
+        # Get items from SAP B1
+        sap = SAPIntegration()
+        result = sap.get_warehouse_items(warehouse_code)
+
+        if result.get('success'):
+            logging.info(f"Found {len(result.get('items', []))} items in warehouse {warehouse_code}")
+            return jsonify({
+                'success': True,
+                'items': result.get('items', []),
+                'warehouse_code': warehouse_code,
+                'sql_text': result.get('sql_text', '')
+            })
+        else:
+            logging.error(f"Failed to fetch items from warehouse {warehouse_code}: {result.get('error')}")
+            return jsonify({
+                'success': False,
+                'error': result.get('error', 'Failed to fetch items'),
+                'items': []
+            }), 400
+
+    except Exception as e:
+        logging.error(f"Error fetching warehouse items: {str(e)}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 

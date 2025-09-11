@@ -2910,6 +2910,118 @@ class SAPIntegration:
                 'source': 'error'
             }
 
+    def get_warehouse_items(self, warehouse_code):
+        """
+        Get available items from warehouse using SAP B1 SQL Query with enhanced metadata
+        Uses the specific API endpoint: SQLQueries('Get_Item')/List
+        Enhanced to include serial management and other item metadata
+        """
+        try:
+            if not self.ensure_logged_in():
+                logging.warning("SAP B1 not available, returning mock items list with metadata")
+                return {
+                    'success': True,
+                    'items': [
+                        {
+                            'item_code': 'MOCK_SERIAL',
+                            'item_name': 'Mock Serial Item',
+                            'warehouse_code': warehouse_code,
+                            'quantity_on_hand': 10.0,
+                            'unit_of_measure': 'EA',
+                            'is_serial_managed': True,
+                            'is_batch_managed': False,
+                            'manage_serial_numbers': 'Y',
+                            'manage_batch_numbers': 'N'
+                        },
+                        {
+                            'item_code': 'MOCK_NONSRL',
+                            'item_name': 'Mock Non-Serial Item',
+                            'warehouse_code': warehouse_code,
+                            'quantity_on_hand': 25.0,
+                            'unit_of_measure': 'EA',
+                            'is_serial_managed': False,
+                            'is_batch_managed': False,
+                            'manage_serial_numbers': 'N',
+                            'manage_batch_numbers': 'N'
+                        }
+                    ],
+                    'warehouse_code': warehouse_code,
+                    'offline_mode': True
+                }
+
+            # SAP B1 SQL Query API endpoint as specified by user
+            url = f"{self.base_url}/b1s/v1/SQLQueries('Get_Item')/List"
+
+            # Request body with warehouse code parameter as specified
+            request_body = {
+                "ParamList": f"whcode='{warehouse_code}'"
+            }
+
+            logging.info(f"Fetching items from warehouse {warehouse_code} via SAP B1 SQL Query")
+            logging.info(f"Request URL: {url}")
+            logging.info(f"Request Body: {request_body}")
+
+            response = self.session.post(url, json=request_body, timeout=30)
+            
+            if response.status_code == 200:
+                data = response.json()
+                logging.info(f"SAP B1 Response received for warehouse items")
+
+                # Check if we have results
+                values = data.get('value', [])
+                if values:
+                    items = []
+                    for item in values:
+                        item_code = item.get('ItemCode', '')
+                        
+                        # Get enhanced item metadata from Items master data
+                        item_metadata = self._get_item_metadata(item_code)
+                        
+                        item_data = {
+                            'item_code': item_code,
+                            'item_name': item.get('itemName', item_metadata.get('item_name', f'Item {item_code}')),
+                            'warehouse_code': item.get('WhsCode', warehouse_code),
+                            'quantity_on_hand': float(item.get('OnHand', 0.0)),
+                            'unit_of_measure': item_metadata.get('unit_of_measure', 'EA'),
+                            'is_serial_managed': item_metadata.get('is_serial_managed', False),
+                            'is_batch_managed': item_metadata.get('is_batch_managed', False),
+                            'manage_serial_numbers': item_metadata.get('manage_serial_numbers', 'N'),
+                            'manage_batch_numbers': item_metadata.get('manage_batch_numbers', 'N'),
+                            'standard_price': float(item.get('StandardPrice', 0.0)),
+                            'item_type': item_metadata.get('item_type', 'itItems')
+                        }
+                        items.append(item_data)
+                    
+                    logging.info(f"Found {len(items)} items with metadata in warehouse {warehouse_code}")
+                    return {
+                        'success': True,
+                        'items': items,
+                        'sql_text': data.get('SqlText', ''),
+                        'warehouse_code': warehouse_code
+                    }
+                else:
+                    logging.info(f"No items found in warehouse {warehouse_code}")
+                    return {
+                        'success': True,
+                        'items': [],
+                        'warehouse_code': warehouse_code
+                    }
+            else:
+                logging.error(f"SAP B1 API error: {response.status_code} - {response.text}")
+                return {
+                    'success': False,
+                    'error': f'SAP API error: {response.status_code} - {response.text}',
+                    'items': []
+                }
+
+        except Exception as e:
+            logging.error(f"Error fetching warehouse items: {str(e)}")
+            return {
+                'success': False,
+                'error': f'Error fetching items: {str(e)}',
+                'items': []
+            }
+
     def _get_item_description(self, item_code):
         """
         Get item description from SAP B1 Items master data
@@ -2933,6 +3045,57 @@ class SAPIntegration:
 
         # Fallback to item code if description not found
         return f'Item {item_code}'
+
+    def _get_item_metadata(self, item_code):
+        """
+        Get enhanced item metadata from SAP B1 Items master data
+        Includes serial management, batch management, and other critical metadata
+        """
+        try:
+            if not item_code:
+                return self._get_default_item_metadata()
+
+            # Get comprehensive item metadata from Items master data
+            url = f"{self.base_url}/b1s/v1/Items?$filter=ItemCode eq '{item_code}'&$select=ItemCode,ItemName,InventoryUOM,ManageSerialNumbers,ManageBatchNumbers,ItemType,StandardPrice"
+            response = self.session.get(url, timeout=10)
+
+            if response.status_code == 200:
+                data = response.json()
+                items = data.get('value', [])
+                if items and len(items) > 0:
+                    item = items[0]
+                    manage_serial = item.get('ManageSerialNumbers', 'N')
+                    manage_batch = item.get('ManageBatchNumbers', 'N')
+                    
+                    return {
+                        'item_name': item.get('ItemName', f'Item {item_code}'),
+                        'unit_of_measure': item.get('InventoryUOM', 'EA'),
+                        'is_serial_managed': manage_serial == 'Y',
+                        'is_batch_managed': manage_batch == 'Y',
+                        'manage_serial_numbers': manage_serial,
+                        'manage_batch_numbers': manage_batch,
+                        'item_type': item.get('ItemType', 'itItems'),
+                        'standard_price': float(item.get('StandardPrice', 0.0))
+                    }
+
+        except Exception as e:
+            logging.warning(f"⚠️ Could not fetch item metadata for {item_code}: {str(e)}")
+
+        # Return default metadata if API call fails
+        return self._get_default_item_metadata()
+
+    def _get_default_item_metadata(self):
+        """Get default item metadata when SAP API is unavailable"""
+        return {
+            'item_name': 'Unknown Item',
+            'unit_of_measure': 'EA',
+            'is_serial_managed': False,
+            'is_batch_managed': False,
+            'manage_serial_numbers': 'N',
+            'manage_batch_numbers': 'N',
+            'item_type': 'itItems',
+            'standard_price': 0.0
+        }
 
     def logout(self):
         """Logout from SAP B1"""

@@ -743,17 +743,28 @@ class SerialItemTransferItem(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     serial_item_transfer_id = db.Column(db.Integer, db.ForeignKey('serial_item_transfers.id'), nullable=False)
-    serial_number = db.Column(db.String(100), nullable=False)  # The entered serial number
+    serial_number = db.Column(db.String(100), nullable=True)  # The entered serial number (nullable for non-serial items)
     item_code = db.Column(db.String(50), nullable=False)  # Auto-populated from SAP B1
     item_description = db.Column(db.String(200), nullable=False)  # Auto-populated from SAP B1
     warehouse_code = db.Column(db.String(10), nullable=False)  # From SAP B1 validation
-    quantity = db.Column(db.Integer, default=1, nullable=False)  # Always 1 for serial items
+    quantity = db.Column(db.Integer, default=1, nullable=False)  # 1 for serial items, can be >1 for non-serial
     unit_of_measure = db.Column(db.String(10), default='EA')
     from_warehouse_code = db.Column(db.String(10), nullable=False)
     to_warehouse_code = db.Column(db.String(10), nullable=False)
     qc_status = db.Column(db.String(20), default='pending')  # pending, approved, rejected
     validation_status = db.Column(db.String(20), default='pending')  # pending, validated, failed
     validation_error = db.Column(db.Text)  # Error message if validation fails
+    
+    # Enhanced metadata fields for better workflow support
+    is_serial_managed = db.Column(db.Boolean, default=False, nullable=False)  # Whether this item requires serial numbers
+    is_batch_managed = db.Column(db.Boolean, default=False, nullable=False)  # Whether this item requires batch management
+    item_type = db.Column(db.String(20), default='serial')  # 'serial' or 'non_serial'
+    expected_quantity = db.Column(db.Integer, default=1, nullable=False)  # Expected quantity to be scanned/confirmed
+    scanned_quantity = db.Column(db.Integer, default=0, nullable=False)  # Actual quantity scanned/confirmed
+    completion_status = db.Column(db.String(20), default='pending')  # pending, completed, partial
+    parent_item_code = db.Column(db.String(50), nullable=True)  # For grouped items (selected item code)
+    line_group_id = db.Column(db.String(50), nullable=True)  # Groups related line items together
+    
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     

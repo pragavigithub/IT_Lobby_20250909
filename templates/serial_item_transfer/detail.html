@@ -184,106 +184,128 @@
 
             <div class="card shadow">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0">Add Serial Items</h6>
-                    <!--                    <div class="btn-group btn-group-sm">-->
-                    <!--                        <button type="button" class="btn btn-outline-primary" onclick="toggleBulkMode(false)" id="lineByLineBtn">-->
-                    <!--                            <i class="fas fa-list"></i> Line by Line-->
-                    <!--                        </button>-->
-                    <!--                        <button type="button" class="btn btn-primary" onclick="toggleBulkMode(true)" id="bulkModeBtn">-->
-                    <!--                            <i class="fas fa-layer-group"></i> Bulk Mode-->
-                    <!--                        </button>-->
-                    <!--                    </div>-->
+                    <h6 class="mb-0">Add Items to Transfer</h6>
+                    <button type="button" class="btn btn-sm btn-outline-info" onclick="loadWarehouseItems()">
+                        <i class="fas fa-refresh"></i> Load Items
+                    </button>
                 </div>
                 <div class="card-body">
-                    <!-- Line by Line Mode -->
-                    <div id="lineByLineMode">
-                        <div class="alert alert-info alert-sm">
-                            <small>
-                                <i class="fas fa-info-circle"></i>
-                                Enter serial number to validate and add
-                                immediately to the list
-                            </small>
+                    <!-- Step 1: Item Selection -->
+                    <div class="alert alert-info alert-sm">
+                        <small>
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Step 1:</strong> Choose Item Name and Quantity → 
+                            <strong>Step 2:</strong> Scan serials for serial items OR confirm quantity for non-serial items
+                        </small>
+                    </div>
+
+                    <!-- Item Selection Form -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Item Name <span class="text-danger">*</span></label>
+                            <select class="form-select" id="itemNameSelect" onchange="onItemSelected()">
+                                <option value="">Choose Item Name...</option>
+                            </select>
+                            <small class="text-muted">Items from warehouse: {{ transfer.from_warehouse }}</small>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Expected Quantity <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="expectedQuantity" min="1" value="1">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="button" class="btn btn-primary w-100" onclick="addSelectedItem()">
+                                <i class="fas fa-plus"></i> Add Item
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Bulk Mode -->
-                    <div id="bulkMode" style="display: none;">
-                        <!--                        <div class="alert alert-success alert-sm">-->
-                        <!--                            <small>-->
-                        <!--                                <i class="fas fa-layer-group"></i>-->
-                        <!--                                <strong>Bulk Mode:</strong> Paste multiple serial numbers (one per line) and validate-->
-                        <!--                                all at once. Great for 1000+ serials!-->
-                        <!--                            </small>-->
-                        <!--                        </div>-->
-
-                        <!--                        <div class="row">-->
-                        <!--                            <div class="col-md-8">-->
-                        <!--                                <label class="form-label">Serial Numbers (one per line)</label>-->
-                        <!--                                <textarea class="form-control" id="bulkSerialNumbers" rows="8"-->
-                        <!--                                          placeholder="IP1&#10;IP2&#10;IP3&#10;...paste up to 2000+ serial numbers here"></textarea>-->
-                        <!--                                <small class="text-muted">Supports up to 2000+ serial numbers</small>-->
-                        <!--                            </div>-->
-                        <!--                            <div class="col-md-4">-->
-                        <!--                                <label class="form-label">Item Code (Optional)</label>-->
-                        <!--                                <input type="text" class="form-control" id="expectedItemCode"-->
-                        <!--                                       placeholder="e.g., IPhone" title="Filter validation to specific item code">-->
-                        <!--                                <small class="text-muted">Leave empty to auto-detect</small>-->
-
-                        <!--                                <div class="mt-3">-->
-                        <!--                                    <button type="button" class="btn btn-primary w-100" onclick="validateBulkSerials()">-->
-                        <!--                                        <i class="fas fa-check-circle"></i> Validate All Serials-->
-                        <!--                                    </button>-->
-                        <!--                                </div>-->
-
-                        <!--                                <div class="mt-2">-->
-                        <!--                                    <button type="button" class="btn btn-success w-100"-->
-                        <!--                                            onclick="addValidatedSerialsToTransfer()"-->
-                        <!--                                            id="addValidatedBtn" style="display: none;">-->
-                        <!--                                        <i class="fas fa-plus-circle"></i> Add Valid Serials to Transfer-->
-                        <!--                                    </button>-->
-                        <!--                                </div>-->
-                        <!--                            </div>-->
-                        <!--                        </div>-->
-
-                        <!-- Validation Results -->
-                        <!--                        <div id="bulkValidationResults" style="display: none;" class="mt-4">-->
-                        <!--                            <h6>Validation Results</h6>-->
-                        <!--                            <div id="bulkValidationSummary" class="row mb-3">-->
-                        <!--                                &lt;!&ndash; Summary cards will be populated here &ndash;&gt;-->
-                        <!--                            </div>-->
-                        <!--                            <div id="bulkValidationDetails" class="table-responsive">-->
-                        <!--                                &lt;!&ndash; Detailed results table will be populated here &ndash;&gt;-->
-                        <!--                            </div>-->
-                        <!--                        </div>-->
+                    <!-- Selected Items Queue -->
+                    <div id="selectedItemsQueue" style="display: none;">
+                        <h6 class="mb-3">Selected Items Queue</h6>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-sm table-bordered" id="selectedItemsTable">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>Item Code</th>
+                                    <th>Item Name</th>
+                                    <th>Expected Qty</th>
+                                    <th>Scanned/Confirmed</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody id="selectedItemsTableBody">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
-                    <!-- Serial Number Input Grid -->
-                    <div id="serialInputGrid">
-                        <div class="row mb-2 serial-input-row" data-line="1">
-                            <div class="col-2">
-                                <label class="form-label small text-muted">Line 1</label>
-                                <div class="badge bg-secondary w-100">1</div>
-                            </div>
-                            <div class="col-10">
-                                <label class="form-label small text-muted">Serial Number</label>
-                                <input type="text" class="form-control serial-input" data-line="1"
-                                       placeholder="Enter serial number and press Tab/Enter"
-                                       autocomplete="off">
-                                <div class="feedback-area mt-1" style="min-height: 20px;">
-                                    <!-- Validation feedback will appear here -->
+                    <!-- Step 2: Serial Scanning or Quantity Entry -->
+                    <div id="scanningSection" style="display: none;">
+                        <div class="alert alert-warning">
+                            <strong>Step 2:</strong> Scanning for item: <span id="currentItemName"></span>
+                            <br><small>Expected quantity: <span id="currentExpectedQty"></span></small>
+                        </div>
+
+                        <!-- Serial Item Scanning -->
+                        <div id="serialScanningMode" style="display: none;">
+                            <div class="row mb-3">
+                                <div class="col-md-8">
+                                    <label class="form-label">Scan Serial Numbers</label>
+                                    <input type="text" class="form-control" id="serialScanInput" 
+                                           placeholder="Scan or enter serial number and press Enter">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Progress</label>
+                                    <div class="progress">
+                                        <div class="progress-bar" id="serialProgress" style="width: 0%">0/0</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <button type="button" class="btn btn-outline-secondary btn-sm"
-                                onclick="clearAllInputs()">
-                            <i class="fas fa-eraser"></i> Clear All
-                        </button>
-                        <button type="button" class="btn btn-info" onclick="submitAllValidatedSerials()">
-                            <i class="fas fa-info-circle"></i> About Real-time Adding
-                        </button>
+                        <!-- Non-Serial Item Confirmation -->
+                        <div id="quantityConfirmMode" style="display: none;">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Confirm Quantity</label>
+                                    <input type="number" class="form-control" id="confirmedQuantity" min="1">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">&nbsp;</label>
+                                    <button type="button" class="btn btn-success w-100" onclick="confirmQuantity()">
+                                        <i class="fas fa-check"></i> Confirm Quantity
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scanning Results -->
+                        <div id="scanningResults">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered" id="scanningResultsTable">
+                                    <thead class="table-dark">
+                                    <tr>
+                                        <th>Serial Number</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="scanningResultsTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <button type="button" class="btn btn-outline-secondary" onclick="cancelCurrentScanning()">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                            <button type="button" class="btn btn-success" onclick="completeCurrentItem()" id="completeItemBtn" style="display: none;">
+                                <i class="fas fa-check-circle"></i> Complete Item
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -871,6 +893,314 @@ function setupSerialInputHandlers() {
             $('.alert').alert('close');
         }, 5000);
     }
+
+    // New Item Selection Workflow Functions
+    let warehouseItems = [];
+    let selectedItemsQueue = [];
+    let currentItemBeingScanned = null;
+    let currentScannedSerials = [];
+
+    function loadWarehouseItems() {
+        const warehouseCode = '{{ transfer.from_warehouse }}';
+        
+        $.ajax({
+            url: '{{ url_for("serial_item_transfer.get_warehouse_items", transfer_id=transfer.id) }}',
+            method: 'POST',
+            data: { warehouse_code: warehouseCode },
+            beforeSend: function() {
+                $('#itemNameSelect').prop('disabled', true).html('<option>Loading items...</option>');
+            },
+            success: function(response) {
+                if (response.success) {
+                    warehouseItems = response.items;
+                    populateItemDropdown();
+                    showAlert(`Loaded ${warehouseItems.length} items from warehouse ${warehouseCode}`, 'success');
+                } else {
+                    showAlert(`Failed to load items: ${response.error}`, 'error');
+                    $('#itemNameSelect').prop('disabled', false).html('<option value="">Choose Item Name...</option>');
+                }
+            },
+            error: function(xhr) {
+                const response = xhr.responseJSON;
+                showAlert(response ? response.error : 'Error loading warehouse items', 'error');
+                $('#itemNameSelect').prop('disabled', false).html('<option value="">Choose Item Name...</option>');
+            }
+        });
+    }
+
+    function populateItemDropdown() {
+        const select = $('#itemNameSelect');
+        select.empty().append('<option value="">Choose Item Name...</option>');
+        
+        warehouseItems.forEach(item => {
+            select.append(`<option value="${item.item_code}" data-name="${item.item_name}">${item.item_name} (${item.item_code})</option>`);
+        });
+        
+        select.prop('disabled', false);
+    }
+
+    function onItemSelected() {
+        const selectedCode = $('#itemNameSelect').val();
+        const expectedQty = $('#expectedQuantity').val();
+        
+        if (selectedCode && expectedQty && parseInt(expectedQty) > 0) {
+            $('#expectedQuantity').removeClass('is-invalid');
+        } else {
+            $('#expectedQuantity').addClass('is-invalid');
+        }
+    }
+
+    function addSelectedItem() {
+        const selectedCode = $('#itemNameSelect').val();
+        const selectedName = $('#itemNameSelect option:selected').data('name');
+        const expectedQty = parseInt($('#expectedQuantity').val());
+        
+        if (!selectedCode) {
+            showAlert('Please select an item name', 'error');
+            return;
+        }
+        
+        if (!expectedQty || expectedQty < 1) {
+            showAlert('Please enter a valid quantity', 'error');
+            $('#expectedQuantity').addClass('is-invalid');
+            return;
+        }
+        
+        // Check if item already in queue
+        const existingItem = selectedItemsQueue.find(item => item.item_code === selectedCode);
+        if (existingItem) {
+            showAlert('Item already in queue', 'error');
+            return;
+        }
+        
+        // Add to queue
+        const queueItem = {
+            item_code: selectedCode,
+            item_name: selectedName,
+            expected_qty: expectedQty,
+            scanned_qty: 0,
+            status: 'pending',
+            is_serial: true // Assume serial for now, can be enhanced later
+        };
+        
+        selectedItemsQueue.push(queueItem);
+        updateSelectedItemsTable();
+        
+        // Reset form
+        $('#itemNameSelect').val('');
+        $('#expectedQuantity').val('1');
+        
+        showAlert(`Added ${selectedName} (Qty: ${expectedQty}) to queue`, 'success');
+    }
+
+    function updateSelectedItemsTable() {
+        const tbody = $('#selectedItemsTableBody');
+        tbody.empty();
+        
+        if (selectedItemsQueue.length === 0) {
+            $('#selectedItemsQueue').hide();
+            return;
+        }
+        
+        $('#selectedItemsQueue').show();
+        
+        selectedItemsQueue.forEach((item, index) => {
+            const statusBadge = item.status === 'completed' ? 'bg-success' : 
+                               item.status === 'in_progress' ? 'bg-warning' : 'bg-secondary';
+            
+            const row = `
+                <tr>
+                    <td>${item.item_code}</td>
+                    <td>${item.item_name}</td>
+                    <td>${item.expected_qty}</td>
+                    <td>${item.scanned_qty}</td>
+                    <td><span class="badge ${statusBadge}">${item.status}</span></td>
+                    <td>
+                        ${item.status === 'pending' ? 
+                            `<button class="btn btn-sm btn-primary" onclick="startScanning(${index})">
+                                <i class="fas fa-barcode"></i> Start
+                            </button>` : ''
+                        }
+                        <button class="btn btn-sm btn-outline-danger" onclick="removeFromQueue(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            tbody.append(row);
+        });
+    }
+
+    function removeFromQueue(index) {
+        const item = selectedItemsQueue[index];
+        if (confirm(`Remove ${item.item_name} from queue?`)) {
+            selectedItemsQueue.splice(index, 1);
+            updateSelectedItemsTable();
+            showAlert('Item removed from queue', 'success');
+        }
+    }
+
+    function startScanning(index) {
+        const item = selectedItemsQueue[index];
+        currentItemBeingScanned = item;
+        currentScannedSerials = [];
+        
+        // Update status
+        item.status = 'in_progress';
+        updateSelectedItemsTable();
+        
+        // Show scanning section
+        $('#currentItemName').text(item.item_name);
+        $('#currentExpectedQty').text(item.expected_qty);
+        
+        if (item.is_serial) {
+            $('#serialScanningMode').show();
+            $('#quantityConfirmMode').hide();
+            $('#serialScanInput').focus();
+        } else {
+            $('#serialScanningMode').hide();
+            $('#quantityConfirmMode').show();
+            $('#confirmedQuantity').val(item.expected_qty).focus();
+        }
+        
+        $('#scanningSection').show();
+        updateScanningProgress();
+    }
+
+    function updateScanningProgress() {
+        if (!currentItemBeingScanned) return;
+        
+        const progress = (currentScannedSerials.length / currentItemBeingScanned.expected_qty) * 100;
+        $('#serialProgress').css('width', `${progress}%`)
+                           .text(`${currentScannedSerials.length}/${currentItemBeingScanned.expected_qty}`);
+        
+        if (currentScannedSerials.length >= currentItemBeingScanned.expected_qty) {
+            $('#completeItemBtn').show();
+        }
+    }
+
+    // Handle serial number scanning
+    $('#serialScanInput').on('keypress', function(e) {
+        if (e.which === 13) { // Enter key
+            const serialNumber = $(this).val().trim();
+            if (serialNumber) {
+                scanSerial(serialNumber);
+                $(this).val('');
+            }
+        }
+    });
+
+    function scanSerial(serialNumber) {
+        if (!currentItemBeingScanned) return;
+        
+        // Check for duplicates
+        if (currentScannedSerials.some(s => s.serial === serialNumber)) {
+            showAlert('Serial number already scanned', 'error');
+            return;
+        }
+        
+        // Add to scanned list (validate later against SAP)
+        const scannedSerial = {
+            serial: serialNumber,
+            status: 'scanned',
+            item_code: currentItemBeingScanned.item_code
+        };
+        
+        currentScannedSerials.push(scannedSerial);
+        updateScanningResults();
+        updateScanningProgress();
+        
+        // Update queue item
+        currentItemBeingScanned.scanned_qty = currentScannedSerials.length;
+        updateSelectedItemsTable();
+    }
+
+    function updateScanningResults() {
+        const tbody = $('#scanningResultsTableBody');
+        tbody.empty();
+        
+        currentScannedSerials.forEach((serial, index) => {
+            const row = `
+                <tr>
+                    <td><code>${serial.serial}</code></td>
+                    <td><span class="badge bg-primary">${serial.status}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-danger" onclick="removeScannedSerial(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            tbody.append(row);
+        });
+    }
+
+    function removeScannedSerial(index) {
+        currentScannedSerials.splice(index, 1);
+        updateScanningResults();
+        updateScanningProgress();
+        
+        if (currentItemBeingScanned) {
+            currentItemBeingScanned.scanned_qty = currentScannedSerials.length;
+            updateSelectedItemsTable();
+        }
+    }
+
+    function confirmQuantity() {
+        const confirmedQty = parseInt($('#confirmedQuantity').val());
+        if (!confirmedQty || confirmedQty < 1) {
+            showAlert('Please enter a valid quantity', 'error');
+            return;
+        }
+        
+        if (currentItemBeingScanned) {
+            currentItemBeingScanned.scanned_qty = confirmedQty;
+            updateSelectedItemsTable();
+            $('#completeItemBtn').show();
+        }
+    }
+
+    function completeCurrentItem() {
+        if (!currentItemBeingScanned) return;
+        
+        if (currentItemBeingScanned.is_serial && currentScannedSerials.length !== currentItemBeingScanned.expected_qty) {
+            showAlert('Please scan all required serial numbers', 'error');
+            return;
+        }
+        
+        // Mark as completed
+        currentItemBeingScanned.status = 'completed';
+        updateSelectedItemsTable();
+        
+        // Hide scanning section
+        $('#scanningSection').hide();
+        
+        // Reset current scanning state
+        currentItemBeingScanned = null;
+        currentScannedSerials = [];
+        
+        showAlert('Item completed successfully', 'success');
+        
+        // TODO: Submit to backend
+        // For now, just show success message
+    }
+
+    function cancelCurrentScanning() {
+        if (currentItemBeingScanned) {
+            currentItemBeingScanned.status = 'pending';
+            currentItemBeingScanned.scanned_qty = 0;
+            updateSelectedItemsTable();
+        }
+        
+        $('#scanningSection').hide();
+        currentItemBeingScanned = null;
+        currentScannedSerials = [];
+    }
+
+    // Load items on page load
+    $(document).ready(function() {
+        loadWarehouseItems();
+    });
 
     // Bulk Mode Functions
     function toggleBulkMode(isBulk) {
