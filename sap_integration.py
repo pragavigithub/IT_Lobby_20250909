@@ -2922,28 +2922,7 @@ class SAPIntegration:
                 return {
                     'success': True,
                     'items': [
-                        {
-                            'item_code': 'MOCK_SERIAL',
-                            'item_name': 'Mock Serial Item',
-                            'warehouse_code': warehouse_code,
-                            'quantity_on_hand': 10.0,
-                            'unit_of_measure': 'EA',
-                            'is_serial_managed': True,
-                            'is_batch_managed': False,
-                            'manage_serial_numbers': 'Y',
-                            'manage_batch_numbers': 'N'
-                        },
-                        {
-                            'item_code': 'MOCK_NONSRL',
-                            'item_name': 'Mock Non-Serial Item',
-                            'warehouse_code': warehouse_code,
-                            'quantity_on_hand': 25.0,
-                            'unit_of_measure': 'EA',
-                            'is_serial_managed': False,
-                            'is_batch_managed': False,
-                            'manage_serial_numbers': 'N',
-                            'manage_batch_numbers': 'N'
-                        }
+
                     ],
                     'warehouse_code': warehouse_code,
                     'offline_mode': True
@@ -3107,9 +3086,7 @@ class SAPIntegration:
             return {
                 'success': True,
                 'items': [
-                    {"ItemCode": "S1", "WhsCode": warehouse_code, "itemName": "225MM Inspection Table Fan"},
-                    {"ItemCode": "RedmiNote4", "WhsCode": warehouse_code, "itemName": "8GBRAM/250GBROM Black"},
-                    {"ItemCode": "IPhone", "WhsCode": warehouse_code, "itemName": "12 Series 8GB RAM/250 GB ROM Black"}
+
                 ]
             }
 
@@ -3120,7 +3097,8 @@ class SAPIntegration:
             }
             
             headers = {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Prefer':'odata.maxpagesize=0'
             }
             
             response = self.session.post(url, headers=headers, json=payload, timeout=30)
@@ -3139,9 +3117,7 @@ class SAPIntegration:
                 return {
                     'success': True,
                     'items': [
-                        {"ItemCode": "S1", "WhsCode": warehouse_code, "itemName": "225MM Inspection Table Fan"},
-                        {"ItemCode": "RedmiNote4", "WhsCode": warehouse_code, "itemName": "8GBRAM/250GBROM Black"},
-                        {"ItemCode": "IPhone", "WhsCode": warehouse_code, "itemName": "12 Series 8GB RAM/250 GB ROM Black"}
+
                     ]
                 }
                 
@@ -3150,9 +3126,7 @@ class SAPIntegration:
             return {
                 'success': True,
                 'items': [
-                    {"ItemCode": "S1", "WhsCode": warehouse_code, "itemName": "225MM Inspection Table Fan"},
-                    {"ItemCode": "RedmiNote4", "WhsCode": warehouse_code, "itemName": "8GBRAM/250GBROM Black"},
-                    {"ItemCode": "IPhone", "WhsCode": warehouse_code, "itemName": "12 Series 8GB RAM/250 GB ROM Black"}
+
                 ]
             }
 
@@ -3265,7 +3239,7 @@ class SAPIntegration:
                         'offline_mode': False,
                         'data': {
                             'ItemCode': item_data.get('ItemCode', item_code),
-                            'ManSerNum': item_data.get('ManSerNum', 'N'),
+                            'ManSerNum': item_data.get('ManSerNum'),
                             'OnHand': float(item_data.get('OnHand', 0.0))
                         },
                         'sql_text': data.get('SqlText', ''),
