@@ -453,8 +453,43 @@ function showSerialSection(isSerialManaged) {
     }
 }
 
-function validateSerial() {
+// Auto-validation functions
+function handleSerialInput(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        autoValidateSerial();
+    }
+}
+
+function autoValidateSerial() {
     const serialNumber = $('#serialNumberInput').val().trim();
+    if (serialNumber) {
+        validateSerial();
+    }
+}
+
+function clearSerialInput() {
+    $('#serialNumberInput').val('').focus();
+}
+
+function checkItemSerialManagement(itemCode) {
+    // Check if the item requires serial number management
+    // Items starting with 'S' are considered serial managed
+    const isSerialManaged = itemCode.toUpperCase().startsWith('S') || itemCode.toLowerCase().includes('serial');
+    
+    if (isSerialManaged) {
+        showSerialSection(true);
+        showAlert(`Item ${itemCode} requires serial number validation`, 'info');
+    } else {
+        showSerialSection(false);
+        showAlert(`Item ${itemCode} does not require serial numbers. You can proceed with quantity-based transfer.`, 'info');
+        // For non-serial items, enable populate button immediately
+        updatePopulateButton();
+    }
+}
+
+function validateSerial() {
+    const serialNumber = $('#serialNumberInput').val().trim().toUpperCase();
     
     if (!serialNumber) {
         showAlert('Please enter a serial number', 'error');
@@ -466,9 +501,18 @@ function validateSerial() {
         return;
     }
     
-    // Check if serial already validated
-    if (validatedSerials.find(s => s.serialNumber === serialNumber)) {
-        showAlert('Serial number already validated', 'error');
+    // Enhanced duplicate check with case-insensitive comparison
+    const existingSerial = validatedSerials.find(s => s.serialNumber.toUpperCase() === serialNumber);
+    if (existingSerial) {
+        showAlert(`Serial number "${serialNumber}" has already been validated. Please enter a different serial number.`, 'warning');
+        $('#serialNumberInput').val('').focus();
+        return;
+    }
+    
+    // Check if we already have enough serials
+    if (validatedSerials.length >= requiredQuantity) {
+        showAlert(`You have already validated ${requiredQuantity} serial numbers. Remove existing serials if you need to add different ones.`, 'warning');
+        $('#serialNumberInput').val('');
         return;
     }
     
@@ -478,42 +522,51 @@ function validateSerial() {
         item_code: selectedItem.itemCode
     };
     
+    // Show loading state
+    $('#serialNumberInput').prop('disabled', true);
+    
     $.ajax({
         url: '/api/validate-serial-number',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(data),
         success: function(response) {
+            $('#serialNumberInput').prop('disabled', false);
+            
             if (response.success && response.valid) {
-                // Add to validated serials
+                // Add to validated serials (store normalized version)
                 validatedSerials.push({
                     serialNumber: serialNumber,
                     itemCode: selectedItem.itemCode,
                     status: 'validated'
                 });
                 
-                // Clear input
-                $('#serialNumberInput').val('');
+                // Clear input and focus for next entry
+                $('#serialNumberInput').val('').focus();
                 
                 // Update UI
                 updateValidatedSerialsList();
                 updateSerialProgress();
                 updatePopulateButton();
                 
-                showAlert('Serial number validated successfully', 'success');
+                showAlert(`Serial number "${serialNumber}" validated successfully`, 'success');
                 
-                // If we have enough serials, enable populate button
+                // If we have enough serials, notify user
                 if (validatedSerials.length >= requiredQuantity) {
-                    showAlert('All required serial numbers validated!', 'success');
+                    showAlert('All required serial numbers validated! You can now populate line items.', 'success');
+                    $('#populateLineItemsBtn').focus(); // Focus the populate button
                 }
                 
             } else {
                 showAlert(response.error || 'Serial number validation failed', 'error');
+                $('#serialNumberInput').focus();
             }
         },
         error: function(xhr, status, error) {
+            $('#serialNumberInput').prop('disabled', false);
             console.error('Error validating serial:', error);
             showAlert('Error validating serial number: ' + error, 'error');
+            $('#serialNumberInput').focus();
         }
     });
 }
@@ -526,17 +579,15 @@ function updateValidatedSerialsList() {
         $('#validatedSerialsSection').removeClass('d-none');
         
         validatedSerials.forEach(function(serial, index) {
-            const row = $(`
-                <tr>
-                    <td><span class="font-monospace">${serial.serialNumber}</span></td>
-                    <td><span class="badge bg-success">Validated</span></td>
-                    <td>
-                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeValidatedSerial(${index})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `);
+            const row = $('<tr>');
+            const serialCell = $('<td>').append($('<span class="font-monospace">').text(serial.serialNumber));
+            const statusCell = $('<td>').append($('<span class="badge bg-success">').text('Validated'));
+            const actionCell = $('<td>').append(
+                $('<button type="button" class="btn btn-sm btn-outline-danger">')
+                .attr('onclick', `removeValidatedSerial(${index})`)
+                .append($('<i class="fas fa-trash">'))
+            );
+            row.append(serialCell).append(statusCell).append(actionCell);
             tbody.append(row);
         });
     } else {
@@ -556,48 +607,93 @@ function updateSerialProgress() {
 }
 
 function updatePopulateButton() {
-    const canPopulate = selectedItem && (validatedSerials.length >= requiredQuantity);
+    let canPopulate = false;
+    
+    if (selectedItem) {
+        if ($('#serialNumberSection').is(':visible')) {
+            // Serial managed item
+            canPopulate = validatedSerials.length >= requiredQuantity;
+        } else {
+            // Non-serial item
+            canPopulate = requiredQuantity > 0;
+        }
+    }
+    
     $('#populateLineItemsBtn').prop('disabled', !canPopulate);
 }
 
 function populateLineItems() {
-    if (!selectedItem || validatedSerials.length < requiredQuantity) {
-        showAlert('Please validate all required serial numbers first', 'error');
+    if (!selectedItem) {
+        showAlert('Please select an item first', 'error');
         return;
     }
     
-    // Create line items based on validated serials
-    const promises = validatedSerials.map(function(serial) {
-        return $.ajax({
-            url: '/serial-item-transfer/{{ transfer.id }}/add_serial_item',
+    // Handle serial managed items
+    if ($('#serialNumberSection').is(':visible')) {
+        if (validatedSerials.length < requiredQuantity) {
+            showAlert('Please validate all required serial numbers first', 'error');
+            return;
+        }
+        
+        // Create line items based on validated serials
+        const promises = validatedSerials.map(function(serial) {
+            return $.ajax({
+                url: '/serial-item-transfer/{{ transfer.id }}/add_serial_item',
+                method: 'POST',
+                data: {
+                    serial_number: serial.serialNumber,
+                    expected_item_code: selectedItem.itemCode
+                }
+            });
+        });
+        
+        Promise.all(promises)
+            .then(function(responses) {
+                const successCount = responses.filter(r => r.success).length;
+                if (successCount === validatedSerials.length) {
+                    showAlert(`Successfully added ${successCount} serial line items`, 'success');
+                    // Refresh page to show new items
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showAlert(`Added ${successCount} of ${validatedSerials.length} items. Some items failed.`, 'warning');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 2000);
+                }
+            })
+            .catch(function(error) {
+                console.error('Error populating line items:', error);
+                showAlert('Error adding line items', 'error');
+            });
+    } else {
+        // Handle non-serial items
+        $.ajax({
+            url: '/serial-item-transfer/{{ transfer.id }}/add_non_serial_item',
             method: 'POST',
             data: {
-                serial_number: serial.serialNumber,
-                expected_item_code: selectedItem.itemCode
+                item_code: selectedItem.itemCode,
+                item_description: selectedItem.itemName,
+                quantity: requiredQuantity,
+                unit_of_measure: 'EA'
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert(`Successfully added ${requiredQuantity} quantity of ${selectedItem.itemCode}`, 'success');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showAlert(response.error || 'Error adding non-serial item', 'error');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error adding non-serial item:', error);
+                showAlert('Error adding non-serial item', 'error');
             }
         });
-    });
-    
-    Promise.all(promises)
-        .then(function(responses) {
-            const successCount = responses.filter(r => r.success).length;
-            if (successCount === validatedSerials.length) {
-                showAlert(`Successfully added ${successCount} line items`, 'success');
-                // Refresh page to show new items
-                setTimeout(function() {
-                    location.reload();
-                }, 1500);
-            } else {
-                showAlert(`Added ${successCount} of ${validatedSerials.length} items. Some items failed.`, 'warning');
-                setTimeout(function() {
-                    location.reload();
-                }, 2000);
-            }
-        })
-        .catch(function(error) {
-            console.error('Error populating line items:', error);
-            showAlert('Error adding line items', 'error');
-        });
+    }
 }
 
 function resetItemSelection() {
@@ -683,12 +779,11 @@ function showAlert(message, type) {
                       type === 'warning' ? 'alert-warning' : 
                       type === 'success' ? 'alert-success' : 'alert-info';
     
-    const alert = $(`
-        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    `);
+    // Create alert element safely to prevent XSS
+    const alert = $('<div class="alert alert-dismissible fade show" role="alert">')
+        .addClass(alertClass)
+        .text(message)  // Use .text() to safely insert user content
+        .append($('<button type="button" class="btn-close" data-bs-dismiss="alert">'));
     
     $('.container-fluid').prepend(alert);
     
