@@ -1,0 +1,720 @@
+================================================================================
+CONSOLIDATED MYSQL MIGRATION - Serial Item Transfer Enhancement
+================================================================================
+
+2025-09-11 10:44:53,975 - INFO - 🚀 Starting Serial Item Transfer Enhancement Migration
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f680' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 278, in run_migration
+    self.logger.info("🚀 Starting Serial Item Transfer Enhancement Migration")
+Message: '🚀 Starting Serial Item Transfer Enhancement Migration'
+Arguments: ()
+2025-09-11 10:44:53,975 - INFO - ✅ Credentials loaded from C:/tmp/sap_login/credential.json
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 281, in run_migration
+    if not self.connect_database():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 56, in connect_database
+    creds = self.load_credentials()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 44, in load_credentials
+    self.logger.info(f"✅ Credentials loaded from {file_path}")
+Message: '✅ Credentials loaded from C:/tmp/sap_login/credential.json'
+Arguments: ()
+2025-09-11 10:44:53,989 - INFO - ✅ Connected to MySQL database successfully
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 281, in run_migration
+    if not self.connect_database():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 69, in connect_database
+    self.logger.info("✅ Connected to MySQL database successfully")
+Message: '✅ Connected to MySQL database successfully'
+Arguments: ()
+2025-09-11 10:44:53,989 - INFO - 📋 Checking table: serial_item_transfer_items
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4cb' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 287, in run_migration
+    if not self.add_missing_columns():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 107, in add_missing_columns
+    self.logger.info(f"📋 Checking table: {table_name}")
+Message: '📋 Checking table: serial_item_transfer_items'
+Arguments: ()
+2025-09-11 10:44:53,989 - INFO -   ✅ Column 'is_serial_managed' already exists
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 35: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 287, in run_migration
+    if not self.add_missing_columns():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 116, in add_missing_columns
+    self.logger.info(f"  ✅ Column '{column_name}' already exists")
+Message: "  ✅ Column 'is_serial_managed' already exists"
+Arguments: ()
+2025-09-11 10:44:54,005 - INFO -   ✅ Column 'is_batch_managed' already exists
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 35: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 287, in run_migration
+    if not self.add_missing_columns():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 116, in add_missing_columns
+    self.logger.info(f"  ✅ Column '{column_name}' already exists")
+Message: "  ✅ Column 'is_batch_managed' already exists"
+Arguments: ()
+2025-09-11 10:44:54,005 - INFO -   ✅ Column 'item_type' already exists
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 35: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 287, in run_migration
+    if not self.add_missing_columns():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 116, in add_missing_columns
+    self.logger.info(f"  ✅ Column '{column_name}' already exists")
+Message: "  ✅ Column 'item_type' already exists"
+Arguments: ()
+2025-09-11 10:44:54,005 - INFO -   ✅ Column 'expected_quantity' already exists
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 35: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 287, in run_migration
+    if not self.add_missing_columns():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 116, in add_missing_columns
+    self.logger.info(f"  ✅ Column '{column_name}' already exists")
+Message: "  ✅ Column 'expected_quantity' already exists"
+Arguments: ()
+2025-09-11 10:44:54,005 - INFO -   ✅ Column 'scanned_quantity' already exists
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 35: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 287, in run_migration
+    if not self.add_missing_columns():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 116, in add_missing_columns
+    self.logger.info(f"  ✅ Column '{column_name}' already exists")
+Message: "  ✅ Column 'scanned_quantity' already exists"
+Arguments: ()
+2025-09-11 10:44:54,020 - INFO -   ✅ Column 'completion_status' already exists
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 35: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 287, in run_migration
+    if not self.add_missing_columns():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 116, in add_missing_columns
+    self.logger.info(f"  ✅ Column '{column_name}' already exists")
+Message: "  ✅ Column 'completion_status' already exists"
+Arguments: ()
+2025-09-11 10:44:54,020 - INFO -   ✅ Column 'parent_item_code' already exists
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 35: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 287, in run_migration
+    if not self.add_missing_columns():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 116, in add_missing_columns
+    self.logger.info(f"  ✅ Column '{column_name}' already exists")
+Message: "  ✅ Column 'parent_item_code' already exists"
+Arguments: ()
+2025-09-11 10:44:54,020 - INFO -   ✅ Column 'line_group_id' already exists
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 35: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 287, in run_migration
+    if not self.add_missing_columns():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 116, in add_missing_columns
+    self.logger.info(f"  ✅ Column '{column_name}' already exists")
+Message: "  ✅ Column 'line_group_id' already exists"
+Arguments: ()
+2025-09-11 10:44:54,020 - INFO - 🎉 All required columns already exist!
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f389' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 287, in run_migration
+    if not self.add_missing_columns():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 119, in add_missing_columns
+    self.logger.info("🎉 All required columns already exist!")
+Message: '🎉 All required columns already exist!'
+Arguments: ()
+2025-09-11 10:44:54,020 - INFO - 🔧 Making serial_number column nullable...
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f527' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 292, in run_migration
+    if not self.make_serial_number_nullable():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 140, in make_serial_number_nullable
+    self.logger.info("🔧 Making serial_number column nullable...")
+Message: '🔧 Making serial_number column nullable...'
+Arguments: ()
+2025-09-11 10:44:54,057 - INFO - ✅ Successfully made serial_number nullable
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 292, in run_migration
+    if not self.make_serial_number_nullable():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 142, in make_serial_number_nullable
+    self.logger.info("✅ Successfully made serial_number nullable")
+Message: '✅ Successfully made serial_number nullable'
+Arguments: ()
+2025-09-11 10:44:54,057 - INFO - 📊 Updating existing records with proper defaults...
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4ca' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 297, in run_migration
+    if not self.update_existing_data():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 151, in update_existing_data
+    self.logger.info("📊 Updating existing records with proper defaults...")
+Message: '📊 Updating existing records with proper defaults...'
+Arguments: ()
+2025-09-11 10:44:54,057 - INFO -   ✅ Updated 0 serial item records
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 35: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 297, in run_migration
+    if not self.update_existing_data():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 172, in update_existing_data
+    self.logger.info(f"  ✅ Updated {serial_records} serial item records")
+Message: '  ✅ Updated 0 serial item records'
+Arguments: ()
+2025-09-11 10:44:54,057 - INFO -   ✅ Updated 0 non-serial item records
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 35: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 297, in run_migration
+    if not self.update_existing_data():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 187, in update_existing_data
+    self.logger.info(f"  ✅ Updated {non_serial_records} non-serial item records")
+Message: '  ✅ Updated 0 non-serial item records'
+Arguments: ()
+2025-09-11 10:44:54,057 - INFO - 🔍 Creating performance indexes...
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 302, in run_migration
+    if not self.create_indexes():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 197, in create_indexes
+    self.logger.info("🔍 Creating performance indexes...")
+Message: '🔍 Creating performance indexes...'
+Arguments: ()
+2025-09-11 10:44:54,075 - INFO -   ℹ️ Index already exists (skipping)
+--- Logging error ---
+Traceback (most recent call last):
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 208, in create_indexes
+    self.cursor.execute(index_query)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 563, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 825, in _read_query_result
+    result.read()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 1199, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1061, "Duplicate key name 'idx_serial_items_is_serial_managed'")
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 35-36: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 302, in run_migration
+    if not self.create_indexes():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 214, in create_indexes
+    self.logger.info(f"  ℹ️ Index already exists (skipping)")
+Message: '  ℹ️ Index already exists (skipping)'
+Arguments: ()
+2025-09-11 10:44:54,091 - INFO -   ℹ️ Index already exists (skipping)
+--- Logging error ---
+Traceback (most recent call last):
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 208, in create_indexes
+    self.cursor.execute(index_query)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 563, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 825, in _read_query_result
+    result.read()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 1199, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1061, "Duplicate key name 'idx_serial_items_completion_status'")
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 35-36: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 302, in run_migration
+    if not self.create_indexes():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 214, in create_indexes
+    self.logger.info(f"  ℹ️ Index already exists (skipping)")
+Message: '  ℹ️ Index already exists (skipping)'
+Arguments: ()
+2025-09-11 10:44:54,091 - INFO -   ℹ️ Index already exists (skipping)
+--- Logging error ---
+Traceback (most recent call last):
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 208, in create_indexes
+    self.cursor.execute(index_query)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 563, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 825, in _read_query_result
+    result.read()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 1199, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1061, "Duplicate key name 'idx_serial_items_item_type'")
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 35-36: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 302, in run_migration
+    if not self.create_indexes():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 214, in create_indexes
+    self.logger.info(f"  ℹ️ Index already exists (skipping)")
+Message: '  ℹ️ Index already exists (skipping)'
+Arguments: ()
+2025-09-11 10:44:54,106 - INFO -   ℹ️ Index already exists (skipping)
+--- Logging error ---
+Traceback (most recent call last):
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 208, in create_indexes
+    self.cursor.execute(index_query)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\cursors.py", line 153, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\cursors.py", line 322, in _query
+    conn.query(q)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 563, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 825, in _read_query_result
+    result.read()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 1199, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1061, "Duplicate key name 'idx_serial_items_parent_item_code'")
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 35-36: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 302, in run_migration
+    if not self.create_indexes():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 214, in create_indexes
+    self.logger.info(f"  ℹ️ Index already exists (skipping)")
+Message: '  ℹ️ Index already exists (skipping)'
+Arguments: ()
+2025-09-11 10:44:54,106 - INFO - ✅ 4/4 indexes ready
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 302, in run_migration
+    if not self.create_indexes():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 218, in create_indexes
+    self.logger.info(f"✅ {success_count}/{len(indexes)} indexes ready")
+Message: '✅ 4/4 indexes ready'
+Arguments: ()
+2025-09-11 10:44:54,106 - INFO - 💾 Committed all changes to database
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4be' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 308, in run_migration
+    self.logger.info("💾 Committed all changes to database")
+Message: '💾 Committed all changes to database'
+Arguments: ()
+2025-09-11 10:44:54,106 - INFO - 🔍 Verifying migration...
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 311, in run_migration
+    if not self.verify_migration():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 224, in verify_migration
+    self.logger.info("🔍 Verifying migration...")
+Message: '🔍 Verifying migration...'
+Arguments: ()
+2025-09-11 10:44:54,106 - INFO - ✅ Table has 2073 records
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 311, in run_migration
+    if not self.verify_migration():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 245, in verify_migration
+    self.logger.info(f"✅ Table has {record_count} records")
+Message: '✅ Table has 2073 records'
+Arguments: ()
+2025-09-11 10:44:54,124 - INFO - 📊 Record breakdown:
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4ca' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 311, in run_migration
+    if not self.verify_migration():
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 261, in verify_migration
+    self.logger.info("📊 Record breakdown:")
+Message: '📊 Record breakdown:'
+Arguments: ()
+2025-09-11 10:44:54,124 - INFO -   - serial (serial_managed: 1, status: completed): 2073 records
+2025-09-11 10:44:54,124 - INFO - 🎉 Migration completed successfully!
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f389' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 315, in run_migration
+    self.logger.info("🎉 Migration completed successfully!")
+Message: '🎉 Migration completed successfully!'
+Arguments: ()
+2025-09-11 10:44:54,124 - INFO - 🔒 Database connection closed
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f512' in position 33: character maps to <undefined>
+Call stack:
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 341, in main
+    success = migration.run_migration()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 327, in run_migration
+    self.logger.info("🔒 Database connection closed")
+Message: '🔒 Database connection closed'
+Arguments: ()
+
+================================================================================
+✅ MIGRATION COMPLETED SUCCESSFULLY!
+Your database schema has been updated.
+You can now restart your application and the error should be resolved.
+================================================================================
+Traceback (most recent call last):
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 366, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 363, in main
+    migration.close()
+  File "E:\SAP_Integ\Git Change\20250911\2\IT_Lobby_20250909\mysql_migration_consolidated.py", line 334, in close
+    self.connection.close()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\pymysql\connections.py", line 414, in close
+    raise err.Error("Already closed")
+pymysql.err.Error: Already closed

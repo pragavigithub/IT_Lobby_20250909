@@ -22,15 +22,22 @@ class MySQLMigration:
         
     def setup_logging(self):
         """Setup logging for migration"""
-        logging.basicConfig(
-            level=logging.INFO,
-            format='%(asctime)s - %(levelname)s - %(message)s',
-            handlers=[
-                logging.StreamHandler(sys.stdout),
-                logging.FileHandler('mysql_migration.log')
-            ]
-        )
+        # Create formatters
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        
+        # Create console handler with UTF-8 encoding
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setFormatter(formatter)
+        
+        # Create file handler with UTF-8 encoding
+        file_handler = logging.FileHandler('mysql_migration.log', encoding='utf-8')
+        file_handler.setFormatter(formatter)
+        
+        # Setup logger
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
+        self.logger.addHandler(console_handler)
+        self.logger.addHandler(file_handler)
 
     def load_credentials(self):
         """Load credentials from JSON file"""
@@ -41,13 +48,13 @@ class MySQLMigration:
                 if os.path.exists(file_path):
                     with open(file_path, 'r') as f:
                         credentials = json.load(f)
-                    self.logger.info(f"✅ Credentials loaded from {file_path}")
+                    self.logger.info(f"[SUCCESS] Credentials loaded from {file_path}")
                     return credentials
             except Exception as e:
-                self.logger.warning(f"⚠️ Could not load credentials from {file_path}: {e}")
+                self.logger.warning(f"[WARNING] Could not load credentials from {file_path}: {e}")
                 continue
         
-        self.logger.error("❌ No credential file found")
+        self.logger.error("[ERROR] No credential file found")
         return {}
 
     def connect_database(self):
@@ -66,11 +73,11 @@ class MySQLMigration:
             )
             
             self.cursor = self.connection.cursor(pymysql.cursors.DictCursor)
-            self.logger.info("✅ Connected to MySQL database successfully")
+            self.logger.info("[SUCCESS] Connected to MySQL database successfully")
             return True
             
         except Exception as e:
-            self.logger.error(f"❌ Failed to connect to database: {e}")
+            self.logger.error(f"[ERROR] Failed to connect to database: {e}")
             return False
 
     def check_column_exists(self, table_name, column_name):
@@ -87,7 +94,7 @@ class MySQLMigration:
             result = self.cursor.fetchone()
             return result['count'] > 0
         except Exception as e:
-            self.logger.error(f"❌ Error checking column {column_name}: {e}")
+            self.logger.error(f"[ERROR] Error checking column {column_name}: {e}")
             return False
 
     def add_missing_columns(self):
@@ -104,32 +111,32 @@ class MySQLMigration:
             ('line_group_id', 'VARCHAR(50) NULL')
         ]
         
-        self.logger.info(f"📋 Checking table: {table_name}")
+        self.logger.info(f"[INFO] Checking table: {table_name}")
         
         # Check which columns need to be added
         columns_needed = []
         for column_name, column_def in columns_to_add:
             if not self.check_column_exists(table_name, column_name):
                 columns_needed.append((column_name, column_def))
-                self.logger.info(f"  📌 Column '{column_name}' needs to be added")
+                self.logger.info(f"  [NEEDED] Column '{column_name}' needs to be added")
             else:
-                self.logger.info(f"  ✅ Column '{column_name}' already exists")
+                self.logger.info(f"  [EXISTS] Column '{column_name}' already exists")
         
         if not columns_needed:
-            self.logger.info("🎉 All required columns already exist!")
+            self.logger.info("[SUCCESS] All required columns already exist!")
             return True
         
         # Add missing columns
-        self.logger.info(f"📝 Adding {len(columns_needed)} missing columns...")
+        self.logger.info(f"[PROGRESS] Adding {len(columns_needed)} missing columns...")
         
         for column_name, column_def in columns_needed:
             try:
                 alter_query = f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_def}"
-                self.logger.info(f"  🔧 Adding column: {column_name}")
+                self.logger.info(f"  [ADDING] Adding column: {column_name}")
                 self.cursor.execute(alter_query)
-                self.logger.info(f"  ✅ Successfully added column: {column_name}")
+                self.logger.info(f"  [SUCCESS] Successfully added column: {column_name}")
             except Exception as e:
-                self.logger.error(f"  ❌ Failed to add column {column_name}: {e}")
+                self.logger.error(f"  [ERROR] Failed to add column {column_name}: {e}")
                 return False
         
         return True
@@ -137,18 +144,18 @@ class MySQLMigration:
     def make_serial_number_nullable(self):
         """Make serial_number column nullable for non-serial items"""
         try:
-            self.logger.info("🔧 Making serial_number column nullable...")
+            self.logger.info("[MODIFY] Making serial_number column nullable...")
             self.cursor.execute("ALTER TABLE serial_item_transfer_items MODIFY COLUMN serial_number VARCHAR(100) NULL")
-            self.logger.info("✅ Successfully made serial_number nullable")
+            self.logger.info("[SUCCESS] Successfully made serial_number nullable")
             return True
         except Exception as e:
-            self.logger.warning(f"⚠️ Warning: Could not modify serial_number column: {e}")
+            self.logger.warning(f"[WARNING] Could not modify serial_number column: {e}")
             return True  # Non-critical error
 
     def update_existing_data(self):
         """Update existing records with proper defaults"""
         try:
-            self.logger.info("📊 Updating existing records with proper defaults...")
+            self.logger.info("[UPDATE] Updating existing records with proper defaults...")
             
             # Update records with serial numbers
             query1 = """
@@ -169,7 +176,7 @@ class MySQLMigration:
             """
             self.cursor.execute(query1)
             serial_records = self.cursor.rowcount
-            self.logger.info(f"  ✅ Updated {serial_records} serial item records")
+            self.logger.info(f"  [SUCCESS] Updated {serial_records} serial item records")
             
             # Update records without serial numbers
             query2 = """
@@ -184,17 +191,17 @@ class MySQLMigration:
             """
             self.cursor.execute(query2)
             non_serial_records = self.cursor.rowcount
-            self.logger.info(f"  ✅ Updated {non_serial_records} non-serial item records")
+            self.logger.info(f"  [SUCCESS] Updated {non_serial_records} non-serial item records")
             
             return True
             
         except Exception as e:
-            self.logger.error(f"❌ Failed to update existing data: {e}")
+            self.logger.error(f"[ERROR] Failed to update existing data: {e}")
             return False
 
     def create_indexes(self):
         """Create performance indexes"""
-        self.logger.info("🔍 Creating performance indexes...")
+        self.logger.info("[INDEXES] Creating performance indexes...")
         indexes = [
             "CREATE INDEX idx_serial_items_is_serial_managed ON serial_item_transfer_items(is_serial_managed)",
             "CREATE INDEX idx_serial_items_completion_status ON serial_item_transfer_items(completion_status)",
@@ -207,21 +214,21 @@ class MySQLMigration:
             try:
                 self.cursor.execute(index_query)
                 success_count += 1
-                self.logger.info(f"  ✅ Created index successfully")
+                self.logger.info(f"  [SUCCESS] Created index successfully")
             except Exception as e:
                 if "Duplicate key name" in str(e) or "already exists" in str(e):
                     success_count += 1
-                    self.logger.info(f"  ℹ️ Index already exists (skipping)")
+                    self.logger.info(f"  [EXISTS] Index already exists (skipping)")
                 else:
-                    self.logger.warning(f"  ⚠️ Warning: Could not create index: {e}")
+                    self.logger.warning(f"  [WARNING] Could not create index: {e}")
         
-        self.logger.info(f"✅ {success_count}/{len(indexes)} indexes ready")
+        self.logger.info(f"[COMPLETE] {success_count}/{len(indexes)} indexes ready")
         return True
 
     def verify_migration(self):
         """Verify migration was successful"""
         try:
-            self.logger.info("🔍 Verifying migration...")
+            self.logger.info("[VERIFY] Verifying migration...")
             
             # Check table structure
             self.cursor.execute("DESCRIBE serial_item_transfer_items")
@@ -236,13 +243,13 @@ class MySQLMigration:
             
             missing_columns = [col for col in required_columns if col not in column_names]
             if missing_columns:
-                self.logger.error(f"❌ Missing columns after migration: {missing_columns}")
+                self.logger.error(f"[ERROR] Missing columns after migration: {missing_columns}")
                 return False
             
             # Count records
             self.cursor.execute("SELECT COUNT(*) as count FROM serial_item_transfer_items")
             record_count = self.cursor.fetchone()['count']
-            self.logger.info(f"✅ Table has {record_count} records")
+            self.logger.info(f"[INFO] Table has {record_count} records")
             
             # Show breakdown
             self.cursor.execute("""
@@ -258,14 +265,14 @@ class MySQLMigration:
             breakdown = self.cursor.fetchall()
             
             if breakdown:
-                self.logger.info("📊 Record breakdown:")
+                self.logger.info("[BREAKDOWN] Record breakdown:")
                 for row in breakdown:
                     self.logger.info(f"  - {row['item_type']} (serial_managed: {row['is_serial_managed']}, status: {row['completion_status']}): {row['count']} records")
             
             return True
             
         except Exception as e:
-            self.logger.error(f"❌ Verification failed: {e}")
+            self.logger.error(f"[ERROR] Verification failed: {e}")
             return False
 
     def run_migration(self):
@@ -275,7 +282,7 @@ class MySQLMigration:
         print("=" * 80)
         print()
         
-        self.logger.info("🚀 Starting Serial Item Transfer Enhancement Migration")
+        self.logger.info("[START] Starting Serial Item Transfer Enhancement Migration")
         
         # Connect to database
         if not self.connect_database():
@@ -305,26 +312,26 @@ class MySQLMigration:
             
             # Step 5: Commit changes
             self.connection.commit()
-            self.logger.info("💾 Committed all changes to database")
+            self.logger.info("[COMMIT] Committed all changes to database")
             
             # Step 6: Verify migration
             if not self.verify_migration():
                 self.logger.error("Migration verification failed")
                 return False
             
-            self.logger.info("🎉 Migration completed successfully!")
+            self.logger.info("[COMPLETE] Migration completed successfully!")
             return True
             
         except Exception as e:
-            self.logger.error(f"❌ Migration failed: {e}")
+            self.logger.error(f"[ERROR] Migration failed: {e}")
             self.connection.rollback()
-            self.logger.info("🔄 Rolled back all changes")
+            self.logger.info("[ROLLBACK] Rolled back all changes")
             return False
             
         finally:
             if self.connection:
                 self.connection.close()
-                self.logger.info("🔒 Database connection closed")
+                self.logger.info("[CLOSED] Database connection closed")
 
     def close(self):
         """Clean up database connections"""
@@ -343,21 +350,21 @@ def main():
         print()
         print("=" * 80)
         if success:
-            print("✅ MIGRATION COMPLETED SUCCESSFULLY!")
+            print("[SUCCESS] MIGRATION COMPLETED SUCCESSFULLY!")
             print("Your database schema has been updated.")
             print("You can now restart your application and the error should be resolved.")
         else:
-            print("❌ MIGRATION FAILED!")
+            print("[FAILED] MIGRATION FAILED!")
             print("Please check the mysql_migration.log file for details.")
         print("=" * 80)
         
         return 0 if success else 1
         
     except KeyboardInterrupt:
-        print("\n⚠️ Migration interrupted by user")
+        print("\n[INTERRUPTED] Migration interrupted by user")
         return 1
     except Exception as e:
-        print(f"\n❌ Unexpected error: {e}")
+        print(f"\n[ERROR] Unexpected error: {e}")
         return 1
     finally:
         migration.close()
