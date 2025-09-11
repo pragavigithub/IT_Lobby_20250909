@@ -201,7 +201,13 @@
                                 <label for="quantityInput" class="form-label">Quantity <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="quantityInput" min="1" value="1" onchange="onQuantityChanged()">
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-4">
+                                <label class="form-label">Available Stock</label>
+                                <div class="form-control-plaintext" id="onHandQuantityDisplay">
+                                    <span id="onHandQuantity" class="badge bg-secondary">Not checked</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-text">
                                     <span id="serialRequiredText" class="d-none">
                                         <i class="fas fa-exclamation-triangle text-warning"></i>
@@ -795,6 +801,150 @@ function showAlert(message, type) {
 
 // New functions for improved workflow
 
+function displayOnHandQuantity(quantity) {
+    const badge = $('#onHandQuantity');
+    const quantityInput = $('#quantityInput');
+    
+    if (quantity > 0) {
+        badge.removeClass('bg-secondary bg-danger').addClass('bg-success');
+        badge.text(`${quantity} available`);
+        
+        // Update quantity input max value
+        quantityInput.attr('max', quantity);
+        
+        // If current quantity exceeds available, adjust it
+        const currentQuantity = parseInt(quantityInput.val()) || 1;
+        if (currentQuantity > quantity) {
+            quantityInput.val(quantity);
+            showAlert(`Quantity adjusted to available stock: ${quantity}`, 'warning');
+        }
+    } else {
+        badge.removeClass('bg-secondary bg-success').addClass('bg-danger');
+        badge.text('No stock available');
+        
+        // Disable quantity input if no stock
+        quantityInput.attr('max', 0);
+        quantityInput.val(0);
+        showAlert('No stock available for this item in the selected warehouse', 'error');
+    }
+}
+
+function autoPopulateNonSerialItem() {
+    if (!selectedItem || selectedItem.isSerialManaged !== false) {
+        showAlert('Error: Item information not available for auto-population', 'error');
+        return;
+    }
+    
+    if (!requiredQuantity || requiredQuantity <= 0) {
+        showAlert('Error: Invalid quantity for auto-population', 'error');
+        return;
+    }
+    
+    // Show loading message
+    showAlert('Automatically adding non-serial item to transfer...', 'info');
+    
+    // Call the non-serial item endpoint directly
+    $.ajax({
+        url: '/serial-item-transfer/{{ transfer.id }}/add_non_serial_item',
+        method: 'POST',
+        data: {
+            item_code: selectedItem.itemCode,
+            item_description: selectedItem.itemName,
+            quantity: requiredQuantity,
+            unit_of_measure: 'EA'
+        },
+        success: function(response) {
+            if (response.success) {
+                showAlert(`Successfully auto-added ${requiredQuantity} quantity of ${selectedItem.itemCode}`, 'success');
+                setTimeout(function() {
+                    location.reload();
+                }, 1500);
+            } else {
+                showAlert(response.error || 'Error auto-adding non-serial item', 'error');
+                updatePopulateButton(); // Enable manual button as fallback
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error auto-adding non-serial item:', error);
+            showAlert('Error auto-adding non-serial item. You can use the manual populate button.', 'error');
+            updatePopulateButton(); // Enable manual button as fallback
+        }
+    });
+}
+
+function onItemSelected() {
+    const itemSelect = $('#itemSelect');
+    const selectedValue = itemSelect.val();
+    
+    if (!selectedValue) {
+        // No item selected, reset everything
+        selectedItem = null;
+        $('#selectedItemInfo').addClass('d-none');
+        $('#stepSection3').hide();
+        $('#onHandQuantity').removeClass('bg-success bg-danger').addClass('bg-secondary').text('Not checked');
+        updateStepProgress();
+        return;
+    }
+    
+    // Find the selected item from the loaded items
+    const option = itemSelect.find(':selected');
+    const itemCode = selectedValue;
+    const itemName = option.text().replace(itemCode + ' - ', '');
+    
+    // Update selectedItem global variable
+    selectedItem = {
+        itemCode: itemCode,
+        itemName: itemName
+    };
+    
+    // Show selected item info
+    $('#selectedItemCode').text(itemCode);
+    $('#selectedItemName').text(itemName);
+    $('#selectedItemInfo').removeClass('d-none');
+    
+    // Show step 3 section
+    $('#stepSection3').show();
+    currentStep = 3;
+    updateStepProgress();
+    
+    // Call the new SAP B1 API to check item requirements
+    checkItemSerialManagement(itemCode);
+}
+
+function onQuantityChanged() {
+    const quantityInput = $('#quantityInput');
+    const quantity = parseInt(quantityInput.val()) || 1;
+    
+    // Update global variable
+    requiredQuantity = quantity;
+    
+    // Update serial progress if serial section is visible
+    if ($('#serialNumberSection').is(':visible')) {
+        updateSerialProgress();
+    }
+    
+    // Update populate button state
+    updatePopulateButton();
+    
+    // Check if quantity exceeds max allowed (based on OnHand)
+    const maxQuantity = parseInt(quantityInput.attr('max'));
+    if (maxQuantity && quantity > maxQuantity) {
+        showAlert(`Quantity (${quantity}) exceeds available stock (${maxQuantity})`, 'warning');
+        quantityInput.val(maxQuantity);
+        requiredQuantity = maxQuantity;
+    }
+    
+    // For non-serial items with auto-populate, update the auto-populate condition
+    if (selectedItem && selectedItem.manSerNum === 'N' && selectedItem.onHandQuantity) {
+        const onHandQuantity = selectedItem.onHandQuantity;
+        if (quantity <= onHandQuantity) {
+            // Could auto-populate again if needed, but usually not necessary
+            // Just ensure the populate button is enabled
+            updatePopulateButton();
+        }
+    }
+}
+
 function handleSerialInput(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
@@ -814,20 +964,89 @@ function clearSerialInput() {
 }
 
 function checkItemSerialManagement(itemCode) {
-    // Check if the item requires serial number management
-    // For demo purposes, items starting with 'S' are serial managed
-    // In real implementation, this would check SAP B1 item master data
-    const isSerialManaged = itemCode.startsWith('S') || itemCode.includes('Serial');
-    
-    if (isSerialManaged) {
-        showSerialSection(true);
-        showAlert(`Item ${itemCode} requires serial number validation`, 'info');
-    } else {
-        showSerialSection(false);
-        showAlert(`Item ${itemCode} does not require serial numbers. You can proceed with quantity-based transfer.`, 'info');
-        // For non-serial items, enable populate button immediately
-        updatePopulateButton();
+    if (!itemCode) {
+        return;
     }
+    
+    // Show loading state
+    showAlert('Checking item requirements...', 'info');
+    
+    // Call the new SAP B1 API to get actual ManSerNum flag and OnHand quantity
+    const data = {
+        warehouse_code: '{{ transfer.from_warehouse }}',
+        item_code: itemCode
+    };
+    
+    $.ajax({
+        url: '/serial-item-transfer/api/check-item-quantity',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function(response) {
+            if (response.success) {
+                const itemData = response.data;
+                const isSerialManaged = itemData.ManSerNum === 'Y';
+                const onHandQuantity = itemData.OnHand || 0;
+                
+                // Display OnHand quantity in the UI
+                displayOnHandQuantity(onHandQuantity);
+                
+                if (isSerialManaged) {
+                    showSerialSection(true);
+                    showAlert(`Item ${itemCode} requires serial number validation. OnHand: ${onHandQuantity}`, 'info');
+                } else {
+                    showSerialSection(false);
+                    showAlert(`Item ${itemCode} does not require serial numbers. OnHand: ${onHandQuantity}. Automatically populating line items...`, 'success');
+                    // For non-serial items, automatically populate line items after a short delay
+                    setTimeout(function() {
+                        if (onHandQuantity > 0 && requiredQuantity <= onHandQuantity) {
+                            autoPopulateNonSerialItem();
+                        } else {
+                            showAlert(`Cannot auto-populate: Requested quantity (${requiredQuantity}) exceeds available stock (${onHandQuantity})`, 'warning');
+                            updatePopulateButton(); // Enable manual button as fallback
+                        }
+                    }, 1000);
+                }
+                
+                // Store the item management info for later use
+                if (selectedItem) {
+                    selectedItem.isSerialManaged = isSerialManaged;
+                    selectedItem.onHandQuantity = onHandQuantity;
+                    selectedItem.manSerNum = itemData.ManSerNum;
+                }
+            } else {
+                // Handle API error - show warning but allow fallback
+                const errorMsg = response.error || 'Failed to check item requirements';
+                showAlert(`Warning: ${errorMsg}. Using fallback item detection.`, 'warning');
+                
+                // Fallback to heuristic approach
+                const isSerialManaged = itemCode.startsWith('S') || itemCode.includes('Serial');
+                if (isSerialManaged) {
+                    showSerialSection(true);
+                    showAlert(`Item ${itemCode} requires serial number validation (fallback detection)`, 'info');
+                } else {
+                    showSerialSection(false);
+                    showAlert(`Item ${itemCode} does not require serial numbers (fallback detection)`, 'info');
+                    updatePopulateButton();
+                }
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error checking item serial management:', error);
+            showAlert(`Error checking item requirements: ${error}. Using fallback item detection.`, 'warning');
+            
+            // Fallback to heuristic approach
+            const isSerialManaged = itemCode.startsWith('S') || itemCode.includes('Serial');
+            if (isSerialManaged) {
+                showSerialSection(true);
+                showAlert(`Item ${itemCode} requires serial number validation (fallback detection)`, 'info');
+            } else {
+                showSerialSection(false);
+                showAlert(`Item ${itemCode} does not require serial numbers (fallback detection)`, 'info');
+                updatePopulateButton();
+            }
+        }
+    });
 }
 
 function validateSerial() {
@@ -1001,6 +1220,224 @@ function populateLineItems() {
             }
         });
     }
+}
+
+// Missing function implementations to fix frontend wiring issues
+
+function updateStepProgress() {
+    // Update step progress indicators - this could be enhanced with actual visual indicators
+    console.log(`Current step: ${currentStep}`);
+}
+
+function resetItemSelection() {
+    selectedItem = null;
+    validatedSerials = [];
+    requiredQuantity = 1;
+    currentStep = 2;
+    
+    // Reset UI elements
+    $('#itemSelect').val('');
+    $('#selectedItemInfo').addClass('d-none');
+    $('#stepSection3').hide();
+    $('#quantityInput').val(1);
+    $('#serialNumberInput').val('');
+    $('#onHandQuantity').text('Not checked').removeClass().addClass('badge bg-secondary');
+    $('#serialNumberSection').addClass('d-none');
+    $('#validatedSerialsSection').addClass('d-none');
+    $('#populateLineItemsBtn').prop('disabled', true);
+    
+    updateStepProgress();
+    showAlert('Item selection reset', 'info');
+}
+
+function updateSerialProgress() {
+    const progress = `${validatedSerials.length} / ${requiredQuantity}`;
+    $('#serialProgress').text(progress);
+}
+
+function updateValidatedSerialsList() {
+    const tbody = $('#validatedSerialsTableBody');
+    tbody.empty();
+    
+    if (validatedSerials.length > 0) {
+        $('#validatedSerialsSection').removeClass('d-none');
+        
+        validatedSerials.forEach(function(serial, index) {
+            const row = $('<tr>');
+            const serialCell = $('<td>').append($('<span class="font-monospace">').text(serial.serialNumber));
+            const statusCell = $('<td>').append($('<span class="badge bg-success">').text('Validated'));
+            const actionCell = $('<td>').append(
+                $('<button type="button" class="btn btn-sm btn-outline-danger">')
+                .attr('onclick', `removeValidatedSerial(${index})`)
+                .append($('<i class="fas fa-trash">'))
+            );
+            row.append(serialCell).append(statusCell).append(actionCell);
+            tbody.append(row);
+        });
+    } else {
+        $('#validatedSerialsSection').addClass('d-none');
+    }
+}
+
+function removeValidatedSerial(index) {
+    if (index >= 0 && index < validatedSerials.length) {
+        const removed = validatedSerials.splice(index, 1);
+        updateValidatedSerialsList();
+        updateSerialProgress();
+        updatePopulateButton();
+        showAlert(`Removed serial number "${removed[0].serialNumber}"`, 'info');
+        $('#serialNumberInput').focus();
+    }
+}
+
+function displayOnHandQuantity(quantity) {
+    const badge = $('#onHandQuantity');
+    badge.text(quantity);
+    
+    // Update badge color based on quantity
+    badge.removeClass().addClass('badge');
+    if (quantity > 10) {
+        badge.addClass('bg-success');
+    } else if (quantity > 0) {
+        badge.addClass('bg-warning');
+    } else {
+        badge.addClass('bg-danger');
+    }
+}
+
+function autoPopulateNonSerialItem() {
+    if (!selectedItem || !selectedItem.onHandQuantity) {
+        showAlert('Cannot auto-populate: Item data not available', 'error');
+        return;
+    }
+    
+    if (requiredQuantity > selectedItem.onHandQuantity) {
+        showAlert(`Cannot auto-populate: Requested quantity (${requiredQuantity}) exceeds available stock (${selectedItem.onHandQuantity})`, 'warning');
+        updatePopulateButton(); // Enable manual button as fallback
+        return;
+    }
+    
+    // Auto-trigger the populate line items function for non-serial items
+    showAlert('Auto-populating line items for non-serial item...', 'info');
+    
+    $.ajax({
+        url: '/serial-item-transfer/{{ transfer.id }}/add_non_serial_item',
+        method: 'POST',
+        data: {
+            item_code: selectedItem.itemCode,
+            item_description: selectedItem.itemName,
+            quantity: requiredQuantity,
+            unit_of_measure: 'EA'
+        },
+        success: function(response) {
+            if (response.success) {
+                showAlert(`Successfully auto-populated ${requiredQuantity} quantity of ${selectedItem.itemCode}`, 'success');
+                setTimeout(function() {
+                    location.reload();
+                }, 1500);
+            } else {
+                showAlert(response.error || 'Error auto-populating non-serial item', 'error');
+                updatePopulateButton(); // Enable manual button as fallback
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error auto-populating non-serial item:', error);
+            showAlert('Error auto-populating non-serial item', 'error');
+            updatePopulateButton(); // Enable manual button as fallback
+        }
+    });
+}
+
+function removeItem(itemId) {
+    if (!confirm('Are you sure you want to remove this item from the transfer?')) {
+        return;
+    }
+    
+    $.ajax({
+        url: `/serial-item-transfer/{{ transfer.id }}/remove_item/${itemId}`,
+        method: 'POST',
+        success: function(response) {
+            if (response.success) {
+                showAlert('Item removed successfully', 'success');
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
+            } else {
+                showAlert(response.error || 'Error removing item', 'error');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error removing item:', error);
+            showAlert('Error removing item', 'error');
+        }
+    });
+}
+
+function submitTransfer() {
+    if (!confirm('Are you sure you want to submit this transfer for QC approval?')) {
+        return;
+    }
+    
+    $.ajax({
+        url: '/serial-item-transfer/{{ transfer.id }}/submit',
+        method: 'POST',
+        success: function(response) {
+            if (response.success) {
+                showAlert('Transfer submitted for QC approval successfully', 'success');
+                setTimeout(function() {
+                    location.reload();
+                }, 1500);
+            } else {
+                showAlert(response.error || 'Error submitting transfer', 'error');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error submitting transfer:', error);
+            showAlert('Error submitting transfer', 'error');
+        }
+    });
+}
+
+function showAlert(message, type) {
+    // Create or get alert container
+    let alertContainer = $('#alertContainer');
+    if (alertContainer.length === 0) {
+        alertContainer = $('<div id="alertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;"></div>');
+        $('body').append(alertContainer);
+    }
+    
+    // Map alert types to Bootstrap classes
+    const alertClasses = {
+        'success': 'alert-success',
+        'error': 'alert-danger',
+        'warning': 'alert-warning',
+        'info': 'alert-info'
+    };
+    
+    const alertClass = alertClasses[type] || 'alert-info';
+    
+    // Create alert element
+    const alertId = 'alert-' + Date.now();
+    const alertElement = $(`
+        <div id="${alertId}" class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            <strong>${type.charAt(0).toUpperCase() + type.slice(1)}:</strong> ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `);
+    
+    // Add to container
+    alertContainer.append(alertElement);
+    
+    // Auto-remove after 5 seconds (except for errors which stay longer)
+    const timeout = type === 'error' ? 8000 : 5000;
+    setTimeout(function() {
+        $(`#${alertId}`).fadeOut(function() {
+            $(this).remove();
+        });
+    }, timeout);
+    
+    // Also log to console for debugging
+    console.log(`${type.toUpperCase()}: ${message}`);
 }
 
 </script>

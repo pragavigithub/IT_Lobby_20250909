@@ -278,6 +278,39 @@ def add_non_serial_item(transfer_id):
         except ValueError:
             return jsonify({'success': False, 'error': 'Invalid quantity format'}), 400
 
+        # Server-side validation: Check SAP B1 for ManSerNum and OnHand quantity
+        sap = SAPIntegration()
+        try:
+            quantity_check_result = sap.get_item_quantity_check(transfer.from_warehouse, item_code)
+            
+            if quantity_check_result.get('success') and not quantity_check_result.get('offline_mode'):
+                item_data = quantity_check_result.get('data', {})
+                man_ser_num = item_data.get('ManSerNum', 'N')
+                on_hand_quantity = float(item_data.get('OnHand', 0))
+                
+                # Validate that item is NOT serial managed (ManSerNum = 'N')
+                if man_ser_num == 'Y':
+                    return jsonify({
+                        'success': False, 
+                        'error': f'Item {item_code} is serial managed and requires serial number validation. Use the serial item flow instead.'
+                    }), 400
+                
+                # Validate that requested quantity does not exceed available stock
+                if quantity > on_hand_quantity:
+                    return jsonify({
+                        'success': False, 
+                        'error': f'Requested quantity ({quantity}) exceeds available stock ({on_hand_quantity}) for item {item_code} in warehouse {transfer.from_warehouse}'
+                    }), 400
+                    
+                logging.info(f"Server-side validation passed for {item_code}: ManSerNum={man_ser_num}, OnHand={on_hand_quantity}, Requested={quantity}")
+            else:
+                # In offline mode or on error, log warning but allow the operation
+                logging.warning(f"Could not validate item {item_code} against SAP B1 - proceeding with caution: {quantity_check_result.get('error', 'Offline mode')}")
+                
+        except Exception as e:
+            # Log the error but don't fail the operation - SAP connectivity issues shouldn't block workflow
+            logging.warning(f"SAP validation failed for item {item_code}, proceeding with local validation: {str(e)}")
+
         # Check if this item is already added as a non-serial item in this transfer
         existing_item = SerialItemTransferItem.query.filter_by(
             serial_item_transfer_id=transfer.id,
@@ -976,6 +1009,54 @@ def post_to_sap(transfer_id):
     except Exception as e:
         logging.error(f"Error posting serial item transfer to SAP: {str(e)}")
         db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@serial_item_bp.route('/api/check-item-quantity', methods=['POST'])
+@login_required
+def check_item_quantity():
+    """
+    Check item quantity and serial management info from SAP B1
+    Uses the Quantity_Check SQL query to get ItemCode, ManSerNum, OnHand
+    """
+    try:
+        # Get request data
+        data = request.get_json()
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+        
+        warehouse_code = data.get('warehouse_code', '').strip()
+        item_code = data.get('item_code', '').strip()
+        
+        if not warehouse_code:
+            return jsonify({'success': False, 'error': 'Warehouse code is required'}), 400
+        
+        if not item_code:
+            return jsonify({'success': False, 'error': 'Item code is required'}), 400
+        
+        # Call SAP B1 integration
+        sap = SAPIntegration()
+        result = sap.get_item_quantity_check(warehouse_code, item_code)
+        
+        logging.info(f"Item quantity check for {item_code} in warehouse {warehouse_code}: {result}")
+        
+        if result.get('success'):
+            return jsonify({
+                'success': True,
+                'data': result['data'],
+                'offline_mode': result.get('offline_mode', False),
+                'sql_text': result.get('sql_text', ''),
+                'warehouse_code': result.get('warehouse_code', warehouse_code)
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': result.get('error', 'Failed to check item quantity'),
+                'offline_mode': result.get('offline_mode', False)
+            }), 400
+            
+    except Exception as e:
+        logging.error(f"Error in check_item_quantity API: {str(e)}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 

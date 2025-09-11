@@ -3219,6 +3219,91 @@ class SAPIntegration:
                 'error': f'Error validating serial: {str(e)}'
             }
 
+    def get_item_quantity_check(self, warehouse_code, item_code):
+        """
+        Get item quantity and serial management info from SAP B1 using Quantity_Check SQL query
+        Returns: ItemCode, ManSerNum, OnHand
+        """
+        if not self.ensure_logged_in():
+            # Return mock data for offline mode
+            return {
+                'success': True,
+                'offline_mode': True,
+                'data': {
+                    'ItemCode': item_code,
+                    'ManSerNum': 'Y' if item_code.startswith('S') else 'N',  # Fallback heuristic
+                    'OnHand': 100.0
+                }
+            }
+
+        try:
+            # Use the exact SQL query as specified by the user
+            url = f"{self.base_url}/b1s/v1/SQLQueries('Quantity_Check')/List"
+            
+            # Build request body with warehouse and item code parameters
+            request_body = {
+                "ParamList": f"whCode='{warehouse_code}'&itemCode='{item_code}'"
+            }
+            
+            logging.info(f"Calling SAP B1 Quantity_Check for item {item_code} in warehouse {warehouse_code}")
+            logging.info(f"Request URL: {url}")
+            logging.info(f"Request Body: {request_body}")
+            
+            response = self.session.post(url, json=request_body, timeout=30)
+            
+            if response.status_code == 200:
+                data = response.json()
+                logging.info(f"SAP B1 Quantity_Check response received")
+                
+                # Extract the results from the response
+                values = data.get('value', [])
+                if values and len(values) > 0:
+                    item_data = values[0]  # Get first result
+                    
+                    result = {
+                        'success': True,
+                        'offline_mode': False,
+                        'data': {
+                            'ItemCode': item_data.get('ItemCode', item_code),
+                            'ManSerNum': item_data.get('ManSerNum', 'N'),
+                            'OnHand': float(item_data.get('OnHand', 0.0))
+                        },
+                        'sql_text': data.get('SqlText', ''),
+                        'warehouse_code': warehouse_code
+                    }
+                    
+                    logging.info(f"Item {item_code}: ManSerNum={result['data']['ManSerNum']}, OnHand={result['data']['OnHand']}")
+                    return result
+                else:
+                    # No results found - item may not exist in this warehouse
+                    logging.warning(f"No data found for item {item_code} in warehouse {warehouse_code}")
+                    return {
+                        'success': False,
+                        'error': f'Item {item_code} not found in warehouse {warehouse_code} or has no stock',
+                        'offline_mode': False
+                    }
+            else:
+                logging.error(f"SAP B1 Quantity_Check failed: {response.status_code} - {response.text}")
+                return {
+                    'success': False,
+                    'error': f'SAP API error: {response.status_code}',
+                    'offline_mode': False
+                }
+                
+        except Exception as e:
+            logging.error(f"Error calling SAP B1 Quantity_Check: {str(e)}")
+            # Return mock data on error
+            return {
+                'success': True,
+                'offline_mode': True,
+                'data': {
+                    'ItemCode': item_code,
+                    'ManSerNum': 'Y' if item_code.startswith('S') else 'N',  # Fallback heuristic
+                    'OnHand': 100.0
+                },
+                'error': str(e)
+            }
+
     def logout(self):
         """Logout from SAP B1"""
         if self.session_id:
