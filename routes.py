@@ -4439,3 +4439,49 @@ def preview_grpo_json(grpo_id):
         import traceback
         logging.error(f"🔍 Full traceback: {traceback.format_exc()}")
         return jsonify({'success': False, 'error': str(e)})
+
+
+# New API endpoints for Serial Item Transfer module as per specification
+@app.route('/api/get-items-by-warehouse', methods=['GET'])
+def get_items_by_warehouse():
+    """Get items available in specified warehouse using SAP B1 SQLQueries('Get_Item')/List"""
+    try:
+        warehouse_code = request.args.get('warehouse_code')
+        
+        if not warehouse_code:
+            return jsonify({'success': False, 'error': 'Warehouse code is required'}), 400
+        
+        sap = SAPIntegration()
+        result = sap.get_items_by_warehouse(warehouse_code)
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logging.error(f"Error in get_items_by_warehouse API: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/validate-serial-number', methods=['POST'])
+def validate_serial_number():
+    """Validate serial number using SAP B1 SQLQueries('Series_Validation')/List"""
+    try:
+        data = request.get_json()
+        
+        warehouse_code = data.get('warehouse_code')
+        serial_number = data.get('serial_number')
+        item_code = data.get('item_code')
+        
+        if not all([warehouse_code, serial_number, item_code]):
+            return jsonify({
+                'success': False, 
+                'error': 'Warehouse code, serial number, and item code are required'
+            }), 400
+        
+        sap = SAPIntegration()
+        result = sap.validate_serial_number(warehouse_code, serial_number, item_code)
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logging.error(f"Error in validate_serial_number API: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
