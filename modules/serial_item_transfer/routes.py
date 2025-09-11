@@ -285,7 +285,7 @@ def add_non_serial_item(transfer_id):
             
             if quantity_check_result.get('success') and not quantity_check_result.get('offline_mode'):
                 item_data = quantity_check_result.get('data', {})
-                man_ser_num = item_data.get('ManSerNum', 'N')
+                man_ser_num = item_data.get('ManSerNum')
                 on_hand_quantity = float(item_data.get('OnHand', 0))
                 
                 # Validate that item is NOT serial managed (ManSerNum = 'N')
