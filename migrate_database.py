@@ -13,7 +13,7 @@ from datetime import datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Import application modules
-from credential_loader import load_credentials
+from credential_loader import load_credentials_from_json, get_credential
 import pymysql
 
 def setup_logging():
@@ -34,7 +34,7 @@ def get_database_connection():
     
     try:
         # Load credentials
-        creds = load_credentials()
+        creds = load_credentials_from_json()
         
         # Use MySQL credentials from JSON file
         connection = pymysql.connect(
