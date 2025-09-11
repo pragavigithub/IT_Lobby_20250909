@@ -5,11 +5,11 @@
 <div class="container-fluid">
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 text-gray-800"><i data-feather="list"></i>Serial Item Transfer {{ transfer.transfer_number }}
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-exchange-alt"></i> Serial Item Transfer {{ transfer.transfer_number }}
         </h1>
         <div>
-            {% if transfer.status == 'draft' and (transfer.user_id == current_user.id or current_user.role in ['admin',
-            'manager']) %}
+            {% if transfer.status == 'draft' and (transfer.user_id == current_user.id or current_user.role in ['admin', 'manager']) %}
             <button type="button" class="btn btn-success" onclick="submitTransfer()">
                 <i class="fas fa-paper-plane"></i> Submit for QC
             </button>
@@ -25,8 +25,7 @@
         <div class="col-12">
             {% if transfer.status == 'draft' %}
             <div class="alert alert-secondary">
-                <i class="fas fa-edit"></i> This transfer is in <strong>Draft</strong> status. You can add/remove items
-                and submit for QC approval.
+                <i class="fas fa-edit"></i> This transfer is in <strong>Draft</strong> status. Follow the 5-step process to add items and submit for QC approval.
             </div>
             {% elif transfer.status == 'submitted' %}
             <div class="alert alert-warning">
@@ -34,8 +33,7 @@
             </div>
             {% elif transfer.status == 'qc_approved' %}
             <div class="alert alert-success">
-                <i class="fas fa-check-circle"></i> This transfer has been <strong>QC Approved</strong> and is ready for
-                posting.
+                <i class="fas fa-check-circle"></i> This transfer has been <strong>QC Approved</strong> and is ready for posting.
             </div>
             {% elif transfer.status == 'posted' %}
             <div class="alert alert-primary">
@@ -50,1348 +48,732 @@
             </div>
             {% endif %}
         </div>
-        <!-- Transfer Details -->
+    </div>
+
+    <!-- Transfer Details -->
+    <div class="row mb-4">
         <div class="col-md-6">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="mb-0">Transfer Details</h6>
+                    <h6 class="mb-0 font-weight-bold text-primary">Transfer Details</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-6">
                             <p><strong>Transfer Number:</strong><br>{{ transfer.transfer_number }}</p>
                         </div>
-
                         <div class="col-sm-6">
-                            <p><strong>Status:</strong></p>
-                            {% if transfer.status == 'draft' %}
-                            <span class="badge bg-secondary">Draft</span>
-                            {% elif transfer.status == 'submitted' %}
-                            <span class="badge bg-warning">Submitted</span>
-                            {% elif transfer.status == 'qc_approved' %}
-                            <span class="badge bg-success">QC Approved</span>
-                            {% elif transfer.status == 'posted' %}
-                            <span class="badge bg-primary">Posted</span>
-                            {% elif transfer.status == 'rejected' %}
-                            <span class="badge bg-danger">Rejected</span>
-                            {% endif %}
-                        </div>
-                        <!--                        <div class="col-sm-6">-->
-                        <!--                            <p><strong>From Warehouse:</strong></p>-->
-                        <!--                            <span class="badge bg-info">{{ transfer.from_warehouse }}</span>-->
-                        <!--                        </div>-->
-                        <!--                        <div class="col-sm-6">-->
-                        <!--                            <p><strong>To Warehouse:</strong></p>-->
-                        <!--                            <span class="badge bg-info">{{ transfer.to_warehouse }}</span>-->
-                        <!--                        </div>-->
-                        <div class="col-sm-6">
-                            <p><strong>Priority:</strong></p>
-
-                            {% if transfer.priority == 'urgent' %}
-                            <span class="badge bg-danger">Urgent</span>
-                            {% elif transfer.priority == 'high' %}
-                            <span class="badge bg-warning">High</span>
-                            {% elif transfer.priority == 'normal' %}
-                            <span class="badge bg-info">Normal</span>
-                            {% else %}
-                            <span class="badge bg-secondary">Low</span>
-                            {% endif %}
-
+                            <p><strong>Status:</strong><br>
+                                {% if transfer.status == 'draft' %}
+                                <span class="badge bg-secondary">Draft</span>
+                                {% elif transfer.status == 'submitted' %}
+                                <span class="badge bg-warning">Submitted</span>
+                                {% elif transfer.status == 'qc_approved' %}
+                                <span class="badge bg-success">QC Approved</span>
+                                {% elif transfer.status == 'posted' %}
+                                <span class="badge bg-primary">Posted</span>
+                                {% elif transfer.status == 'rejected' %}
+                                <span class="badge bg-danger">Rejected</span>
+                                {% endif %}
+                            </p>
                         </div>
                         <div class="col-sm-6">
-                            <p><strong>Total Items:</strong></p>
-                            <span class="badge bg-primary">{{ transfer.items|length }}</span>
+                            <p><strong>From Warehouse:</strong><br>
+                                <span class="badge bg-info">{{ transfer.from_warehouse }}</span>
+                            </p>
                         </div>
                         <div class="col-sm-6">
-                            <p><strong>Created By:</strong></p>
-                            <span class="badge bg-primary">{{ transfer.user.username }}</span>
+                            <p><strong>To Warehouse:</strong><br>
+                                <span class="badge bg-info">{{ transfer.to_warehouse }}</span>
+                            </p>
                         </div>
                         <div class="col-sm-6">
-                            <p><strong>Created Date:</strong></p>
-                            <span class="badge bg-primary">{{ transfer.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                            <p><strong>Priority:</strong><br>
+                                {% if transfer.priority == 'urgent' %}
+                                <span class="badge bg-danger">Urgent</span>
+                                {% elif transfer.priority == 'high' %}
+                                <span class="badge bg-warning">High</span>
+                                {% elif transfer.priority == 'normal' %}
+                                <span class="badge bg-info">Normal</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Low</span>
+                                {% endif %}
+                            </p>
                         </div>
-                        <!--                        {% if transfer.sap_document_number %}-->
-                        <!--                        <div class="col-sm-6">-->
-                        <!--                            <p><strong>SAP Document Number:</strong></p>-->
-                        <!--                            <span class="badge bg-success">{{ transfer.sap_document_number }}</span>-->
-                        <!--                        </div>-->
-                        <!--                        {% endif %}-->
+                        <div class="col-sm-6">
+                            <p><strong>Total Items:</strong><br>
+                                <span class="badge bg-primary">{{ transfer.items|length }}</span>
+                            </p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p><strong>Created By:</strong><br>{{ transfer.user.username }}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p><strong>Created Date:</strong><br>{{ transfer.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                        </div>
                         {% if transfer.notes %}
-                        <div class="col-sm-6">
-                            <p><strong>Notes:</strong></p>
-                            <span class="badge bg-primary">{{ transfer.notes }}</span>
+                        <div class="col-12">
+                            <p><strong>Notes:</strong><br>{{ transfer.notes }}</p>
                         </div>
                         {% endif %}
-                        </table>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="col-md-6">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="mb-0">SAP B1 Details</h6>
+                    <h6 class="mb-0 font-weight-bold text-info">5-Step Process Guide</h6>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        {% if transfer.sap_document_number %}
-                        <div class="col-sm-6">
-                            <p><strong>SAP Document Number:</strong></p>
-                            <span class="badge bg-success">{{ transfer.sap_document_number }}</span>
+                    <div class="step-guide">
+                        <div class="step-item">
+                            <span class="step-number completed">1</span>
+                            <span class="step-text">Select Warehouses ✓</span>
                         </div>
-                        {% endif %}
-                        <!--                        <div class="col-sm-6">-->
-                        <!--                            <p><strong>Transfer Number:</strong><br>{{ transfer.transfer_number }}</p>-->
-                        <!--                        </div>-->
-
-                        <div class="col-sm-6">
-                            <p><strong>Status:</strong></p>
-                            {% if transfer.status == 'draft' %}
-                            <span class="badge bg-secondary">Draft</span>
-                            {% elif transfer.status == 'submitted' %}
-                            <span class="badge bg-warning">Submitted</span>
-                            {% elif transfer.status == 'qc_approved' %}
-                            <span class="badge bg-success">QC Approved</span>
-                            {% elif transfer.status == 'posted' %}
-                            <span class="badge bg-primary">Posted</span>
-                            {% elif transfer.status == 'rejected' %}
-                            <span class="badge bg-danger">Rejected</span>
-                            {% endif %}
+                        <div class="step-item" id="step2">
+                            <span class="step-number">2</span>
+                            <span class="step-text">Select Item</span>
                         </div>
-                        <div class="col-sm-6">
-                            <p><strong>From Warehouse:</strong></p>
-                            <span class="badge bg-info">{{ transfer.from_warehouse }}</span>
+                        <div class="step-item" id="step3">
+                            <span class="step-number">3</span>
+                            <span class="step-text">Enter Quantity & Validate Serials</span>
                         </div>
-                        <div class="col-sm-6">
-                            <p><strong>To Warehouse:</strong></p>
-                            <span class="badge bg-info">{{ transfer.to_warehouse }}</span>
+                        <div class="step-item" id="step4">
+                            <span class="step-number">4</span>
+                            <span class="step-text">Populate Line Items</span>
                         </div>
-                        <div class="col-sm-6">
-                            <p><strong>Total Items:</strong></p>
-                            <span class="badge bg-primary">{{ transfer.items|length }}</span>
+                        <div class="step-item" id="step5">
+                            <span class="step-number">5</span>
+                            <span class="step-text">Submit Transaction</span>
                         </div>
-                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <!-- Add Serial Item Form -->
-            {% if transfer.status == 'draft' and (transfer.user_id == current_user.id or current_user.role in
-            ['admin', 'manager']) %}
 
+    <!-- 5-Step Workflow Section -->
+    {% if transfer.status == 'draft' and (transfer.user_id == current_user.id or current_user.role in ['admin', 'manager']) %}
+    <div class="row mb-4">
+        <div class="col-12">
             <div class="card shadow">
-                <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0">Add Items to Transfer</h6>
-                    <button type="button" class="btn btn-sm btn-outline-info" onclick="loadWarehouseItems()">
-                        <i class="fas fa-refresh"></i> Load Items
-                    </button>
+                <div class="card-header py-3">
+                    <h6 class="mb-0 font-weight-bold text-primary">Add Items to Transfer</h6>
                 </div>
                 <div class="card-body">
-                    <!-- Step 1: Item Selection -->
-                    <div class="alert alert-info alert-sm">
-                        <small>
-                            <i class="fas fa-info-circle"></i>
-                            <strong>Step 1:</strong> Choose Item Name and Quantity → 
-                            <strong>Step 2:</strong> Scan serials for serial items OR confirm quantity for non-serial items
-                        </small>
-                    </div>
-
-                    <!-- Item Selection Form -->
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label">Item Name <span class="text-danger">*</span></label>
-                            <select class="form-select" id="itemNameSelect" onchange="onItemSelected()">
-                                <option value="">Choose Item Name...</option>
-                            </select>
-                            <small class="text-muted">Items from warehouse: {{ transfer.from_warehouse }}</small>
+                    
+                    <!-- Step 2: Select Item -->
+                    <div class="step-section" id="stepSection2">
+                        <h5 class="text-primary mb-3">
+                            <span class="badge bg-primary me-2">2</span>Select Item
+                        </h5>
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <label for="itemSelect" class="form-label">Item Code <span class="text-danger">*</span></label>
+                                <select class="form-select" id="itemSelect" onchange="onItemSelected()">
+                                    <option value="">Select Item Code...</option>
+                                </select>
+                                <div class="form-text">Items available in warehouse: {{ transfer.from_warehouse }}</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">&nbsp;</label>
+                                <button type="button" class="btn btn-outline-primary w-100" onclick="loadItems()">
+                                    <i class="fas fa-refresh"></i> Load Items
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Expected Quantity <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="expectedQuantity" min="1" value="1">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">&nbsp;</label>
-                            <button type="button" class="btn btn-primary w-100" onclick="addSelectedItem()">
-                                <i class="fas fa-plus"></i> Add Item
-                            </button>
+                        <div id="selectedItemInfo" class="alert alert-info d-none">
+                            <strong>Selected Item:</strong> <span id="selectedItemCode"></span> - <span id="selectedItemName"></span>
                         </div>
                     </div>
 
-                    <!-- Selected Items Queue -->
-                    <div id="selectedItemsQueue" style="display: none;">
-                        <h6 class="mb-3">Selected Items Queue</h6>
-                        <div class="table-responsive mb-4">
-                            <table class="table table-sm table-bordered" id="selectedItemsTable">
-                                <thead class="table-light">
-                                <tr>
-                                    <th>Item Code</th>
-                                    <th>Item Name</th>
-                                    <th>Expected Qty</th>
-                                    <th>Scanned/Confirmed</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                                </thead>
-                                <tbody id="selectedItemsTableBody">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <hr>
 
-                    <!-- Step 2: Serial Scanning or Quantity Entry -->
-                    <div id="scanningSection" style="display: none;">
-                        <div class="alert alert-warning">
-                            <strong>Step 2:</strong> Scanning for item: <span id="currentItemName"></span>
-                            <br><small>Expected quantity: <span id="currentExpectedQty"></span></small>
-                        </div>
-
-                        <!-- Serial Item Scanning -->
-                        <div id="serialScanningMode" style="display: none;">
-                            <div class="row mb-3">
-                                <div class="col-md-8">
-                                    <label class="form-label">Scan Serial Numbers</label>
-                                    <input type="text" class="form-control" id="serialScanInput" 
-                                           placeholder="Scan or enter serial number and press Enter">
+                    <!-- Step 3: Enter Quantity & Validate Serial Numbers -->
+                    <div class="step-section" id="stepSection3" style="display: none;">
+                        <h5 class="text-primary mb-3">
+                            <span class="badge bg-primary me-2">3</span>Enter Quantity & Validate Serial Numbers
+                        </h5>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="quantityInput" class="form-label">Quantity <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="quantityInput" min="1" value="1" onchange="onQuantityChanged()">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-text">
+                                    <span id="serialRequiredText" class="d-none">
+                                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                                        This item requires serial number validation. Please enter serial numbers below.
+                                    </span>
+                                    <span id="serialNotRequiredText" class="d-none">
+                                        <i class="fas fa-info-circle text-info"></i>
+                                        This item does not require serial numbers. Quantity will be validated against available stock.
+                                    </span>
                                 </div>
-                                <div class="col-md-4">
+                            </div>
+                        </div>
+
+                        <!-- Serial Number Entry Section -->
+                        <div id="serialNumberSection" class="d-none">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="serialNumberInput" class="form-label">Serial Number</label>
+                                    <input type="text" class="form-control" id="serialNumberInput" placeholder="Enter serial number">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">&nbsp;</label>
+                                    <button type="button" class="btn btn-primary w-100" onclick="validateSerial()">
+                                        <i class="fas fa-check"></i> Validate
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
                                     <label class="form-label">Progress</label>
-                                    <div class="progress">
-                                        <div class="progress-bar" id="serialProgress" style="width: 0%">0/0</div>
+                                    <div class="form-control-plaintext">
+                                        <span id="serialProgress">0 / 0</span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Non-Serial Item Confirmation -->
-                        <div id="quantityConfirmMode" style="display: none;">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Confirm Quantity</label>
-                                    <input type="number" class="form-control" id="confirmedQuantity" min="1">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">&nbsp;</label>
-                                    <button type="button" class="btn btn-success w-100" onclick="confirmQuantity()">
-                                        <i class="fas fa-check"></i> Confirm Quantity
-                                    </button>
+                            <!-- Validated Serials List -->
+                            <div id="validatedSerialsSection" class="d-none">
+                                <h6>Validated Serial Numbers</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Serial Number</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="validatedSerialsTableBody">
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Scanning Results -->
-                        <div id="scanningResults">
-                            <div class="table-responsive">
-                                <table class="table table-sm table-bordered" id="scanningResultsTable">
-                                    <thead class="table-dark">
-                                    <tr>
-                                        <th>Serial Number</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="scanningResultsTableBody">
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <button type="button" class="btn btn-outline-secondary" onclick="cancelCurrentScanning()">
-                                <i class="fas fa-times"></i> Cancel
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-secondary" onclick="resetItemSelection()">
+                                <i class="fas fa-undo"></i> Reset
                             </button>
-                            <button type="button" class="btn btn-success" onclick="completeCurrentItem()" id="completeItemBtn" style="display: none;">
-                                <i class="fas fa-check-circle"></i> Complete Item
+                            <button type="button" class="btn btn-success" id="populateLineItemsBtn" onclick="populateLineItems()" disabled>
+                                <i class="fas fa-plus"></i> Populate Line Items
                             </button>
                         </div>
                     </div>
+
                 </div>
             </div>
-            {% endif %}
         </div>
     </div>
+    {% endif %}
 
-
-    <div class="row-col-4">
-        <!-- Serial Items List -->
-        <div class="card shadow">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="mb-0">Serial Items</h6>
-                <div>
-                    <span class="badge bg-primary me-2">{{ transfer.items|length }} items</span>
+    <!-- Step 4: Line Items Display -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 font-weight-bold text-primary">
+                        <span class="badge bg-primary me-2">4</span>Transfer Line Items
+                    </h6>
+                    <span class="badge bg-info">{{ transfer.items|length }} item(s)</span>
                 </div>
-            </div>
-            <div class="card-body">
-                {% if transfer.items %}
-                <div class="table-responsive">
-                    <table class="table table-bordered table-sm" id="serialItemsTable"
-                           style="font-size: 0.9rem;">
-                        <thead class="table-dark">
-                        <tr>
-                            <th style="width: 60px;">Line</th>
-                            <th style="width: 140px;">Serial Number</th>
-                            <th style="width: 120px;">Item Code</th>
-                            <th style="width: 200px;">Item Description</th>
-                            <th style="width: 90px;">From WH</th>
-                            <th style="width: 90px;">To WH</th>
-                            <th style="width: 90px;">Validation</th>
-                            <th style="width: 50px;">Qty</th>
-                            {% if transfer.status == 'draft' and (transfer.user_id == current_user.id or
-                            current_user.role in ['admin', 'manager']) %}
-                            <th style="width: 120px;">Actions</th>
-                            {% endif %}
-                        </tr>
-                        </thead>
-                        <tbody id="serialItemsTableBody">
-                        {% for item in transfer.items %}
-                        <tr>
-                            <td class="text-center align-middle">
-                                <span class="badge bg-secondary fs-6">{{ loop.index }}</span>
-                            </td>
-                            <td class="align-middle">
-                                <code class="text-primary fw-bold">{{ item.serial_number }}</code>
-                                {% if transfer.items|selectattr("serial_number", "equalto",
-                                item.serial_number)|list|length > 1 %}
-                                <i class="fas fa-exclamation-triangle text-warning ms-1"
-                                   title="Duplicate serial number"></i>
-                                {% endif %}
-                            </td>
-                            <td class="align-middle">
-                                <span class="fw-semibold">{{ item.item_code }}</span>
-                            </td>
-                            <td class="align-middle">
-                                <small>{{ item.item_description }}</small>
-                            </td>
-                            <td class="align-middle">
-                                <span class="badge bg-info text-dark">{{ item.from_warehouse_code }}</span>
-                            </td>
-                            <td class="align-middle">
-                                <span class="badge bg-success">{{ item.to_warehouse_code }}</span>
-                            </td>
-                            <td class="align-middle">
-                                {% if item.validation_status == 'validated' %}
-                                <span class="badge bg-success">
-                                                <i class="fas fa-check"></i> Valid
-                                            </span>
-                                {% elif item.validation_status == 'failed' %}
-                                <span class="badge bg-danger">
-                                                <i class="fas fa-times"></i> Failed
-                                            </span>
-                                {% else %}
-                                <span class="badge bg-warning text-dark">
-                                                <i class="fas fa-clock"></i> Pending
-                                            </span>
-                                {% endif %}
-                            </td>
-                            <td class="text-center align-middle">{{ item.quantity }}</td>
-                            {% if transfer.status == 'draft' and (transfer.user_id == current_user.id or
-                            current_user.role in ['admin', 'manager']) %}
-                            <td class="align-middle">
-                                <div class="btn-group" role="group">
-                                    {% if item.validation_status == 'failed' %}
-                                    <button type="button" class="btn btn-sm btn-outline-warning"
-                                            onclick="revalidateItem({{ item.id }})"
-                                            title="{{ item.validation_error }}">
-                                        <i class="fas fa-redo">update</i>
-                                    </button>
+                <div class="card-body">
+                    {% if transfer.items %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Serial Number</th>
+                                    <th>Item Code</th>
+                                    <th>Item Description</th>
+                                    <th>From Warehouse</th>
+                                    <th>To Warehouse</th>
+                                    <th>Quantity</th>
+                                    <th>Validation Status</th>
+                                    {% if transfer.status == 'draft' and (transfer.user_id == current_user.id or current_user.role in ['admin', 'manager']) %}
+                                    <th>Actions</th>
                                     {% endif %}
-                                    <button type="button" class="btn btn-sm btn-outline-danger"
-                                            onclick="deleteItem({{ item.id }}, '{{ item.serial_number }}')">
-                                        <i class="fas fa-trash">Delete</i>
-                                    </button>
-                                </div>
-                            </td>
-                            {% endif %}
-                        </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Duplicate Items Alert -->
-                {% set duplicate_items = [] %}
-                {% for serial, items in transfer.items|groupby('serial_number') %}
-                {% if items|list|length > 1 %}
-                {% set _ = duplicate_items.append((serial, items|list)) %}
-                {% endif %}
-                {% endfor %}
-                {% if duplicate_items %}
-                <div class="alert alert-warning mt-3">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <strong>Duplicate Serial Numbers Found:</strong>
-                    <ul class="mb-0 mt-2">
-                        {% for serial, items in duplicate_items %}
-                        <li><code>{{ serial }}</code> appears {{ items|length }} times</li>
-                        {% endfor %}
-                    </ul>
-                    <small class="d-block mt-2">Please review and delete unwanted duplicates before
-                        submitting.</small>
-                </div>
-                {% endif %}
-
-                <!-- Summary -->
-                <div class="row mt-3">
-                    <div class="col-md-4">
-                        <div class="card bg-success text-white">
-                            <div class="card-body text-center">
-                                <h5>{{ transfer.items|selectattr("validation_status", "equalto",
-                                    "validated")|list|length }}</h5>
-                                <small>Validated Items</small>
-                            </div>
-                        </div>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in transfer.items %}
+                                <tr>
+                                    <td>
+                                        {% if item.serial_number %}
+                                            <span class="font-monospace">{{ item.serial_number }}</span>
+                                        {% else %}
+                                            <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    <td><strong>{{ item.item_code }}</strong></td>
+                                    <td>{{ item.item_description }}</td>
+                                    <td><span class="badge bg-info">{{ item.from_warehouse_code }}</span></td>
+                                    <td><span class="badge bg-success">{{ item.to_warehouse_code }}</span></td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>
+                                        {% if item.validation_status == 'validated' %}
+                                            <span class="badge bg-success">Validated</span>
+                                        {% elif item.validation_status == 'failed' %}
+                                            <span class="badge bg-danger">Failed</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    {% if transfer.status == 'draft' and (transfer.user_id == current_user.id or current_user.role in ['admin', 'manager']) %}
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeItem({{ item.id }})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="col-md-4">
-                        <div class="card bg-danger text-white">
-                            <div class="card-body text-center">
-                                <h5>{{ transfer.items|selectattr("validation_status", "equalto",
-                                    "failed")|list|length }}</h5>
-                                <small>Failed Items</small>
-                            </div>
-                        </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No items added to this transfer yet.</p>
+                        {% if transfer.status == 'draft' %}
+                        <p class="text-muted">Use the form above to add items following the 5-step process.</p>
+                        {% endif %}
                     </div>
-                    <div class="col-md-4">
-                        <div class="card bg-primary text-white">
-                            <div class="card-body text-center">
-                                <h5>{{ transfer.items|length }}</h5>
-                                <small>Total Items</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="d-flex justify-content-end gap-2">
-                            {% if transfer.status == 'draft' and (transfer.user_id == current_user.id or
-                            current_user.role in ['admin', 'manager']) %}
-                            <button type="button" class="btn btn-primary" onclick="submitTransfer()">
-                                <i class="fas fa-paper-plane"></i> Submit for QC Approval
-                            </button>
-                            {% elif transfer.status == 'qc_approved' %}
-                            <div class="alert alert-info mb-0">
-                                <i class="fas fa-info-circle"></i>
-                                Transfer is QC approved. SAP posting is available from the QC Dashboard.
-                                <a href="{{ url_for('qc_dashboard') }}"
-                                   class="btn btn-sm btn-outline-primary ms-2">
-                                    <i class="fas fa-external-link-alt"></i> Go to QC Dashboard
-                                </a>
-                            </div>
-                            {% elif transfer.status == 'posted' %}
-                            <div class="alert alert-success mb-0">
-                                <i class="fas fa-check-circle"></i>
-                                Transfer posted to SAP B1
-                                {% if transfer.sap_document_number %}
-                                - Document Number: <strong>{{ transfer.sap_document_number }}</strong>
-                                {% endif %}
-                            </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                {% else %}
-                <div class="text-center py-4">
-                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">No serial items added yet.</p>
-                    {% if transfer.status == 'draft' and (transfer.user_id == current_user.id or
-                    current_user.role in ['admin', 'manager']) %}
-                    <p class="text-muted">Use the form on the left to add serial items.</p>
                     {% endif %}
                 </div>
-
             </div>
-
         </div>
-        {% endif %}
     </div>
-</div>
 
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    let lineCounter = 1;
-    let validatedSerials = [];
-    let bulkValidationResults = {};
+// Global variables
+let selectedItem = null;
+let validatedSerials = [];
+let requiredQuantity = 1;
+let currentStep = 2;
 
-    $(document).ready(function() {
-        setupSerialInputHandlers();
+$(document).ready(function() {
+    // Load items on page load
+    loadItems();
+    
+    // Initialize step display
+    updateStepProgress();
+});
 
-        // Focus on first input
-        $('.serial-input[data-line="1"]').focus();
-
-        // Set default mode
-        toggleBulkMode(false);
-    });
-
-<!--    function setupSerialInputHandlers() {-->
-<!--        // Handle Tab and Enter key navigation-->
-<!--        $(document).on('keydown', '.serial-input', function(e) {-->
-<!--            const currentLine = parseInt($(this).data('line'));-->
-
-<!--            if (e.key === 'Tab' || e.key === 'Enter') {-->
-<!--                e.preventDefault();-->
-
-<!--                const serialNumber = $(this).val().trim();-->
-<!--                if (serialNumber) {-->
-<!--                    validateAndProcessSerial(currentLine, serialNumber);-->
-<!--                } else {-->
-<!--                    // Move to next line even if empty-->
-<!--                    addNewLineIfNeeded(currentLine + 1);-->
-<!--                    focusLine(currentLine + 1);-->
-<!--                }-->
-<!--            }-->
-<!--        });-->
-
-<!--        // Handle focus out event for validation-->
-<!--        $(document).on('blur', '.serial-input', function() {-->
-<!--            const currentLine = parseInt($(this).data('line'));-->
-<!--            const serialNumber = $(this).val().trim();-->
-
-<!--            if (serialNumber) {-->
-<!--                validateAndProcessSerial(currentLine, serialNumber);-->
-<!--            }-->
-<!--        });-->
-<!--    }-->
-
-function setupSerialInputHandlers() {
-    // Handle input event with 2-second delay for automatic validation
-    $(document).on('input', '.serial-input', function() {
-        const currentLine = parseInt($(this).data('line'));
-        const serialNumber = $(this).val().trim();
-
-        if (serialNumber) {
-            console.log(`🔍 Serial number input detected on line ${currentLine}: ${serialNumber}`);
-            const inputElement = $(this);
-            const feedbackArea = inputElement.siblings('.feedback-area');
-
-            // Show loading state
-            feedbackArea.html('<small class="text-warning"><i class="fas fa-spinner fa-spin"></i> Validating...</small>');
-            inputElement.prop('disabled', true);
-
-            // Delay validation by 2 seconds
-            setTimeout(() => {
-                validateAndProcessSerial(currentLine, serialNumber);
-            }, 2000); // 2-second delay
-        }
-    });
-
-    // Handle focus out event as a fallback (optional)
-    $(document).on('blur', '.serial-input', function() {
-        const currentLine = parseInt($(this).data('line'));
-        const serialNumber = $(this).val().trim();
-
-        if (serialNumber && !$(this).prop('disabled')) {
-            validateAndProcessSerial(currentLine, serialNumber);
+function loadItems() {
+    const warehouseCode = '{{ transfer.from_warehouse }}';
+    
+    $.ajax({
+        url: '/api/get-items-by-warehouse',
+        method: 'GET',
+        data: { warehouse_code: warehouseCode },
+        success: function(response) {
+            if (response.success && response.items) {
+                const itemSelect = $('#itemSelect');
+                itemSelect.find('option:not(:first)').remove();
+                
+                response.items.forEach(function(item) {
+                    const option = $('<option>', {
+                        value: item.ItemCode,
+                        text: item.ItemCode + ' - ' + item.itemName,
+                        'data-item-name': item.itemName
+                    });
+                    itemSelect.append(option);
+                });
+                
+                showAlert('Items loaded successfully', 'success');
+            } else {
+                showAlert('Failed to load items', 'error');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error loading items:', error);
+            showAlert('Error loading items: ' + error, 'error');
         }
     });
 }
 
-    function validateAndProcessSerial(lineNumber, serialNumber) {
-        if (!serialNumber) return;
+function onItemSelected() {
+    const itemSelect = $('#itemSelect');
+    const selectedOption = itemSelect.find('option:selected');
+    
+    if (selectedOption.val()) {
+        selectedItem = {
+            itemCode: selectedOption.val(),
+            itemName: selectedOption.data('item-name')
+        };
+        
+        $('#selectedItemCode').text(selectedItem.itemCode);
+        $('#selectedItemName').text(selectedItem.itemName);
+        $('#selectedItemInfo').removeClass('d-none');
+        
+        // Move to step 3
+        currentStep = 3;
+        updateStepProgress();
+        $('#stepSection3').show();
+        
+        // TODO: Check if item is serial managed
+        // For now, assume all items are serial managed
+        showSerialSection(true);
+        
+    } else {
+        selectedItem = null;
+        $('#selectedItemInfo').addClass('d-none');
+        $('#stepSection3').hide();
+        currentStep = 2;
+        updateStepProgress();
+    }
+}
 
-        const inputElement = $(`.serial-input[data-line="${lineNumber}"]`);
-        const feedbackArea = inputElement.siblings('.feedback-area');
+function onQuantityChanged() {
+    requiredQuantity = parseInt($('#quantityInput').val()) || 1;
+    validatedSerials = [];
+    updateSerialProgress();
+    updatePopulateButton();
+}
 
-        // Show loading state
-        feedbackArea.html('<small class="text-warning"><i class="fas fa-spinner fa-spin"></i> Validating...</small>');
-        inputElement.prop('disabled', true);
+function showSerialSection(isSerialManaged) {
+    if (isSerialManaged) {
+        $('#serialRequiredText').removeClass('d-none');
+        $('#serialNotRequiredText').addClass('d-none');
+        $('#serialNumberSection').removeClass('d-none');
+    } else {
+        $('#serialRequiredText').addClass('d-none');
+        $('#serialNotRequiredText').removeClass('d-none');
+        $('#serialNumberSection').addClass('d-none');
+    }
+}
 
-        // Use add_serial_item endpoint for immediate line creation
-        $.ajax({
-            url: '{{ url_for("serial_item_transfer.add_serial_item", transfer_id=transfer.id) }}',
+function validateSerial() {
+    const serialNumber = $('#serialNumberInput').val().trim();
+    
+    if (!serialNumber) {
+        showAlert('Please enter a serial number', 'error');
+        return;
+    }
+    
+    if (!selectedItem) {
+        showAlert('Please select an item first', 'error');
+        return;
+    }
+    
+    // Check if serial already validated
+    if (validatedSerials.find(s => s.serialNumber === serialNumber)) {
+        showAlert('Serial number already validated', 'error');
+        return;
+    }
+    
+    const data = {
+        warehouse_code: '{{ transfer.from_warehouse }}',
+        serial_number: serialNumber,
+        item_code: selectedItem.itemCode
+    };
+    
+    $.ajax({
+        url: '/api/validate-serial-number',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function(response) {
+            if (response.success && response.valid) {
+                // Add to validated serials
+                validatedSerials.push({
+                    serialNumber: serialNumber,
+                    itemCode: selectedItem.itemCode,
+                    status: 'validated'
+                });
+                
+                // Clear input
+                $('#serialNumberInput').val('');
+                
+                // Update UI
+                updateValidatedSerialsList();
+                updateSerialProgress();
+                updatePopulateButton();
+                
+                showAlert('Serial number validated successfully', 'success');
+                
+                // If we have enough serials, enable populate button
+                if (validatedSerials.length >= requiredQuantity) {
+                    showAlert('All required serial numbers validated!', 'success');
+                }
+                
+            } else {
+                showAlert(response.error || 'Serial number validation failed', 'error');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error validating serial:', error);
+            showAlert('Error validating serial number: ' + error, 'error');
+        }
+    });
+}
+
+function updateValidatedSerialsList() {
+    const tbody = $('#validatedSerialsTableBody');
+    tbody.empty();
+    
+    if (validatedSerials.length > 0) {
+        $('#validatedSerialsSection').removeClass('d-none');
+        
+        validatedSerials.forEach(function(serial, index) {
+            const row = $(`
+                <tr>
+                    <td><span class="font-monospace">${serial.serialNumber}</span></td>
+                    <td><span class="badge bg-success">Validated</span></td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeValidatedSerial(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+            tbody.append(row);
+        });
+    } else {
+        $('#validatedSerialsSection').addClass('d-none');
+    }
+}
+
+function removeValidatedSerial(index) {
+    validatedSerials.splice(index, 1);
+    updateValidatedSerialsList();
+    updateSerialProgress();
+    updatePopulateButton();
+}
+
+function updateSerialProgress() {
+    $('#serialProgress').text(validatedSerials.length + ' / ' + requiredQuantity);
+}
+
+function updatePopulateButton() {
+    const canPopulate = selectedItem && (validatedSerials.length >= requiredQuantity);
+    $('#populateLineItemsBtn').prop('disabled', !canPopulate);
+}
+
+function populateLineItems() {
+    if (!selectedItem || validatedSerials.length < requiredQuantity) {
+        showAlert('Please validate all required serial numbers first', 'error');
+        return;
+    }
+    
+    // Create line items based on validated serials
+    const promises = validatedSerials.map(function(serial) {
+        return $.ajax({
+            url: '/serial-item-transfer/{{ transfer.id }}/add_serial_item',
             method: 'POST',
             data: {
-                serial_number: serialNumber
-            },
-            success: function(response) {
-                if (response.success && response.item_added) {
-                    // Show success feedback
-                    feedbackArea.html(`
-                        <small class="text-success">
-                            <i class="fas fa-check"></i> Added - ${response.item_data.item_code} | ${response.item_data.item_description}
-                        </small>
-                    `);
-
-                    // Mark input as valid
-                    inputElement.removeClass('is-invalid').addClass('is-valid').prop('disabled', true);
-
-                    // Add row to table immediately
-                    addRowToTable(response.item_data);
-
-                    // Update summary counters
-                    updateSummaryCounters();
-
-                    // Move to next line
-                    addNewLineIfNeeded(lineNumber + 1);
-                    focusLine(lineNumber + 1);
-
-                } else {
-                    // Show error feedback
-                    feedbackArea.html(`
-                        <small class="text-danger">
-                            <i class="fas fa-times"></i> ${response.error}
-                        </small>
-                    `);
-                    inputElement.removeClass('is-valid').addClass('is-invalid').prop('disabled', false);
-                }
-            },
-            error: function(xhr) {
-                const response = xhr.responseJSON;
-
-                     // Invalid serial numbers are now rejected and not added to database
-            // Show error feedback and allow user to correct the input
-            feedbackArea.html(`
-                <small class="text-danger">
-                    <i class="fas fa-times"></i> ${response ? response.error : 'Invalid serial number - not added to transfer'}
-                </small>
-            `);
-
-            // Clear input and allow correction
-            inputElement.removeClass('is-valid').addClass('is-invalid').prop('disabled', false).val('').focus();
+                serial_number: serial.serialNumber,
+                expected_item_code: selectedItem.itemCode
             }
         });
+    });
+    
+    Promise.all(promises)
+        .then(function(responses) {
+            const successCount = responses.filter(r => r.success).length;
+            if (successCount === validatedSerials.length) {
+                showAlert(`Successfully added ${successCount} line items`, 'success');
+                // Refresh page to show new items
+                setTimeout(function() {
+                    location.reload();
+                }, 1500);
+            } else {
+                showAlert(`Added ${successCount} of ${validatedSerials.length} items. Some items failed.`, 'warning');
+                setTimeout(function() {
+                    location.reload();
+                }, 2000);
+            }
+        })
+        .catch(function(error) {
+            console.error('Error populating line items:', error);
+            showAlert('Error adding line items', 'error');
+        });
+}
+
+function resetItemSelection() {
+    selectedItem = null;
+    validatedSerials = [];
+    requiredQuantity = 1;
+    currentStep = 2;
+    
+    $('#itemSelect').val('');
+    $('#quantityInput').val('1');
+    $('#serialNumberInput').val('');
+    $('#selectedItemInfo').addClass('d-none');
+    $('#stepSection3').hide();
+    $('#validatedSerialsSection').addClass('d-none');
+    
+    updateStepProgress();
+    updatePopulateButton();
+}
+
+function updateStepProgress() {
+    // Reset all steps
+    $('.step-item').removeClass('completed current');
+    $('.step-number').removeClass('completed');
+    
+    // Mark completed steps
+    for (let i = 1; i <= Math.min(currentStep - 1, 5); i++) {
+        $(`#step${i}, .step-item:nth-child(${i})`).addClass('completed');
+        $(`#step${i} .step-number, .step-item:nth-child(${i}) .step-number`).addClass('completed');
     }
-
-    function addNewLineIfNeeded(lineNumber) {
-        if ($(`.serial-input-row[data-line="${lineNumber}"]`).length === 0) {
-            const newRow = `
-                <div class="row mb-2 serial-input-row" data-line="${lineNumber}">
-                    <div class="col-2">
-                        <label class="form-label small text-muted">Line ${lineNumber}</label>
-                        <div class="badge bg-secondary w-100">${lineNumber}</div>
-                    </div>
-                    <div class="col-10">
-                        <label class="form-label small text-muted">Serial Number</label>
-                        <input type="text" class="form-control serial-input" data-line="${lineNumber}"
-                               placeholder="Enter serial number and press Tab/Enter" autocomplete="off">
-                        <div class="feedback-area mt-1" style="min-height: 20px;">
-                            <!-- Validation feedback will appear here -->
-                        </div>
-                    </div>
-                </div>
-            `;
-            $('#serialInputGrid').append(newRow);
-            lineCounter = Math.max(lineCounter, lineNumber);
-        }
+    
+    // Mark current step
+    if (currentStep <= 5) {
+        $(`#step${currentStep}, .step-item:nth-child(${currentStep})`).addClass('current');
     }
+}
 
-    function focusLine(lineNumber) {
-        setTimeout(() => {
-            $(`.serial-input[data-line="${lineNumber}"]`).focus();
-        }, 100);
-    }
-
-    function clearAllInputs() {
-        if (confirm('Clear all inputs? This will remove all unsaved serial numbers.')) {
-            $('#serialInputGrid').html(`
-                <div class="row mb-2 serial-input-row" data-line="1">
-                    <div class="col-2">
-                        <label class="form-label small text-muted">Line 1</label>
-                        <div class="badge bg-secondary w-100">1</div>
-                    </div>
-                    <div class="col-10">
-                        <label class="form-label small text-muted">Serial Number</label>
-                        <input type="text" class="form-control serial-input" data-line="1"
-                               placeholder="Enter serial number and press Tab/Enter" autocomplete="off">
-                        <div class="feedback-area mt-1" style="min-height: 20px;">
-                            <!-- Validation feedback will appear here -->
-                        </div>
-                    </div>
-                </div>
-            `);
-            lineCounter = 1;
-            validatedSerials = [];
-            $('.serial-input[data-line="1"]').focus();
-        }
-    }
-
-    // Live table update functions
-    function addRowToTable(itemData) {
-        // Remove "no items" message if present
-        if ($('#serialItemsTable tbody tr').length === 0 || $('#serialItemsTable tbody tr').first().find('td').length === 1) {
-            $('#serialItemsTable tbody').empty();
-        }
-
-        const validationBadge = itemData.validation_status === 'validated'
-            ? '<span class="badge bg-success"><i class="fas fa-check"></i> Valid</span>'
-            : '<span class="badge bg-danger"><i class="fas fa-times"></i> Failed</span>';
-
-        const actionsCell = `{% if transfer.status == 'draft' and (transfer.user_id == current_user.id or current_user.role in ['admin', 'manager']) %}
-            <td>
-                ${itemData.validation_status === 'failed' ?
-                    `<button type="button" class="btn btn-sm btn-outline-warning" onclick="revalidateItem(${itemData.id})" title="${itemData.validation_error}">
-                        <i class="fas fa-redo"></i> Retry
-                    </button>` : ''}
-                <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteItem(${itemData.id}, '${itemData.serial_number}')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        {% endif %}`;
-
-        const newRow = `
-            <tr id="item-row-${itemData.id}">
-                <td class="text-center">
-                    <span class="badge bg-secondary">${itemData.line_number}</span>
-                </td>
-                <td><code>${itemData.serial_number}</code></td>
-                <td>${itemData.item_code}</td>
-                <td>${itemData.item_description}</td>
-                <td><span class="badge bg-info">${itemData.from_warehouse_code}</span></td>
-                <td><span class="badge bg-success">${itemData.to_warehouse_code}</span></td>
-                <td>${validationBadge}</td>
-                <td>${itemData.quantity}</td>
-                ${actionsCell}
-            </tr>
-        `;
-
-        $('#serialItemsTableBody').append(newRow);
-    }
-
-    function updateSummaryCounters() {
-        // This would require getting updated counts - for now just trigger a refresh
-        // In a more sophisticated implementation, we'd track counts in JavaScript
-        setTimeout(() => {
-            location.reload();
-        }, 100);
-    }
-
-    function submitAllValidatedSerials() {
-        // This function is now obsolete since we're doing immediate adding
-        // But keeping for compatibility
-        showAlert('Items are added immediately upon validation. Use "Submit for QC" to submit the transfer.', 'info');
-    }
-
-    function deleteItem(itemId, serialNumber) {
-        if (!confirm(`Are you sure you want to delete serial item ${serialNumber}?`)) {
-            return;
-        }
-
+function removeItem(itemId) {
+    if (confirm('Are you sure you want to remove this item?')) {
         $.ajax({
             url: `/serial-item-transfer/items/${itemId}/delete`,
             method: 'POST',
             success: function(response) {
                 if (response.success) {
-                    showAlert(response.message, 'success');
-                    setTimeout(() => location.reload(), 1000);
+                    showAlert('Item removed successfully', 'success');
+                    location.reload();
                 } else {
-                    showAlert(response.error, 'error');
+                    showAlert(response.error || 'Error removing item', 'error');
                 }
             },
-            error: function(xhr) {
-                const response = xhr.responseJSON;
-                showAlert(response ? response.error : 'Error deleting serial item', 'error');
+            error: function(xhr, status, error) {
+                console.error('Error removing item:', error);
+                showAlert('Error removing item', 'error');
             }
         });
     }
+}
 
-    function revalidateItem(itemId) {
+function submitTransfer() {
+    if (confirm('Are you sure you want to submit this transfer for QC approval?')) {
         $.ajax({
-            url: `/serial-item-transfer/items/${itemId}/revalidate`,
+            url: '/serial-item-transfer/{{ transfer.id }}/submit',
             method: 'POST',
             success: function(response) {
                 if (response.success) {
-                    showAlert(response.message, 'success');
-                    setTimeout(() => location.reload(), 1000);
+                    showAlert('Transfer submitted successfully!', 'success');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
                 } else {
-                    showAlert(response.error, 'error');
+                    showAlert(response.error || 'Error submitting transfer', 'error');
                 }
             },
-            error: function(xhr) {
-                const response = xhr.responseJSON;
-                showAlert(response ? response.error : 'Error revalidating serial item', 'error');
+            error: function(xhr, status, error) {
+                console.error('Error submitting transfer:', error);
+                showAlert('Error submitting transfer', 'error');
             }
         });
     }
+}
 
-    function submitTransfer() {
-        const validatedCount = {{ transfer.items|selectattr("validation_status", "equalto", "validated")|list|length }};
-        const failedCount = {{ transfer.items|selectattr("validation_status", "equalto", "failed")|list|length }};
-        const totalCount = {{ transfer.items|length }};
+function showAlert(message, type) {
+    const alertClass = type === 'error' ? 'alert-danger' : 
+                      type === 'warning' ? 'alert-warning' : 
+                      type === 'success' ? 'alert-success' : 'alert-info';
+    
+    const alert = $(`
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `);
+    
+    $('.container-fluid').prepend(alert);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(function() {
+        alert.alert('close');
+    }, 5000);
+}
 
-        if (totalCount === 0) {
-            showAlert('Cannot submit transfer without items', 'error');
-            return;
-        }
-
-        if (failedCount > 0) {
-            showAlert(`Cannot submit transfer with ${failedCount} failed validation items`, 'error');
-            return;
-        }
-
-        if (!confirm(`Submit transfer with ${validatedCount} validated items for QC approval?`)) {
-            return;
-        }
-
-        $.ajax({
-            url: '{{ url_for("serial_item_transfer.submit_transfer", transfer_id=transfer.id) }}',
-            method: 'POST',
-            success: function(response) {
-                if (response.success) {
-                    showAlert(response.message, 'success');
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    showAlert(response.error, 'error');
-                }
-            },
-            error: function(xhr) {
-                const response = xhr.responseJSON;
-                showAlert(response ? response.error : 'Error submitting transfer', 'error');
-            }
-        });
-    }
-
-    function postToSAP() {
-        if (!confirm('Post this approved transfer to SAP B1? This action creates a stock transfer in SAP.')) {
-            return;
-        }
-
-        // Show loading state
-        const button = $('button[onclick="postToSAP()"]');
-        const originalText = button.html();
-        button.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Posting to SAP...');
-
-        $.ajax({
-            url: '{{ url_for("serial_item_transfer.post_to_sap", transfer_id=transfer.id) }}',
-            method: 'POST',
-            success: function(response) {
-                if (response.success) {
-                    showAlert(`✅ Successfully posted to SAP B1! Document Number: ${response.sap_document_number}`, 'success');
-                    setTimeout(() => location.reload(), 2000);
-                } else {
-                    showAlert(`❌ SAP posting failed: ${response.error}`, 'error');
-                    button.prop('disabled', false).html(originalText);
-                }
-            },
-            error: function(xhr) {
-                const response = xhr.responseJSON;
-                showAlert(response ? response.error : 'Error posting to SAP B1', 'error');
-                button.prop('disabled', false).html(originalText);
-            }
-        });
-    }
-
-    function showAlert(message, type) {
-        const alertClass = type === 'error' ? 'alert-danger' :
-                          type === 'warning' ? 'alert-warning' :
-                          type === 'success' ? 'alert-success' : 'alert-info';
-
-        const alert = `
-            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `;
-
-        $('.container-fluid').prepend(alert);
-
-        // Auto-dismiss after 5 seconds
-        setTimeout(function() {
-            $('.alert').alert('close');
-        }, 5000);
-    }
-
-    // New Item Selection Workflow Functions
-    let warehouseItems = [];
-    let selectedItemsQueue = [];
-    let currentItemBeingScanned = null;
-    let currentScannedSerials = [];
-
-    function loadWarehouseItems() {
-        const warehouseCode = '{{ transfer.from_warehouse }}';
-        
-        $.ajax({
-            url: '{{ url_for("serial_item_transfer.get_warehouse_items", transfer_id=transfer.id) }}',
-            method: 'POST',
-            data: { warehouse_code: warehouseCode },
-            beforeSend: function() {
-                $('#itemNameSelect').prop('disabled', true).html('<option>Loading items...</option>');
-            },
-            success: function(response) {
-                if (response.success) {
-                    warehouseItems = response.items;
-                    populateItemDropdown();
-                    showAlert(`Loaded ${warehouseItems.length} items from warehouse ${warehouseCode}`, 'success');
-                } else {
-                    showAlert(`Failed to load items: ${response.error}`, 'error');
-                    $('#itemNameSelect').prop('disabled', false).html('<option value="">Choose Item Name...</option>');
-                }
-            },
-            error: function(xhr) {
-                const response = xhr.responseJSON;
-                showAlert(response ? response.error : 'Error loading warehouse items', 'error');
-                $('#itemNameSelect').prop('disabled', false).html('<option value="">Choose Item Name...</option>');
-            }
-        });
-    }
-
-    function populateItemDropdown() {
-        const select = $('#itemNameSelect');
-        select.empty().append('<option value="">Choose Item Name...</option>');
-        
-        warehouseItems.forEach(item => {
-            select.append(`<option value="${item.item_code}" data-name="${item.item_name}">${item.item_name} (${item.item_code})</option>`);
-        });
-        
-        select.prop('disabled', false);
-    }
-
-    function onItemSelected() {
-        const selectedCode = $('#itemNameSelect').val();
-        const expectedQty = $('#expectedQuantity').val();
-        
-        if (selectedCode && expectedQty && parseInt(expectedQty) > 0) {
-            $('#expectedQuantity').removeClass('is-invalid');
-        } else {
-            $('#expectedQuantity').addClass('is-invalid');
-        }
-    }
-
-    function addSelectedItem() {
-        const selectedCode = $('#itemNameSelect').val();
-        const selectedName = $('#itemNameSelect option:selected').data('name');
-        const expectedQty = parseInt($('#expectedQuantity').val());
-        
-        if (!selectedCode) {
-            showAlert('Please select an item name', 'error');
-            return;
-        }
-        
-        if (!expectedQty || expectedQty < 1) {
-            showAlert('Please enter a valid quantity', 'error');
-            $('#expectedQuantity').addClass('is-invalid');
-            return;
-        }
-        
-        // Check if item already in queue
-        const existingItem = selectedItemsQueue.find(item => item.item_code === selectedCode);
-        if (existingItem) {
-            showAlert('Item already in queue', 'error');
-            return;
-        }
-        
-        // Add to queue
-        const queueItem = {
-            item_code: selectedCode,
-            item_name: selectedName,
-            expected_qty: expectedQty,
-            scanned_qty: 0,
-            status: 'pending',
-            is_serial: true // Assume serial for now, can be enhanced later
-        };
-        
-        selectedItemsQueue.push(queueItem);
-        updateSelectedItemsTable();
-        
-        // Reset form
-        $('#itemNameSelect').val('');
-        $('#expectedQuantity').val('1');
-        
-        showAlert(`Added ${selectedName} (Qty: ${expectedQty}) to queue`, 'success');
-    }
-
-    function updateSelectedItemsTable() {
-        const tbody = $('#selectedItemsTableBody');
-        tbody.empty();
-        
-        if (selectedItemsQueue.length === 0) {
-            $('#selectedItemsQueue').hide();
-            return;
-        }
-        
-        $('#selectedItemsQueue').show();
-        
-        selectedItemsQueue.forEach((item, index) => {
-            const statusBadge = item.status === 'completed' ? 'bg-success' : 
-                               item.status === 'in_progress' ? 'bg-warning' : 'bg-secondary';
-            
-            const row = `
-                <tr>
-                    <td>${item.item_code}</td>
-                    <td>${item.item_name}</td>
-                    <td>${item.expected_qty}</td>
-                    <td>${item.scanned_qty}</td>
-                    <td><span class="badge ${statusBadge}">${item.status}</span></td>
-                    <td>
-                        ${item.status === 'pending' ? 
-                            `<button class="btn btn-sm btn-primary" onclick="startScanning(${index})">
-                                <i class="fas fa-barcode"></i> Start
-                            </button>` : ''
-                        }
-                        <button class="btn btn-sm btn-outline-danger" onclick="removeFromQueue(${index})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-            tbody.append(row);
-        });
-    }
-
-    function removeFromQueue(index) {
-        const item = selectedItemsQueue[index];
-        if (confirm(`Remove ${item.item_name} from queue?`)) {
-            selectedItemsQueue.splice(index, 1);
-            updateSelectedItemsTable();
-            showAlert('Item removed from queue', 'success');
-        }
-    }
-
-    function startScanning(index) {
-        const item = selectedItemsQueue[index];
-        currentItemBeingScanned = item;
-        currentScannedSerials = [];
-        
-        // Update status
-        item.status = 'in_progress';
-        updateSelectedItemsTable();
-        
-        // Show scanning section
-        $('#currentItemName').text(item.item_name);
-        $('#currentExpectedQty').text(item.expected_qty);
-        
-        if (item.is_serial) {
-            $('#serialScanningMode').show();
-            $('#quantityConfirmMode').hide();
-            $('#serialScanInput').focus();
-        } else {
-            $('#serialScanningMode').hide();
-            $('#quantityConfirmMode').show();
-            $('#confirmedQuantity').val(item.expected_qty).focus();
-        }
-        
-        $('#scanningSection').show();
-        updateScanningProgress();
-    }
-
-    function updateScanningProgress() {
-        if (!currentItemBeingScanned) return;
-        
-        const progress = (currentScannedSerials.length / currentItemBeingScanned.expected_qty) * 100;
-        $('#serialProgress').css('width', `${progress}%`)
-                           .text(`${currentScannedSerials.length}/${currentItemBeingScanned.expected_qty}`);
-        
-        if (currentScannedSerials.length >= currentItemBeingScanned.expected_qty) {
-            $('#completeItemBtn').show();
-        }
-    }
-
-    // Handle serial number scanning
-    $('#serialScanInput').on('keypress', function(e) {
-        if (e.which === 13) { // Enter key
-            const serialNumber = $(this).val().trim();
-            if (serialNumber) {
-                scanSerial(serialNumber);
-                $(this).val('');
-            }
-        }
-    });
-
-    function scanSerial(serialNumber) {
-        if (!currentItemBeingScanned) return;
-        
-        // Check for duplicates
-        if (currentScannedSerials.some(s => s.serial === serialNumber)) {
-            showAlert('Serial number already scanned', 'error');
-            return;
-        }
-        
-        // Add to scanned list (validate later against SAP)
-        const scannedSerial = {
-            serial: serialNumber,
-            status: 'scanned',
-            item_code: currentItemBeingScanned.item_code
-        };
-        
-        currentScannedSerials.push(scannedSerial);
-        updateScanningResults();
-        updateScanningProgress();
-        
-        // Update queue item
-        currentItemBeingScanned.scanned_qty = currentScannedSerials.length;
-        updateSelectedItemsTable();
-    }
-
-    function updateScanningResults() {
-        const tbody = $('#scanningResultsTableBody');
-        tbody.empty();
-        
-        currentScannedSerials.forEach((serial, index) => {
-            const row = `
-                <tr>
-                    <td><code>${serial.serial}</code></td>
-                    <td><span class="badge bg-primary">${serial.status}</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-danger" onclick="removeScannedSerial(${index})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-            tbody.append(row);
-        });
-    }
-
-    function removeScannedSerial(index) {
-        currentScannedSerials.splice(index, 1);
-        updateScanningResults();
-        updateScanningProgress();
-        
-        if (currentItemBeingScanned) {
-            currentItemBeingScanned.scanned_qty = currentScannedSerials.length;
-            updateSelectedItemsTable();
-        }
-    }
-
-    function confirmQuantity() {
-        const confirmedQty = parseInt($('#confirmedQuantity').val());
-        if (!confirmedQty || confirmedQty < 1) {
-            showAlert('Please enter a valid quantity', 'error');
-            return;
-        }
-        
-        if (currentItemBeingScanned) {
-            currentItemBeingScanned.scanned_qty = confirmedQty;
-            updateSelectedItemsTable();
-            $('#completeItemBtn').show();
-        }
-    }
-
-    function completeCurrentItem() {
-        if (!currentItemBeingScanned) return;
-        
-        if (currentItemBeingScanned.is_serial && currentScannedSerials.length !== currentItemBeingScanned.expected_qty) {
-            showAlert('Please scan all required serial numbers', 'error');
-            return;
-        }
-        
-        // Mark as completed
-        currentItemBeingScanned.status = 'completed';
-        updateSelectedItemsTable();
-        
-        // Hide scanning section
-        $('#scanningSection').hide();
-        
-        // Reset current scanning state
-        currentItemBeingScanned = null;
-        currentScannedSerials = [];
-        
-        showAlert('Item completed successfully', 'success');
-        
-        // TODO: Submit to backend
-        // For now, just show success message
-    }
-
-    function cancelCurrentScanning() {
-        if (currentItemBeingScanned) {
-            currentItemBeingScanned.status = 'pending';
-            currentItemBeingScanned.scanned_qty = 0;
-            updateSelectedItemsTable();
-        }
-        
-        $('#scanningSection').hide();
-        currentItemBeingScanned = null;
-        currentScannedSerials = [];
-    }
-
-    // Load items on page load
-    $(document).ready(function() {
-        loadWarehouseItems();
-    });
-
-    // Bulk Mode Functions
-    function toggleBulkMode(isBulk) {
-        if (isBulk) {
-            $('#bulkMode').show();
-            $('#lineByLineMode').hide();
-            $('#serialInputGrid').hide();
-            $('#bulkModeBtn').removeClass('btn-outline-primary').addClass('btn-primary');
-            $('#lineByLineBtn').removeClass('btn-primary').addClass('btn-outline-primary');
-        } else {
-            $('#bulkMode').hide();
-            $('#lineByLineMode').show();
-            $('#serialInputGrid').show();
-            $('#lineByLineBtn').removeClass('btn-outline-primary').addClass('btn-primary');
-            $('#bulkModeBtn').removeClass('btn-primary').addClass('btn-outline-primary');
-        }
-    }
-
-    function validateBulkSerials() {
-        const serialText = $('#bulkSerialNumbers').val().trim();
-        const itemCode = $('#expectedItemCode').val().trim();
-        
-        if (!serialText) {
-            showAlert('Please enter serial numbers', 'error');
-            return;
-        }
-
-        const serialNumbers = serialText.split('\n')
-            .map(s => s.trim())
-            .filter(s => s.length > 0);
-
-        if (serialNumbers.length === 0) {
-            showAlert('No valid serial numbers found', 'error');
-            return;
-        }
-
-        if (serialNumbers.length > 2000) {
-            showAlert(`Too many serial numbers (${serialNumbers.length}). Maximum is 2000.`, 'error');
-            return;
-        }
-
-        // Show loading state
-        const validateBtn = $('button[onclick="validateBulkSerials()"]');
-        validateBtn.html('<i class="fas fa-spinner fa-spin"></i> Validating...').prop('disabled', true);
-
-        // Validate all serials using the batch validation endpoint
-        $.ajax({
-            url: '{{ url_for("inventory_transfer.validate_batch_serials") }}',
-            method: 'POST',
-            data: {
-                serial_numbers: JSON.stringify(serialNumbers),
-                item_code: itemCode || '',
-                warehouse_code: '{{ transfer.from_warehouse }}'
-            },
-            success: function(response) {
-                bulkValidationResults = response;
-                displayBulkValidationResults(response, serialNumbers.length);
-                validateBtn.html('<i class="fas fa-check-circle"></i> Validate All Serials').prop('disabled', false);
-            },
-            error: function(xhr) {
-                const response = xhr.responseJSON;
-                showAlert(response ? response.error : 'Error validating serials', 'error');
-                validateBtn.html('<i class="fas fa-check-circle"></i> Validate All Serials').prop('disabled', false);
-            }
-        });
-    }
-
-    function displayBulkValidationResults(results, totalCount) {
-        const validCount = Object.values(results).filter(r => r.valid).length;
-        const invalidCount = totalCount - validCount;
-
-        // Update summary with proper styling matching your system
-        const summaryHtml = `
-            <div class="col-md-4">
-                <div class="card bg-primary text-white">
-                    <div class="card-body text-center">
-                        <h5>${totalCount}</h5>
-                        <small>Total Serials</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card bg-success text-white">
-                    <div class="card-body text-center">
-                        <h5>${validCount}</h5>
-                        <small>Valid Serials</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card bg-danger text-white">
-                    <div class="card-body text-center">
-                        <h5>${invalidCount}</h5>
-                        <small>Invalid Serials</small>
-                    </div>
-                </div>
-            </div>
-        `;
-        $('#bulkValidationSummary').html(summaryHtml);
-
-        // Show detailed results (first 100 for performance)
-        let detailsHtml = `
-            <table class="table table-sm table-bordered">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Serial Number</th>
-                        <th>Status</th>
-                        <th>Item Code</th>
-                        <th>Error</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        let count = 0;
-        for (const [serial, result] of Object.entries(results)) {
-            if (count >= 100) {
-                detailsHtml += `<tr><td colspan="4" class="text-center text-muted">... and ${Object.keys(results).length - 100} more results</td></tr>`;
-                break;
-            }
-            
-            const statusBadge = result.valid 
-                ? '<span class="badge bg-success">Valid</span>'
-                : '<span class="badge bg-danger">Invalid</span>';
-            
-            detailsHtml += `
-                <tr>
-                    <td><code>${serial}</code></td>
-                    <td>${statusBadge}</td>
-                    <td>${result.ItemCode || ''}</td>
-                    <td><small class="text-danger">${result.error || ''}</small></td>
-                </tr>
-            `;
-            count++;
-        }
-
-        detailsHtml += '</tbody></table>';
-        $('#bulkValidationDetails').html(detailsHtml);
-        $('#bulkValidationResults').show();
-
-        // Show add button if there are valid serials
-        if (validCount > 0) {
-            $('#addValidatedBtn').show();
-        }
-    }
-
-    function addValidatedSerialsToTransfer() {
-        const validSerials = [];
-        
-        for (const [serial, result] of Object.entries(bulkValidationResults)) {
-            if (result.valid) {
-                validSerials.push({
-                    serial_number: serial,
-                    item_code: result.ItemCode || '',
-                    item_description: result.item_description || '',
-                    warehouse_code: result.WhsCode || '{{ transfer.from_warehouse }}'
-                });
-            }
-        }
-
-        if (validSerials.length === 0) {
-            showAlert('No valid serials to add', 'error');
-            return;
-        }
-
-        // Show loading state
-        const addBtn = $('#addValidatedBtn');
-        addBtn.html('<i class="fas fa-spinner fa-spin"></i> Adding...').prop('disabled', true);
-
-        // Add all valid serials
-        $.ajax({
-            url: '{{ url_for("serial_item_transfer.add_multiple_serials", transfer_id=transfer.id) }}',
-            method: 'POST',
-            data: {
-                validated_serials: JSON.stringify(validSerials)
-            },
-            success: function(response) {
-                if (response.success) {
-                    showAlert(`Successfully added ${validSerials.length} valid serial items!`, 'success');
-                    setTimeout(() => location.reload(), 1500);
-                } else {
-                    showAlert(response.error || 'Error adding serials', 'error');
-                    addBtn.html('<i class="fas fa-plus-circle"></i> Add Valid Serials to Transfer').prop('disabled', false);
-                }
-            },
-            error: function(xhr) {
-                const response = xhr.responseJSON;
-                showAlert(response ? response.error : 'Error adding serials', 'error');
-                addBtn.html('<i class="fas fa-plus-circle"></i> Add Valid Serials to Transfer').prop('disabled', false);
-            }
-        });
-    }
 </script>
+
+<style>
+.step-guide {
+    padding: 1rem 0;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.3s ease;
+}
+
+.step-item.current {
+    background-color: #e3f2fd;
+    border-left: 4px solid #2196f3;
+}
+
+.step-item.completed {
+    background-color: #e8f5e8;
+    border-left: 4px solid #4caf50;
+}
+
+.step-number {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+}
+
+.step-number.completed {
+    background-color: #4caf50;
+    color: white;
+}
+
+.step-item.current .step-number {
+    background-color: #2196f3;
+    color: white;
+}
+
+.step-text {
+    font-weight: 500;
+    color: #333;
+}
+
+.step-item.completed .step-text {
+    color: #2e7d32;
+}
+
+.step-item.current .step-text {
+    color: #1976d2;
+    font-weight: 600;
+}
+
+.step-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background-color: #fafafa;
+}
+
+.step-section h5 {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #ddd;
+}
+</style>
 {% endblock %}
