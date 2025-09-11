@@ -1,0 +1,66 @@
+Keep on Update MySQL Migration files as single files if any db changes.
+
+Module: Serial Item Transfer 
+
+Step 1: Select Warehouses
+a. User must select From Warehouse and To Warehouse.
+b. Validation: From Warehouse and To Warehouse cannot be the same.
+c. API to fetch available warehouses:
+•	URL: https://192.168.0.158:50000/b1s/v1/Warehouses?$select=WarehouseName,WarehouseCode
+•	Method: GET
+•	Response Example:
+{
+  "value": [
+    { "WarehouseCode": "01", "WarehouseName": "MAINTENENCE Warehouse" },
+    { "WarehouseCode": "1002-FG", "WarehouseName": "Finished Goods GST-AVS CHN" },
+    { "WarehouseCode": "1003-FG", "WarehouseName": "Finished Goods GST-BDS CHN" },
+    { "WarehouseCode": "2002-RM", "WarehouseName": "Raw Material-AVS CHN" }
+  ]
+}
+________________________________________
+Step 2: Select Item
+a. User chooses the ItemCode from a dropdown list.
+b. API to fetch items available in the selected warehouse:
+•	URL: https://192.168.0.158:50000/b1s/v1/SQLQueries('Get_Item')/List
+•	Method: POST
+•	Body:
+{ "ParamList": "whcode='7000-FG'" }
+•	Response Example:
+{
+  "value": [
+    { "ItemCode": "S1", "WhsCode": "7000-FG", "itemName": "225MM Inspection Table Fan" },
+    { "ItemCode": "RedmiNote4", "WhsCode": "7000-FG", "itemName": "8GBRAM/250GBROM Black" },
+    { "ItemCode": "IPhone", "WhsCode": "7000-FG", "itemName": "12 Series 8GB RAM/250 GB ROM Black" }
+  ]
+}
+________________________________________
+Step 3: Enter Quantity & Validate Serial Numbers
+a. User enters the Quantity.
+b. If the item is serial managed, each serial number must be validated.
+•	Validation API:
+o	URL: https://192.168.0.158:50000/b1s/v1/SQLQueries('Series_Validation')/List
+o	Method: POST
+o	Body Example:
+o	{ "ParamList": "whsCode='7000-FG'&series='RDM13'&itemCode='RedmiNote4'" }
+o	Response Example:
+o	{
+o	  "value": [
+o	    { "DistNumber": "RDM13", "ItemCode": "RedmiNote4", "WhsCode": "7000-FG" }
+o	  ]
+o	}
+c. Validation Rules:
+•	If the serial exists → add to line item automatically.
+•	The number of entered serials must not exceed the entered quantity.
+•	If the item is not serial managed, the system checks the available stock quantity in the warehouse before adding line items.
+________________________________________
+Step 4: Populate Line Items
+a. If serial managed: Line items are populated automatically with validated serials.
+b. If not serial managed: Line items are populated with the entered quantity.
+c. System validates total quantity entered ≤ available warehouse quantity.
+________________________________________
+Step 5: Submit Transaction
+a. User clicks Submit.
+b. System posts the Inventory Transfer to SAP B1 via Service Layer.
+c. On success → transaction is saved, and confirmation is shown.
+d. On failure → error details are displayed.
+
