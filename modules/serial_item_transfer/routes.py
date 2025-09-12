@@ -311,33 +311,8 @@ def add_non_serial_item(transfer_id):
             # Log the error but don't fail the operation - SAP connectivity issues shouldn't block workflow
             logging.warning(f"SAP validation failed for item {item_code}, proceeding with local validation: {str(e)}")
 
-        # Check if this item is already added as a non-serial item in this transfer
-        existing_item = SerialItemTransferItem.query.filter_by(
-            serial_item_transfer_id=transfer.id,
-            item_code=item_code,
-            item_type='non_serial'
-        ).first()
-
-        if existing_item:
-            # Update the existing item's quantity
-            existing_item.quantity += quantity
-            existing_item.scanned_quantity += quantity
-            existing_item.updated_at = datetime.utcnow()
-            db.session.commit()
-
-            logging.info(f"Updated non-serial item {item_code} quantity to {existing_item.quantity}")
-            return jsonify({
-                'success': True,
-                'message': f'Updated {item_code} quantity to {existing_item.quantity}',
-                'item_updated': True,
-                'item_data': {
-                    'id': existing_item.id,
-                    'item_code': existing_item.item_code,
-                    'item_description': existing_item.item_description,
-                    'quantity': existing_item.quantity,
-                    'item_type': existing_item.item_type
-                }
-            })
+        # Create separate line items for each addition (user preference: separate entries instead of consolidating)
+        # Note: If consolidation is needed in the future, uncomment the existing_item check logic
 
         # Create new non-serial transfer item
         transfer_item = SerialItemTransferItem()

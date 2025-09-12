@@ -705,48 +705,6 @@ function displayOnHandQuantity(quantity) {
     }
 }
 
-function autoPopulateNonSerialItem() {
-    if (!selectedItem || selectedItem.isSerialManaged !== false) {
-        showAlert('Error: Item information not available for auto-population', 'error');
-        return;
-    }
-    
-    if (!requiredQuantity || requiredQuantity <= 0) {
-        showAlert('Error: Invalid quantity for auto-population', 'error');
-        return;
-    }
-    
-    // Show loading message
-    showAlert('Automatically adding non-serial item to transfer...', 'info');
-    
-    // Call the non-serial item endpoint directly
-    $.ajax({
-        url: '/serial-item-transfer/{{ transfer.id }}/add_non_serial_item',
-        method: 'POST',
-        data: {
-            item_code: selectedItem.itemCode,
-            item_description: selectedItem.itemName,
-            quantity: requiredQuantity,
-            unit_of_measure: 'EA'
-        },
-        success: function(response) {
-            if (response.success) {
-                showAlert(`Successfully auto-added ${requiredQuantity} quantity of ${selectedItem.itemCode}`, 'success');
-                setTimeout(function() {
-                    location.reload();
-                }, 1500);
-            } else {
-                showAlert(response.error || 'Error auto-adding non-serial item', 'error');
-                updatePopulateButton(); // Enable manual button as fallback
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error auto-adding non-serial item:', error);
-            showAlert('Error auto-adding non-serial item. You can use the manual populate button.', 'error');
-            updatePopulateButton(); // Enable manual button as fallback
-        }
-    });
-}
 
 function onItemSelected() {
     const itemSelect = $('#itemSelect');
@@ -955,16 +913,11 @@ function checkItemSerialManagement(itemCode) {
                     showAlert(`Item ${itemCode} requires serial number validation. OnHand: ${onHandQuantity}`, 'info');
                 } else {
                     showSerialSection(false);
-                    showAlert(`Item ${itemCode} does not require serial numbers. OnHand: ${onHandQuantity}. Automatically populating line items...`, 'success');
-                    // For non-serial items, automatically populate line items after a short delay
-                    setTimeout(function() {
-                        if (onHandQuantity > 0 && requiredQuantity <= onHandQuantity) {
-                            autoPopulateNonSerialItem();
-                        } else {
-                            showAlert(`Cannot auto-populate: Requested quantity (${requiredQuantity}) exceeds available stock (${onHandQuantity})`, 'warning');
-                            updatePopulateButton(); // Enable manual button as fallback
-                        }
-                    }, 1000);
+                    showAlert(`Item ${itemCode} does not require serial numbers. OnHand: ${onHandQuantity}`, 'info');
+                    // Set quantity to 1 for non-serial items and enable manual populate button
+                    $('#quantityInput').val(1);
+                    onQuantityChanged();
+                    updatePopulateButton();
                 }
                 
                 // Store the item management info for later use
@@ -1264,48 +1217,6 @@ function displayOnHandQuantity(quantity) {
     }
 }
 
-function autoPopulateNonSerialItem() {
-    if (!selectedItem || !selectedItem.onHandQuantity) {
-        showAlert('Cannot auto-populate: Item data not available', 'error');
-        return;
-    }
-    
-    if (requiredQuantity > selectedItem.onHandQuantity) {
-        showAlert(`Cannot auto-populate: Requested quantity (${requiredQuantity}) exceeds available stock (${selectedItem.onHandQuantity})`, 'warning');
-        updatePopulateButton(); // Enable manual button as fallback
-        return;
-    }
-    
-    // Auto-trigger the populate line items function for non-serial items
-    showAlert('Auto-populating line items for non-serial item...', 'info');
-    
-    $.ajax({
-        url: '/serial-item-transfer/{{ transfer.id }}/add_non_serial_item',
-        method: 'POST',
-        data: {
-            item_code: selectedItem.itemCode,
-            item_description: selectedItem.itemName,
-            quantity: requiredQuantity,
-            unit_of_measure: 'EA'
-        },
-        success: function(response) {
-            if (response.success) {
-                showAlert(`Successfully auto-populated ${requiredQuantity} quantity of ${selectedItem.itemCode}`, 'success');
-                setTimeout(function() {
-                    location.reload();
-                }, 1500);
-            } else {
-                showAlert(response.error || 'Error auto-populating non-serial item', 'error');
-                updatePopulateButton(); // Enable manual button as fallback
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error auto-populating non-serial item:', error);
-            showAlert('Error auto-populating non-serial item', 'error');
-            updatePopulateButton(); // Enable manual button as fallback
-        }
-    });
-}
 
 
 function submitTransfer() {
