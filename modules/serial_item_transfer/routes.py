@@ -832,6 +832,7 @@ def post_to_sap(transfer_id):
         invalid_items = [item for item in transfer.items if item.validation_status != 'validated' or item.qc_status != 'approved']
         if invalid_items:
             return jsonify({'success': False, 'error': f'Cannot post transfer with {len(invalid_items)} invalid or unapproved items'}), 400
+        bplId=sap.get_warehouse_business_place_id(transfer.from_warehouse)
 
         # Build SAP B1 Stock Transfer JSON
         sap_transfer_data = {
@@ -840,6 +841,7 @@ def post_to_sap(transfer_id):
             "CardCode": "",
             "CardName": "",
             "Address": "",
+            "BPLID":bplId,
             "U_EA_CREATEDBy": transfer.user.username,
             "U_EA_Approved": current_user.username,
             "Comments": f"Serial Number Item Transfer from WMS - {current_user.username}",
@@ -945,6 +947,7 @@ def post_to_sap(transfer_id):
                     timeout = 60   # 1 minute for small transfers
                 
                 logging.info(f"Posting {item_count} items to SAP B1 with {timeout}s timeout")
+                print(sap_transfer_data)
                 response = sap.session.post(url, json=sap_transfer_data, timeout=timeout)
 
                 if response.status_code == 201:
