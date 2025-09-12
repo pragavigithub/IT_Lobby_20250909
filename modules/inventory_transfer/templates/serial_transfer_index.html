@@ -7,9 +7,14 @@
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center">
             <h3> Serial Number Stock Transfer</h3>
-            <a href="{{ url_for('inventory_transfer.serial_create') }}" class="btn btn-primary">
-                <i data-feather="plus"></i> Create Serial Transfer
-            </a>
+            <div>
+                <a href="{{ url_for('inventory_transfer.serial_create') }}" class="btn btn-primary">
+                    <i data-feather="plus"></i> Create Serial Transfer
+                </a>
+                <button onclick="cleanupEmptyDrafts()" class="btn btn-outline-warning ml-2">
+                    <i data-feather="trash-2"></i> Clear Empty Drafts
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -230,6 +235,26 @@ document.getElementById('user_based').addEventListener('change', function() {
     this.form.submit();
 });
 {% endif %}
+
+function cleanupEmptyDrafts() {
+    if (confirm('This will delete all draft transfers that have no line items. Are you sure?')) {
+        $.ajax({
+            url: '/inventory_transfer/serial/cleanup_empty_drafts',
+            method: 'POST',
+            success: function(response) {
+                if (response.success) {
+                    alert(`✅ Cleaned up ${response.count} empty draft transfers`);
+                    location.reload(); // Refresh the page to show updated list
+                } else {
+                    alert('❌ Error: ' + response.error);
+                }
+            },
+            error: function() {
+                alert('❌ Error cleaning up empty drafts');
+            }
+        });
+    }
+}
 
 // Initialize Feather icons for pagination
 feather.replace();
