@@ -850,7 +850,7 @@ def post_to_sap(transfer_id):
             "SalesPersonCode": -1,
             "FromWarehouse": transfer.from_warehouse,
             "ToWarehouse": transfer.to_warehouse,
-            "AuthorizationStatus": "sasWithout",
+            "AuthorizationStatus": "",
             "StockTransferLines": []
         }
 
