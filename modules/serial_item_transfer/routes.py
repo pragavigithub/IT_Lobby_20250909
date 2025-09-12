@@ -783,7 +783,7 @@ def get_warehouse_items(transfer_id):
         logging.error(f"Error fetching warehouse items: {str(e)}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
-
+#SerialItemTransfer Post to Sap_B1
 @serial_item_bp.route('/<int:transfer_id>/post_to_sap', methods=['POST'])
 @login_required
 def post_to_sap(transfer_id):
@@ -899,7 +899,7 @@ def post_to_sap(transfer_id):
                     timeout = 60   # 1 minute for small transfers
                 
                 logging.info(f"Posting {item_count} items to SAP B1 with {timeout}s timeout")
-                print(sap_transfer_data)
+
                 response = sap.session.post(url, json=sap_transfer_data, timeout=timeout)
 
                 if response.status_code == 201:
