@@ -92,6 +92,8 @@ Location: `C:/tmp/sap_login/credential.json` (Primary) or `/tmp/sap_login/creden
   - **NON-SERIAL ITEM FIXES**: Fixed quantity auto-population timing issues and modified backend to create separate line items instead of consolidating quantities
   - **QUANTITY DISPLAY FIXES**: Fixed all template displays to show total quantities instead of line item counts throughout the application (detail pages, dashboard, approval screens)
   - **SAP B1 QUANTITY POSTING FIX**: Fixed critical issue where non-serial items were posting quantity 1 to SAP B1 instead of actual entered quantity (e.g., quantity 5)
+  - **SAP B1 JSON SERIALNUMBERS ARRAY**: Modified non-serial items to have empty SerialNumbers array instead of placeholder entries for cleaner SAP B1 integration
+  - **SAP B1 DOCNUM DISPLAY**: Added SAP B1 document number display to both detail and index screens after successful posting
   - Improved user experience with real-time stock validation and seamless item addition
 - **Fresh GitHub Import Configuration** (September 11, 2025)
   - Successfully imported GitHub repository and configured for Replit environment
