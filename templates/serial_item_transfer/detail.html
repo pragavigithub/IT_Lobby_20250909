@@ -440,12 +440,6 @@ function onItemSelected() {
     }
 }
 
-function onQuantityChanged() {
-    requiredQuantity = parseInt($('#quantityInput').val());
-    validatedSerials = [];
-    updateSerialProgress();
-    updatePopulateButton();
-}
 
 function showSerialSection(isSerialManaged) {
     if (isSerialManaged) {
@@ -459,80 +453,7 @@ function showSerialSection(isSerialManaged) {
     }
 }
 
-// Auto-validation functions
-function handleSerialInput(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        autoValidateSerial();
-    }
-}
 
-function autoValidateSerial() {
-    const serialNumber = $('#serialNumberInput').val().trim();
-    if (serialNumber) {
-        validateSerial();
-    }
-}
-
-function clearSerialInput() {
-    $('#serialNumberInput').val('').focus();
-}
-
-function checkItemSerialManagement(itemCode) {
-    // Check if the item requires serial number management
-    // Items starting with 'S' are considered serial managed
-    const isSerialManaged = itemCode.toUpperCase().startsWith('S') || itemCode.toLowerCase().includes('serial');
-    
-    if (isSerialManaged) {
-        showSerialSection(true);
-        showAlert(`Item ${itemCode} requires serial number validation`, 'info');
-    } else {
-        showSerialSection(false);
-        showAlert(`Item ${itemCode} does not require serial numbers. You can proceed with quantity-based transfer.`, 'info');
-        // For non-serial items, enable populate button immediately
-        updatePopulateButton();
-    }
-}
-
-function validateSerial() {
-    const serialNumber = $('#serialNumberInput').val().trim().toUpperCase();
-    
-    if (!serialNumber) {
-        showAlert('Please enter a serial number', 'error');
-        return;
-    }
-    
-    if (!selectedItem) {
-        showAlert('Please select an item first', 'error');
-        return;
-    }
-    
-    // Enhanced duplicate check with case-insensitive comparison
-    const existingSerial = validatedSerials.find(s => s.serialNumber.toUpperCase() === serialNumber);
-    if (existingSerial) {
-        showAlert(`Serial number "${serialNumber}" has already been validated. Please enter a different serial number.`, 'warning');
-        $('#serialNumberInput').val('').focus();
-        return;
-    }
-    
-    // Check if we already have enough serials
-    if (validatedSerials.length >= requiredQuantity) {
-        showAlert(`You have already validated ${requiredQuantity} serial numbers. Remove existing serials if you need to add different ones.`, 'warning');
-        $('#serialNumberInput').val('');
-        return;
-    }
-    
-    const data = {
-        warehouse_code: '{{ transfer.from_warehouse }}',
-        serial_number: serialNumber,
-        item_code: selectedItem.itemCode
-    };
-    
-    // Show loading state
-    $('#serialNumberInput').prop('disabled', true);
-    
-    $.ajax({
-        url: '/api/validate-serial-number',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(data),
@@ -955,8 +876,91 @@ function handleSerialInput(event) {
 function autoValidateSerial() {
     const serialNumber = $('#serialNumberInput').val().trim();
     if (serialNumber) {
-        validateSerial();
+        validateSerialAndAutoPopulate();
     }
+}
+
+function validateSerialAndAutoPopulate() {
+    const serialNumber = $('#serialNumberInput').val().trim();
+    
+    if (!serialNumber) {
+        showAlert('Please enter a serial number', 'error');
+        return;
+    }
+    
+    if (!selectedItem) {
+        showAlert('Please select an item first', 'error');
+        return;
+    }
+    
+    // Enhanced duplicate check with case-insensitive comparison
+    const existingSerial = validatedSerials.find(s => s.serialNumber.toLowerCase() === serialNumber.toLowerCase());
+    if (existingSerial) {
+        showAlert(`Serial number "${serialNumber}" has already been validated. Please enter a different serial number.`, 'warning');
+        $('#serialNumberInput').val('').focus();
+        return;
+    }
+    
+    // Check if we already have enough serials
+    if (validatedSerials.length >= requiredQuantity) {
+        showAlert(`You have already validated ${requiredQuantity} serial numbers. Remove existing serials if you need to add different ones.`, 'warning');
+        $('#serialNumberInput').val('');
+        return;
+    }
+    
+    const data = {
+        warehouse_code: '{{ transfer.from_warehouse }}',
+        serial_number: serialNumber,
+        item_code: selectedItem.itemCode
+    };
+    
+    // Show loading state
+    $('#serialNumberInput').prop('disabled', true);
+    
+    $.ajax({
+        url: '/api/validate-serial-number',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function(response) {
+            $('#serialNumberInput').prop('disabled', false);
+            
+            if (response.success && response.valid) {
+                // Add to validated serials
+                validatedSerials.push({
+                    serialNumber: serialNumber,
+                    itemCode: selectedItem.itemCode,
+                    status: 'validated'
+                });
+                
+                // Clear input and focus for next entry
+                $('#serialNumberInput').val('').focus();
+                
+                // Update UI
+                updateValidatedSerialsList();
+                updateSerialProgress();
+                updatePopulateButton();
+                
+                showAlert(`Serial number "${serialNumber}" validated successfully`, 'success');
+                
+                // If we have enough serials, notify user
+                if (validatedSerials.length >= requiredQuantity) {
+                    showAlert('All required serial numbers validated! You can now populate line items.', 'success');
+                    $('#populateLineItemsBtn').focus(); // Focus the populate button
+                }
+                
+            } else {
+                showAlert(response.error || 'Serial number validation failed', 'error');
+                $('#serialNumberInput').focus();
+            }
+        },
+        error: function(xhr, status, error) {
+            $('#serialNumberInput').prop('disabled', false);
+            console.error('Error validating serial:', error);
+            showAlert('Error validating serial number: ' + error, 'error');
+            $('#serialNumberInput').focus();
+        }
+    });
 }
 
 function clearSerialInput() {
@@ -1348,30 +1352,6 @@ function autoPopulateNonSerialItem() {
     });
 }
 
-function removeItem(itemId) {
-    if (!confirm('Are you sure you want to remove this item from the transfer?')) {
-        return;
-    }
-    
-    $.ajax({
-        url: `/serial-item-transfer/{{ transfer.id }}/remove_item/${itemId}`,
-        method: 'POST',
-        success: function(response) {
-            if (response.success) {
-                showAlert('Item removed successfully', 'success');
-                setTimeout(function() {
-                    location.reload();
-                }, 1000);
-            } else {
-                showAlert(response.error || 'Error removing item', 'error');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error removing item:', error);
-            showAlert('Error removing item', 'error');
-        }
-    });
-}
 
 function submitTransfer() {
     if (!confirm('Are you sure you want to submit this transfer for QC approval?')) {

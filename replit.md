@@ -81,6 +81,13 @@ Location: `C:/tmp/sap_login/credential.json` (Primary) or `/tmp/sap_login/creden
 - Barcode generation utilities
 
 ## Recent Changes
+- **Serial Item Transfer Module Improvements** (September 12, 2025)
+  - Fixed line item removal issue by eliminating duplicate JavaScript functions with conflicting URLs
+  - Implemented non-serial item handling with auto-populate quantity 1 and manual modification capability
+  - Added quantity validation to restrict entries to available stock or less
+  - Enhanced serial number entry behavior to auto-populate line items and disable input when quantity matches
+  - Consolidated JavaScript code to eliminate duplicates and syntax errors
+  - Improved user experience with real-time stock validation and seamless item addition
 - **Fresh GitHub Import Configuration** (September 11, 2025)
   - Successfully imported GitHub repository and configured for Replit environment
   - All Python dependencies installed from req.txt (46 packages including Flask, gunicorn, SQLAlchemy)
