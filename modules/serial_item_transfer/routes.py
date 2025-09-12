@@ -874,14 +874,28 @@ def post_to_sap(transfer_id):
                 system_number = get_system_number_from_sap(sap, item.serial_number)
 
 
-                item_groups[item.item_code]['serials'].append({
-                    "SystemSerialNumber": system_number,
-                    "InternalSerialNumber": item.serial_number,
-                    "ManufacturerSerialNumber": item.serial_number,
-                    "Location": None,
-                    "Notes": None
-                })
-                item_groups[item.item_code]['quantity'] += 1
+                # Handle serial vs non-serial items differently for quantity and serial numbers
+                if item.item_type == 'non_serial':
+                    # For non-serial items, use the actual quantity from database record
+                    item_groups[item.item_code]['quantity'] += item.quantity
+                    # Add placeholder serial number entry for non-serial items
+                    item_groups[item.item_code]['serials'].append({
+                        "SystemSerialNumber": 0,
+                        "InternalSerialNumber": "None",
+                        "ManufacturerSerialNumber": "None",
+                        "Location": "None",
+                        "Notes": "None"
+                    })
+                else:
+                    # For serial items, add actual serial number and increment quantity by 1
+                    item_groups[item.item_code]['serials'].append({
+                        "SystemSerialNumber": system_number,
+                        "InternalSerialNumber": item.serial_number,
+                        "ManufacturerSerialNumber": item.serial_number,
+                        "Location": None,
+                        "Notes": None
+                    })
+                    item_groups[item.item_code]['quantity'] += 1
 
         # Create stock transfer lines
         line_num = 0
