@@ -77,6 +77,13 @@
                                 {% endif %}
                             </p>
                         </div>
+                        {% if transfer.sap_document_number %}
+                        <div class="col-sm-6">
+                            <p><strong>SAP Document Number:</strong><br>
+                                <span class="badge bg-success">{{ transfer.sap_document_number }}</span>
+                            </p>
+                        </div>
+                        {% endif %}
                         <div class="col-sm-6">
                             <p><strong>From Warehouse:</strong><br>
                                 <span class="badge bg-info">{{ transfer.from_warehouse }}</span>

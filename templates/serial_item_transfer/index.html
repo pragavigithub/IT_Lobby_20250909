@@ -57,14 +57,15 @@
                 <table class="table table-bordered" id="transfersTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th width="15%">Transfer Number</th>
-                            <th width="12%">From WH</th>
-                            <th width="12%">To WH</th>
-                            <th width="8%">Items</th>
-                            <th width="10%">Status</th>
-                            <th width="8%">Priority</th>
-                            <th width="12%">Created</th>
-                            <th width="15%">Actions</th>
+                            <th width="13%">Transfer Number</th>
+                            <th width="10%">From WH</th>
+                            <th width="10%">To WH</th>
+                            <th width="7%">Items</th>
+                            <th width="8%">Status</th>
+                            <th width="12%">SAP DocNum</th>
+                            <th width="7%">Priority</th>
+                            <th width="11%">Created</th>
+                            <th width="13%">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -85,17 +86,6 @@
                             <td class="text-center">
                                 <span class="badge bg-secondary">{{ transfer.items|sum(attribute='quantity') }}</span>
                             </td>
-<!--                            <td class="text-center">-->
-<!--                                {% set validated_count = transfer.items|selectattr("validation_status", "equalto", "validated")|list|length %}-->
-<!--                                {% set total_quantity = transfer.items|sum(attribute='quantity') %}-->
-<!--                                {% if validated_count == total_quantity and total_quantity > 0 %}-->
-<!--                                    <span class="badge bg-success">{{ validated_count }}</span>-->
-<!--                                {% elif validated_count > 0 %}-->
-<!--                                    <span class="badge bg-warning">{{ validated_count }}</span>-->
-<!--                                {% else %}-->
-<!--                                    <span class="badge bg-secondary">0</span>-->
-<!--                                {% endif %}-->
-<!--                            </td>-->
                             <td>
                                 {% if transfer.status == 'draft' %}
                                     <span class="badge bg-secondary">Draft</span>
@@ -107,6 +97,13 @@
                                     <span class="badge bg-primary">Posted</span>
                                 {% elif transfer.status == 'rejected' %}
                                     <span class="badge bg-danger">Rejected</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if transfer.sap_document_number %}
+                                    <span class="badge bg-success">{{ transfer.sap_document_number }}</span>
+                                {% else %}
+                                    <span class="text-muted">Not posted</span>
                                 {% endif %}
                             </td>
                             <td>
