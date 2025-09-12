@@ -61,7 +61,6 @@
                             <th width="12%">From WH</th>
                             <th width="12%">To WH</th>
                             <th width="8%">Items</th>
-                            <th width="8%">Valid</th>
                             <th width="10%">Status</th>
                             <th width="8%">Priority</th>
                             <th width="12%">Created</th>
@@ -86,17 +85,17 @@
                             <td class="text-center">
                                 <span class="badge bg-secondary">{{ transfer.items|sum(attribute='quantity') }}</span>
                             </td>
-                            <td class="text-center">
-                                {% set validated_count = transfer.items|selectattr("validation_status", "equalto", "validated")|list|length %}
-                                {% set total_quantity = transfer.items|sum(attribute='quantity') %}
-                                {% if validated_count == total_quantity and total_quantity > 0 %}
-                                    <span class="badge bg-success">{{ validated_count }}</span>
-                                {% elif validated_count > 0 %}
-                                    <span class="badge bg-warning">{{ validated_count }}</span>
-                                {% else %}
-                                    <span class="badge bg-secondary">0</span>
-                                {% endif %}
-                            </td>
+<!--                            <td class="text-center">-->
+<!--                                {% set validated_count = transfer.items|selectattr("validation_status", "equalto", "validated")|list|length %}-->
+<!--                                {% set total_quantity = transfer.items|sum(attribute='quantity') %}-->
+<!--                                {% if validated_count == total_quantity and total_quantity > 0 %}-->
+<!--                                    <span class="badge bg-success">{{ validated_count }}</span>-->
+<!--                                {% elif validated_count > 0 %}-->
+<!--                                    <span class="badge bg-warning">{{ validated_count }}</span>-->
+<!--                                {% else %}-->
+<!--                                    <span class="badge bg-secondary">0</span>-->
+<!--                                {% endif %}-->
+<!--                            </td>-->
                             <td>
                                 {% if transfer.status == 'draft' %}
                                     <span class="badge bg-secondary">Draft</span>

@@ -829,36 +829,6 @@ def post_to_sap(transfer_id):
             "StockTransferLines": []
         }
 
-        # Group items by ItemCode for line consolidation
-        # item_groups = {}
-        # for item in transfer.items:
-        #
-        #     if item.qc_status == 'approved' and item.validation_status == 'validated':
-        #         if item.item_code not in item_groups:
-        #             item_groups[item.item_code] = {
-        #                 'item_code': item.item_code,
-        #                 'item_description': item.item_description,
-        #                 'serials': [],
-        #                 'quantity': 0
-        #             }
-        #             # 🔑 Get SystemNumber from SAP
-        #             system_number = get_system_number_from_sap(sap,item.serial_number)
-        #
-        #             print(f"sap_transfer_data (repr) --> {repr(system_number)}")
-        #         item_groups[item.item_code]['serials'].append({
-        #             "SystemSerialNumber": system_number,
-        #             "InternalSerialNumber": item.serial_number,
-        #             "ManufacturerSerialNumber": item.serial_number,
-        #             # "ExpiryDate": None,
-        #             # "ManufactureDate": None,
-        #             # "ReceptionDate": None,
-        #             # "WarrantyStart": None,
-        #             # "WarrantyEnd": None,
-        #             "Location": None,
-        #             "Notes": None
-        #         })
-        #         item_groups[item.item_code]['quantity'] += 1
-        # Group items by ItemCode for line consolidation
         item_groups = {}
         for item in transfer.items:
             if item.qc_status == 'approved' and item.validation_status == 'validated':
