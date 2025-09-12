@@ -848,14 +848,7 @@ def post_to_sap(transfer_id):
                 if item.item_type == 'non_serial':
                     # For non-serial items, use the actual quantity from database record
                     item_groups[item.item_code]['quantity'] += item.quantity
-                    # Add placeholder serial number entry for non-serial items
-                    item_groups[item.item_code]['serials'].append({
-                        "SystemSerialNumber": 0,
-                        "InternalSerialNumber": "None",
-                        "ManufacturerSerialNumber": "None",
-                        "Location": "None",
-                        "Notes": "None"
-                    })
+                    # Do not add any serial number entries for non-serial items - keep SerialNumbers array empty
                 else:
                     # For serial items, add actual serial number and increment quantity by 1
                     item_groups[item.item_code]['serials'].append({

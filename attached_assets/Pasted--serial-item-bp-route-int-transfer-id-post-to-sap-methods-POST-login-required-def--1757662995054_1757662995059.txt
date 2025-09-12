@@ -1,0 +1,191 @@
+
+
+@serial_item_bp.route('/<int:transfer_id>/post_to_sap', methods=['POST'])
+@login_required
+def post_to_sap(transfer_id):
+    """Post approved Serial Item Transfer to SAP B1 as Stock Transfer"""
+    sap = SAPIntegration()
+    try:
+        transfer = SerialItemTransfer.query.get_or_404(transfer_id)
+
+        # Check QC permissions
+        if not current_user.has_permission('qc_dashboard') and current_user.role not in ['admin', 'manager']:
+            return jsonify({'success': False, 'error': 'Access denied - QC permissions required'}), 403
+
+        if transfer.status != 'qc_approved':
+            return jsonify({'success': False, 'error': 'Only QC approved transfers can be posted to SAP'}), 400
+
+        # Validate that transfer has line items before posting to SAP
+        if not transfer.items:
+            return jsonify({'success': False, 'error': 'Cannot post transfer without line items'}), 400
+        
+        # Validate that all items are validated and approved
+        invalid_items = [item for item in transfer.items if item.validation_status != 'validated' or item.qc_status != 'approved']
+        if invalid_items:
+            return jsonify({'success': False, 'error': f'Cannot post transfer with {len(invalid_items)} invalid or unapproved items'}), 400
+        bplId=sap.get_warehouse_business_place_id(transfer.from_warehouse)
+
+        # Build SAP B1 Stock Transfer JSON
+        sap_transfer_data = {
+            "DocDate": datetime.now().strftime('%Y-%m-%d'),
+            "DueDate": datetime.now().strftime('%Y-%m-%d'),
+            "CardCode": "",
+            "CardName": "",
+            "Address": "",
+            "BPLID":bplId,
+            "U_EA_CREATEDBy": transfer.user.username,
+            "U_EA_Approved": current_user.username,
+            "Comments": f"Serial Number Item Transfer from WMS - {current_user.username}",
+            "JournalMemo": f"Serial Number Item Transfer - {transfer.transfer_number}",
+            #"PriceList": -1,
+            #"SalesPersonCode": -1,
+            "FromWarehouse": transfer.from_warehouse,
+            "ToWarehouse": transfer.to_warehouse,
+            "AuthorizationStatus": "",
+            "StockTransferLines": []
+        }
+
+        item_groups = {}
+        for item in transfer.items:
+            if item.qc_status == 'approved' and item.validation_status == 'validated':
+                if item.item_code not in item_groups:
+                    item_groups[item.item_code] = {
+                        'item_code': item.item_code,
+                        'item_description': item.item_description,
+                        'serials': [],
+                        'quantity': 0
+                    }
+
+                # 🔑 Fetch SystemNumber for *each serial individually*
+                system_number = get_system_number_from_sap(sap, item.serial_number)
+
+
+                # Handle serial vs non-serial items differently for quantity and serial numbers
+                if item.item_type == 'non_serial':
+                    # For non-serial items, use the actual quantity from database record
+                    item_groups[item.item_code]['quantity'] += item.quantity
+                    # Add placeholder serial number entry for non-serial items
+                    item_groups[item.item_code]['serials'].append({
+                        "SystemSerialNumber": 0,
+                        "InternalSerialNumber": "None",
+                        "ManufacturerSerialNumber": "None",
+                        "Location": "None",
+                        "Notes": "None"
+                    })
+                else:
+                    # For serial items, add actual serial number and increment quantity by 1
+                    item_groups[item.item_code]['serials'].append({
+                        "SystemSerialNumber": system_number,
+                        "InternalSerialNumber": item.serial_number,
+                        "ManufacturerSerialNumber": item.serial_number,
+                        "Location": None,
+                        "Notes": None
+                    })
+                    item_groups[item.item_code]['quantity'] += 1
+
+        # Create stock transfer lines
+        line_num = 0
+        for item_code, group_data in item_groups.items():
+            sap_transfer_data["StockTransferLines"].append({
+                "LineNum": line_num,
+                "ItemCode": item_code,
+                "Quantity": group_data['quantity'],
+                "WarehouseCode": transfer.to_warehouse,
+                "FromWarehouseCode": transfer.from_warehouse,
+                "UoMCode": "",
+                "SerialNumbers": group_data['serials']
+            })
+            line_num += 1
+
+        # Post to SAP B1 with optimized handling for large volumes
+        if not sap.ensure_logged_in():
+            return jsonify({'success': False, 'error': 'SAP B1 connection failed'}), 500
+        
+        item_count = len(transfer.items)
+        logging.info(f"Preparing to post {item_count} items to SAP B1")
+        
+        # For very large transfers (>800 items), use SAP integration method with batching
+        if item_count > 800:
+            logging.info(f"Large volume transfer detected ({item_count} items), using optimized SAP integration")
+            sap_result = sap.create_serial_item_stock_transfer(transfer)
+        else:
+            # For smaller transfers, use direct API call
+            try:
+                url = f"{sap.base_url}/b1s/v1/StockTransfers"
+                
+                # Determine timeout based on transfer size
+                if item_count > 500:
+                    timeout = 300  # 5 minutes for large transfers
+                elif item_count > 100:
+                    timeout = 120  # 2 minutes for medium transfers
+                else:
+                    timeout = 60   # 1 minute for small transfers
+                
+                logging.info(f"Posting {item_count} items to SAP B1 with {timeout}s timeout")
+                print(sap_transfer_data)
+                response = sap.session.post(url, json=sap_transfer_data, timeout=timeout)
+
+                if response.status_code == 201:
+                    sap_doc = response.json()
+                    sap_result = {
+                        'success': True,
+                        'document_number': sap_doc.get('DocNum'),
+                        'doc_entry': sap_doc.get('DocEntry')
+                    }
+                else:
+                    error_text = response.text
+                    logging.error(f"SAP B1 API error: {response.status_code} - {error_text}")
+                    sap_result = {
+                        'success': False,
+                        'error': f'SAP B1 API error: {response.status_code} - {error_text}'
+                    }
+            except Exception as api_error:
+                logging.error(f"SAP B1 connection error: {str(api_error)}")
+                sap_result = {
+                    'success': False,
+                    'error': f'SAP B1 connection error: {str(api_error)}'
+                }
+
+        if sap_result.get('success'):
+            # Update transfer status and SAP document info
+            transfer.status = 'posted'
+            transfer.sap_document_number = sap_result.get('document_number')
+            transfer.updated_at = datetime.utcnow()
+
+            db.session.commit()
+
+            logging.info(f"Serial Item Transfer {transfer_id} posted to SAP B1: {sap_result.get('document_number')}")
+            return jsonify({
+                'success': True,
+                'message': f'Transfer posted to SAP B1 successfully. Document Number: {sap_result.get("document_number")}',
+                'sap_document_number': sap_result.get('document_number'),
+                'doc_entry': sap_result.get('doc_entry'),
+                'status': 'posted'
+            })
+        else:
+            # Reject document and send back for editing when SAP posting fails
+            transfer.status = 'rejected'
+            transfer.qc_notes = f"SAP B1 posting failed: {sap_result.get('error', 'Unknown error')}. Document rejected for editing."
+            transfer.updated_at = datetime.utcnow()
+
+            # Reset QC approval to allow re-editing
+            for item in transfer.items:
+                item.qc_status = 'pending'
+                item.updated_at = datetime.utcnow()
+
+            db.session.commit()
+
+            logging.error(
+                f"SAP B1 posting failed for transfer {transfer_id}: {sap_result.get('error')} - Document rejected for editing")
+            return jsonify({
+                'success': False,
+                'error': f'SAP B1 posting failed: {sap_result.get("error", "Unknown error")}. Document has been rejected and sent back for editing.',
+                'status': 'rejected',
+                'redirect_to_edit': True
+            }), 500
+
+    except Exception as e:
+        logging.error(f"Error posting serial item transfer to SAP: {str(e)}")
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
