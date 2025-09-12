@@ -77,6 +77,78 @@
                                 {% endif %}
                             </p>
                         </div>
+<!--                        {% if transfer.sap_document_number %}-->
+<!--                        <div class="col-sm-6">-->
+<!--                            <p><strong>SAP Document Number:</strong><br>-->
+<!--                                <span class="badge bg-success">{{ transfer.sap_document_number }}</span>-->
+<!--                            </p>-->
+<!--                        </div>-->
+<!--                        {% endif %}-->
+<!--                        <div class="col-sm-6">-->
+<!--                            <p><strong>From Warehouse:</strong><br>-->
+<!--                                <span class="badge bg-info">{{ transfer.from_warehouse }}</span>-->
+<!--                            </p>-->
+<!--                        </div>-->
+<!--                        <div class="col-sm-6">-->
+<!--                            <p><strong>To Warehouse:</strong><br>-->
+<!--                                <span class="badge bg-info">{{ transfer.to_warehouse }}</span>-->
+<!--                            </p>-->
+<!--                        </div>-->
+                        <div class="col-sm-6">
+                            <p><strong>Priority:</strong><br>
+                                {% if transfer.priority == 'urgent' %}
+                                <span class="badge bg-danger">Urgent</span>
+                                {% elif transfer.priority == 'high' %}
+                                <span class="badge bg-warning">High</span>
+                                {% elif transfer.priority == 'normal' %}
+                                <span class="badge bg-info">Normal</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Low</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p><strong>Total Items:</strong><br>
+                                <span class="badge bg-primary">{{ transfer.items|sum(attribute='quantity') }}</span>
+                            </p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p><strong>Created By:</strong><br>{{ transfer.user.username }}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p><strong>Created Date:</strong><br>{{ transfer.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                        </div>
+                        {% if transfer.notes %}
+                        <div class="col-12">
+                            <p><strong>Notes:</strong><br>{{ transfer.notes }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 >SAP B1 Details</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p><strong>Status:</strong><br>
+                                {% if transfer.status == 'draft' %}
+                                <span class="badge bg-secondary">Draft</span>
+                                {% elif transfer.status == 'submitted' %}
+                                <span class="badge bg-warning">Submitted</span>
+                                {% elif transfer.status == 'qc_approved' %}
+                                <span class="badge bg-success">QC Approved</span>
+                                {% elif transfer.status == 'posted' %}
+                                <span class="badge bg-primary">Posted</span>
+                                {% elif transfer.status == 'rejected' %}
+                                <span class="badge bg-danger">Rejected</span>
+                                {% endif %}
+                            </p>
+                        </div>
                         {% if transfer.sap_document_number %}
                         <div class="col-sm-6">
                             <p><strong>SAP Document Number:</strong><br>
@@ -112,17 +184,17 @@
                                 <span class="badge bg-primary">{{ transfer.items|sum(attribute='quantity') }}</span>
                             </p>
                         </div>
-                        <div class="col-sm-6">
-                            <p><strong>Created By:</strong><br>{{ transfer.user.username }}</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <p><strong>Created Date:</strong><br>{{ transfer.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
-                        </div>
-                        {% if transfer.notes %}
-                        <div class="col-12">
-                            <p><strong>Notes:</strong><br>{{ transfer.notes }}</p>
-                        </div>
-                        {% endif %}
+<!--                        <div class="col-sm-6">-->
+<!--                            <p><strong>Created By:</strong><br>{{ transfer.user.username }}</p>-->
+<!--                        </div>-->
+<!--                        <div class="col-sm-6">-->
+<!--                            <p><strong>Created Date:</strong><br>{{ transfer.created_at.strftime('%Y-%m-%d %H:%M') }}</p>-->
+<!--                        </div>-->
+<!--                        {% if transfer.notes %}-->
+<!--                        <div class="col-12">-->
+<!--                            <p><strong>Notes:</strong><br>{{ transfer.notes }}</p>-->
+<!--                        </div>-->
+<!--                        {% endif %}-->
                     </div>
                 </div>
             </div>
