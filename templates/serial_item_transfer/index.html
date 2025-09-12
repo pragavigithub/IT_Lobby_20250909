@@ -6,9 +6,14 @@
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0 text-gray-800">Serial Item Transfer</h1>
-        <a href="{{ url_for('serial_item_transfer.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Create New Transfer
-        </a>
+        <div>
+            <a href="{{ url_for('serial_item_transfer.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Create New Transfer
+            </a>
+            <button onclick="cleanupEmptyDrafts()" class="btn btn-outline-warning ml-2">
+                <i class="fas fa-broom"></i> Clear Empty Drafts
+            </button>
+        </div>
     </div>
 
     <!-- Filters and Search -->
@@ -196,5 +201,25 @@ $(document).ready(function() {
         $(this).closest('form').submit();
     });
 });
+
+function cleanupEmptyDrafts() {
+    if (confirm('This will delete all draft transfers that have no line items. Are you sure?')) {
+        $.ajax({
+            url: '/serial-item-transfer/cleanup_empty_drafts',
+            method: 'POST',
+            success: function(response) {
+                if (response.success) {
+                    alert(`✅ Cleaned up ${response.count} empty draft transfers`);
+                    location.reload(); // Refresh the page to show updated list
+                } else {
+                    alert('❌ Error: ' + response.error);
+                }
+            },
+            error: function() {
+                alert('❌ Error cleaning up empty drafts');
+            }
+        });
+    }
+}
 </script>
 {% endblock %}

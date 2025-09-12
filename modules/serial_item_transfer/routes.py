@@ -1039,3 +1039,42 @@ def get_system_number_from_sap(sap,serial_number):
     except Exception as e:
         logging.error(f"Error fetching SystemNumber for {serial_number}: {str(e)}")
         return 0
+
+
+@serial_item_bp.route('/cleanup_empty_drafts', methods=['POST'])
+@login_required
+def cleanup_empty_drafts():
+    """Clean up empty draft transfers that have no line items"""
+    try:
+        if not current_user.has_permission('serial_item_transfer'):
+            return jsonify({'success': False, 'error': 'Access denied - Serial Item Transfer permissions required'}), 403
+
+        # Find all draft transfers by this user that have no line items
+        empty_drafts = db.session.query(SerialItemTransfer).filter(
+            SerialItemTransfer.user_id == current_user.id,
+            SerialItemTransfer.status == 'draft',
+            ~SerialItemTransfer.items.any()  # No line items
+        ).all()
+
+        count = 0
+        for draft in empty_drafts:
+            db.session.delete(draft)
+            count += 1
+
+        db.session.commit()
+
+        logging.info(f"✅ Cleaned up {count} empty draft serial item transfers for user {current_user.username}")
+
+        return jsonify({
+            'success': True,
+            'count': count,
+            'message': f'Cleaned up {count} empty draft transfers'
+        })
+
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"❌ Error cleaning up empty drafts: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': f'Internal error: {str(e)}'
+        }), 500
