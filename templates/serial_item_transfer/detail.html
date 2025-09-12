@@ -333,7 +333,7 @@
                                     </td>
                                     {% if transfer.status == 'draft' and (transfer.user_id == current_user.id or current_user.role in ['admin', 'manager']) %}
                                     <td>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeItem({{ item.id }})">
+                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeItem('{{ item.id }}')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -451,51 +451,6 @@ function showSerialSection(isSerialManaged) {
         $('#serialNotRequiredText').removeClass('d-none');
         $('#serialNumberSection').addClass('d-none');
     }
-}
-
-
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(data),
-        success: function(response) {
-            $('#serialNumberInput').prop('disabled', false);
-            
-            if (response.success && response.valid) {
-                // Add to validated serials (store normalized version)
-                validatedSerials.push({
-                    serialNumber: serialNumber,
-                    itemCode: selectedItem.itemCode,
-                    status: 'validated'
-                });
-                
-                // Clear input and focus for next entry
-                $('#serialNumberInput').val('').focus();
-                
-                // Update UI
-                updateValidatedSerialsList();
-                updateSerialProgress();
-                updatePopulateButton();
-                
-                showAlert(`Serial number "${serialNumber}" validated successfully`, 'success');
-                
-                // If we have enough serials, notify user
-                if (validatedSerials.length >= requiredQuantity) {
-                    showAlert('All required serial numbers validated! You can now populate line items.', 'success');
-                    $('#populateLineItemsBtn').focus(); // Focus the populate button
-                }
-                
-            } else {
-                showAlert(response.error || 'Serial number validation failed', 'error');
-                $('#serialNumberInput').focus();
-            }
-        },
-        error: function(xhr, status, error) {
-            $('#serialNumberInput').prop('disabled', false);
-            console.error('Error validating serial:', error);
-            showAlert('Error validating serial number: ' + error, 'error');
-            $('#serialNumberInput').focus();
-        }
-    });
 }
 
 function updateValidatedSerialsList() {

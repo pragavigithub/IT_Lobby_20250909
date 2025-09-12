@@ -86,6 +86,8 @@ Location: `C:/tmp/sap_login/credential.json` (Primary) or `/tmp/sap_login/creden
   - Implemented non-serial item handling with auto-populate quantity 1 and manual modification capability
   - Added quantity validation to restrict entries to available stock or less
   - Enhanced serial number entry behavior to auto-populate line items and disable input when quantity matches
+  - **CRITICAL FIX**: Resolved JavaScript syntax errors preventing ItemCode dropdown from loading
+  - Added mock data for offline SAP B1 mode with 5 sample items for testing
   - Consolidated JavaScript code to eliminate duplicates and syntax errors
   - Improved user experience with real-time stock validation and seamless item addition
 - **Fresh GitHub Import Configuration** (September 11, 2025)
