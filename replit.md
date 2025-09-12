@@ -90,6 +90,7 @@ Location: `C:/tmp/sap_login/credential.json` (Primary) or `/tmp/sap_login/creden
   - Added mock data for offline SAP B1 mode with 5 sample items for testing
   - Consolidated JavaScript code to eliminate duplicates and syntax errors
   - **NON-SERIAL ITEM FIXES**: Fixed quantity auto-population timing issues and modified backend to create separate line items instead of consolidating quantities
+  - **QUANTITY DISPLAY FIXES**: Fixed all template displays to show total quantities instead of line item counts throughout the application (detail pages, dashboard, approval screens)
   - Improved user experience with real-time stock validation and seamless item addition
 - **Fresh GitHub Import Configuration** (September 11, 2025)
   - Successfully imported GitHub repository and configured for Replit environment

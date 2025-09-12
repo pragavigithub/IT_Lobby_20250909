@@ -180,7 +180,7 @@
 <!--                                    </td>-->
 <!--                                    <td>{{ transfer.user.first_name }} {{ transfer.user.last_name }}</td>-->
 <!--                                    <td>-->
-<!--                                        <span class="badge bg-info">{{ transfer.items|length }} items</span>-->
+<!--                                        <span class="badge bg-info">{{ transfer.items|sum(attribute='quantity') }} items</span>-->
 <!--                                    </td>-->
 <!--                                    <td>-->
 <!--                                        <small>{{ transfer.updated_at.strftime('%Y-%m-%d %H:%M') }}</small>-->
@@ -259,7 +259,7 @@
                                     </td>
                                     <td>{{ transfer.user.first_name }} {{ transfer.user.last_name }}</td>
                                     <td>
-                                        <span class="badge bg-info">{{ transfer.items|length }} items</span>
+                                        <span class="badge bg-info">{{ transfer.items|sum(attribute='quantity') }} items</span>
                                     </td>
                                     <td>
                                         {% set serial_count = transfer.items|map(attribute='serial_numbers')|map('length')|sum %}
@@ -348,10 +348,10 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <span class="badge bg-info">{{ transfer.items|length }} items</span>
+                                        <span class="badge bg-info">{{ transfer.items|sum(attribute='quantity') }} items</span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-secondary">{{ transfer.items|length }} serials</span>
+                                        <span class="badge bg-secondary">{{ transfer.items|sum(attribute='quantity') }} serials</span>
                                     </td>
                                     <td>
                                         {% if transfer.priority == 'high' %}
@@ -536,7 +536,7 @@
 <!--                                    </div>-->
 <!--                                </td>-->
 <!--                                <td>-->
-<!--                                    <span class="badge bg-info">{{ transfer.items|length }} items</span>-->
+<!--                                    <span class="badge bg-info">{{ transfer.items|sum(attribute='quantity') }} items</span>-->
 <!--                                </td>-->
 <!--                                <td>-->
 <!--                                    {% if transfer.sap_document_number %}-->

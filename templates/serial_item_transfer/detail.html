@@ -102,7 +102,7 @@
                         </div>
                         <div class="col-sm-6">
                             <p><strong>Total Items:</strong><br>
-                                <span class="badge bg-primary">{{ transfer.items|length }}</span>
+                                <span class="badge bg-primary">{{ transfer.items|sum(attribute='quantity') }}</span>
                             </p>
                         </div>
                         <div class="col-sm-6">
@@ -287,7 +287,7 @@
                     <h6>
                         <span class="badge bg-primary me-2"></span>Transfer Line Items
                     </h6>
-                    <span class="badge bg-info">{{ transfer.items|length }} item(s)</span>
+                    <span class="badge bg-info">{{ transfer.items|sum(attribute='quantity') }} item(s)</span>
                 </div>
                 <div class="card-body">
                     {% if transfer.items %}

@@ -84,11 +84,12 @@
                                 <span class="badge bg-success">{{ transfer.to_warehouse }}</span>
                             </td>
                             <td class="text-center">
-                                <span class="badge bg-secondary">{{ transfer.items|length }}</span>
+                                <span class="badge bg-secondary">{{ transfer.items|sum(attribute='quantity') }}</span>
                             </td>
                             <td class="text-center">
                                 {% set validated_count = transfer.items|selectattr("validation_status", "equalto", "validated")|list|length %}
-                                {% if validated_count == transfer.items|length and transfer.items|length > 0 %}
+                                {% set total_quantity = transfer.items|sum(attribute='quantity') %}
+                                {% if validated_count == total_quantity and total_quantity > 0 %}
                                     <span class="badge bg-success">{{ validated_count }}</span>
                                 {% elif validated_count > 0 %}
                                     <span class="badge bg-warning">{{ validated_count }}</span>
