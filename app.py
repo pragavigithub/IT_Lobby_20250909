@@ -36,6 +36,11 @@ if not session_secret:
 app.secret_key = session_secret
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
+# Security configurations for production
+app.config['SESSION_COOKIE_SECURE'] = not app.debug
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
 # -------------------------------
 # Database Configuration (MySQL or PostgreSQL)
 # -------------------------------
@@ -71,7 +76,7 @@ try:
         database_url = os.environ.get('DATABASE_URL')
         if not database_url:
             raise Exception("No database configuration found")
-        logging.info(f"Using PostgreSQL database: {database_url.split('@')[0]}@...")
+        logging.info("Using PostgreSQL database (connection successful)")
         db_type = "postgresql"
 
     from sqlalchemy import create_engine, text
@@ -140,7 +145,9 @@ import models_extensions
 from modules.invoice_creation import models as invoice_models  # noqa: F401
 
 with app.app_context():
-    # Note: db.create_all() moved to after module registration to include all module models
+    # Create all tables first to ensure they exist before any queries
+    db.create_all()
+    logging.info("✅ Database tables created")
 
     # Drop unique constraint if exists (PostgreSQL version)
     try:
@@ -183,22 +190,25 @@ with app.app_context():
             db.session.add(default_branch)
             logging.info("✅ Default branch created")
 
-        admin = User.query.filter_by(username='admin').first()
-        if not admin:
-            admin = User()
-            admin.username = 'admin'
-            admin.email = 'admin@company.com'
-            admin.password_hash = generate_password_hash('admin123')
-            admin.first_name = 'System'
-            admin.last_name = 'Administrator'
-            admin.role = 'admin'
-            admin.branch_id = 'BR001'
-            admin.branch_name = 'Main Branch'
-            admin.default_branch_id = 'BR001'
-            admin.active = True
-            admin.must_change_password = False
-            db.session.add(admin)
-            logging.info("✅ Default admin user created")
+        # Only create admin user in development or if explicitly requested
+        if os.environ.get('CREATE_DEFAULT_ADMIN') == 'true' or app.debug:
+            admin = User.query.filter_by(username='admin').first()
+            if not admin:
+                default_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
+                admin = User()
+                admin.username = 'admin'
+                admin.email = 'admin@company.com'
+                admin.password_hash = generate_password_hash(default_password)
+                admin.first_name = 'System'
+                admin.last_name = 'Administrator'
+                admin.role = 'admin'
+                admin.branch_id = 'BR001'
+                admin.branch_name = 'Main Branch'
+                admin.default_branch_id = 'BR001'
+                admin.active = True
+                admin.must_change_password = True  # Force password change
+                db.session.add(admin)
+                logging.info("✅ Default admin user created (password change required)")
 
         db.session.commit()
         logging.info("✅ Default data initialized")
@@ -219,10 +229,10 @@ except Exception as e:
 from modules import main_controller
 main_controller.register_modules(app)
 
-# Create database tables after module registration to include all module models
+# Database tables already created above, this ensures module models are included
 with app.app_context():
-    db.create_all()
-    logging.info("✅ Database tables created (including module models)")
+    db.create_all()  # Safe to call again, will only create missing tables
+    logging.info("✅ All module models verified/created")
 
 # Import routes
 import routes

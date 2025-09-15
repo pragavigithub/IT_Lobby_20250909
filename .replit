@@ -6,7 +6,7 @@ packages = ["cacert", "cargo", "freetype", "lcms2", "libffi", "libiconv", "libim
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
+run = ["gunicorn", "--bind", "0.0.0.0:5000", "--reuse-port", "main:app"]
 
 [workflows]
 runButton = "Project"
@@ -26,7 +26,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "gunicorn --bind 0.0.0.0:5000 --reuse-port --reload main:app"
+args = "gunicorn --bind 0.0.0.0:5000 --reuse-port main:app"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
@@ -35,10 +35,6 @@ outputType = "webview"
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 38967
-externalPort = 3001
 
 [[ports]]
 localPort = 44091
