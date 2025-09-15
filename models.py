@@ -770,3 +770,10 @@ class SerialItemTransferItem(db.Model):
     
     # Note: Allowing duplicate serial numbers for user review and manual deletion
     # __table_args__ = (db.UniqueConstraint('serial_item_transfer_id', 'serial_number', name='unique_serial_per_transfer'),)
+
+
+# ================================
+# SO Against Invoice Models  
+# ================================
+# Note: SO Against Invoice models are imported automatically when module is registered
+# This prevents circular import issues and table redefinition conflicts

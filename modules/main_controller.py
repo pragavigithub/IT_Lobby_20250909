@@ -6,6 +6,7 @@ from flask import Flask
 from modules.grpo.routes import grpo_bp
 from modules.inventory_transfer.routes import transfer_bp
 from modules.invoice_creation.routes import invoice_bp
+from modules.so_against_invoice.routes import so_invoice_bp
 
 def register_modules(app: Flask):
     """Register all module blueprints with the Flask app"""
@@ -19,12 +20,16 @@ def register_modules(app: Flask):
     # Register Invoice Creation module
     app.register_blueprint(invoice_bp)
     
+    # Register SO Against Invoice module
+    app.register_blueprint(so_invoice_bp)
+    
     # Add module-specific template folders
     if hasattr(app.jinja_loader, 'searchpath'):
         app.jinja_loader.searchpath.extend([
             'modules/grpo/templates',
             'modules/inventory_transfer/templates',
-            'modules/invoice_creation/templates'
+            'modules/invoice_creation/templates',
+            'modules/so_against_invoice/templates'
         ])
     
     print("All modules registered successfully")
@@ -32,6 +37,7 @@ def register_modules(app: Flask):
     print("   - GRPO Module: /grpo/*")
     print("   - Inventory Transfer Module: /inventory_transfer/*")
     print("   - Invoice Creation Module: /invoice_creation/*")
+    print("   - SO Against Invoice Module: /so-against-invoice/*")
     print("   - Shared Models: modules/shared/models.py")
 
 def get_module_info():

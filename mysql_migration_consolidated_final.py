@@ -40,6 +40,78 @@ from datetime import datetime
 # Total tables: 34
 #
 # Generated Schema SQL:
+# 
+# -- Table: so_invoice_documents (Model: SOInvoiceDocument)
+# CREATE TABLE IF NOT EXISTS `so_invoice_documents` (
+#   `id` INT PRIMARY KEY AUTO_INCREMENT,
+#   `document_number` VARCHAR(50) NOT NULL UNIQUE,
+#   `sap_invoice_number` VARCHAR(50),
+#   `so_series` INT NOT NULL,
+#   `so_series_name` VARCHAR(100) NOT NULL,
+#   `so_number` VARCHAR(50) NOT NULL,
+#   `so_doc_entry` INT NOT NULL,
+#   `card_code` VARCHAR(50) NOT NULL,
+#   `card_name` VARCHAR(200) NOT NULL,
+#   `customer_address` TEXT,
+#   `doc_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+#   `doc_due_date` DATETIME,
+#   `bplid` INT DEFAULT 5,
+#   `status` VARCHAR(20) DEFAULT 'draft',
+#   `user_id` INT NOT NULL,
+#   `comments` TEXT,
+#   `validation_notes` TEXT,
+#   `posting_error` TEXT,
+#   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+#   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+#   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
+# ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+# 
+# 
+# -- Table: so_invoice_items (Model: SOInvoiceItem)
+# CREATE TABLE IF NOT EXISTS `so_invoice_items` (
+#   `id` INT PRIMARY KEY AUTO_INCREMENT,
+#   `so_invoice_id` INT NOT NULL,
+#   `line_num` INT NOT NULL,
+#   `item_code` VARCHAR(50) NOT NULL,
+#   `item_description` VARCHAR(200) NOT NULL,
+#   `so_quantity` FLOAT NOT NULL,
+#   `warehouse_code` VARCHAR(10) NOT NULL,
+#   `validated_quantity` FLOAT DEFAULT 0,
+#   `is_serial_managed` BOOLEAN DEFAULT FALSE,
+#   `is_batch_managed` BOOLEAN DEFAULT FALSE,
+#   `validation_status` VARCHAR(20) DEFAULT 'pending',
+#   `validation_error` TEXT,
+#   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+#   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+#   FOREIGN KEY (`so_invoice_id`) REFERENCES `so_invoice_documents`(`id`) ON DELETE CASCADE
+# ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+# 
+# 
+# -- Table: so_invoice_serials (Model: SOInvoiceSerial)
+# CREATE TABLE IF NOT EXISTS `so_invoice_serials` (
+#   `id` INT PRIMARY KEY AUTO_INCREMENT,
+#   `so_invoice_item_id` INT NOT NULL,
+#   `serial_number` VARCHAR(100) NOT NULL,
+#   `quantity` INT DEFAULT 1,
+#   `base_line_number` INT NOT NULL,
+#   `validation_status` VARCHAR(20) DEFAULT 'pending',
+#   `validation_error` TEXT,
+#   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+#   FOREIGN KEY (`so_invoice_item_id`) REFERENCES `so_invoice_items`(`id`) ON DELETE CASCADE,
+#   UNIQUE KEY `unique_serial_per_invoice_item` (`so_invoice_item_id`, `serial_number`)
+# ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+# 
+# 
+# -- Table: so_series_cache (Model: SOSeries)
+# CREATE TABLE IF NOT EXISTS `so_series_cache` (
+#   `id` INT PRIMARY KEY AUTO_INCREMENT,
+#   `series` INT NOT NULL UNIQUE,
+#   `series_name` VARCHAR(100) NOT NULL,
+#   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+#   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+# ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+# 
+# 
 # -- Table: users (Model: User)
 # CREATE TABLE IF NOT EXISTS `users` (
 #   `id` INT PRIMARY KEY AUTO_INCREMENT,

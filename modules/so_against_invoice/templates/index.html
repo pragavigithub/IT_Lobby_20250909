@@ -1,0 +1,167 @@
+{% extends "layout.html" %}
+
+{% block title %}SO Against Invoice{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="card-title mb-0">
+                            <i class="fas fa-file-invoice"></i> SO Against Invoice
+                        </h3>
+                        <a href="{{ url_for('so_against_invoice.create') }}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Create New Invoice
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Search and Filter -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <form method="GET" class="d-flex">
+                                <input type="text" name="search" class="form-control me-2" 
+                                       placeholder="Search documents..." value="{{ search }}">
+                                <input type="hidden" name="per_page" value="{{ per_page }}">
+                                <button type="submit" class="btn btn-outline-secondary">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-md-2">
+                            <form method="GET">
+                                <select name="per_page" class="form-select" onchange="this.form.submit()">
+                                    <option value="10" {{ 'selected' if per_page == 10 }}>10 per page</option>
+                                    <option value="25" {{ 'selected' if per_page == 25 }}>25 per page</option>
+                                    <option value="50" {{ 'selected' if per_page == 50 }}>50 per page</option>
+                                    <option value="100" {{ 'selected' if per_page == 100 }}>100 per page</option>
+                                </select>
+                                <input type="hidden" name="search" value="{{ search }}">
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Documents Table -->
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Document #</th>
+                                    <th>SO Number</th>
+                                    <th>Customer</th>
+                                    <th>SAP Invoice #</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if documents %}
+                                    {% for doc in documents %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ url_for('so_against_invoice.detail', doc_id=doc.id) }}" 
+                                               class="text-decoration-none">
+                                                {{ doc.document_number }}
+                                            </a>
+                                        </td>
+                                        <td>{{ doc.so_number or '-' }}</td>
+                                        <td>
+                                            <div>
+                                                <strong>{{ doc.card_code or '-' }}</strong><br>
+                                                <small class="text-muted">{{ doc.card_name or '-' }}</small>
+                                            </div>
+                                        </td>
+                                        <td>{{ doc.sap_invoice_number or '-' }}</td>
+                                        <td>
+                                            {% if doc.status == 'draft' %}
+                                                <span class="badge bg-secondary">Draft</span>
+                                            {% elif doc.status == 'validated' %}
+                                                <span class="badge bg-info">Validated</span>
+                                            {% elif doc.status == 'posted' %}
+                                                <span class="badge bg-success">Posted</span>
+                                            {% elif doc.status == 'failed' %}
+                                                <span class="badge bg-danger">Failed</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small>
+                                                {{ doc.created_at.strftime('%Y-%m-%d %H:%M') }}<br>
+                                                <span class="text-muted">{{ doc.user.username }}</span>
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <a href="{{ url_for('so_against_invoice.detail', doc_id=doc.id) }}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted py-4">
+                                            <i class="fas fa-inbox fa-3x mb-3"></i><br>
+                                            No SO Against Invoice documents found.
+                                            <br><br>
+                                            <a href="{{ url_for('so_against_invoice.create') }}" class="btn btn-primary">
+                                                <i class="fas fa-plus"></i> Create Your First Document
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if pagination and pagination.pages > 1 %}
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            {% if pagination.has_prev %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('so_against_invoice.index', page=pagination.prev_num, per_page=per_page, search=search) }}">
+                                        Previous
+                                    </a>
+                                </li>
+                            {% endif %}
+                            
+                            {% for page_num in pagination.iter_pages() %}
+                                {% if page_num %}
+                                    {% if page_num != pagination.page %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ url_for('so_against_invoice.index', page=page_num, per_page=per_page, search=search) }}">
+                                                {{ page_num }}
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ page_num }}</span>
+                                        </li>
+                                    {% endif %}
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if pagination.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('so_against_invoice.index', page=pagination.next_num, per_page=per_page, search=search) }}">
+                                        Next
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

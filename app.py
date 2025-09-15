@@ -24,7 +24,7 @@ login_manager = LoginManager()
 
 # Create Flask app
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET") or "dev-secret-key-change-in-production"
+app.secret_key = os.environ.get("SESSION_SECRET")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # -------------------------------
@@ -131,9 +131,7 @@ import models_extensions
 from modules.invoice_creation import models as invoice_models  # noqa: F401
 
 with app.app_context():
-    # Create tables
-    db.create_all()
-    logging.info("✅ Database tables created")
+    # Note: db.create_all() moved to after module registration to include all module models
 
     # Drop unique constraint if exists (PostgreSQL version)
     try:
@@ -208,14 +206,14 @@ try:
 except Exception as e:
     logging.warning(f"⚠️ Logging setup failed: {e}. Using basic logging.")
 
-# Register blueprints
-from modules.inventory_transfer.routes import transfer_bp
-from modules.serial_item_transfer.routes import serial_item_bp
-from modules.invoice_creation.routes import invoice_bp
+# Register all modules through main controller
+from modules import main_controller
+main_controller.register_modules(app)
 
-app.register_blueprint(transfer_bp)
-app.register_blueprint(serial_item_bp)
-app.register_blueprint(invoice_bp)
+# Create database tables after module registration to include all module models
+with app.app_context():
+    db.create_all()
+    logging.info("✅ Database tables created (including module models)")
 
 # Import routes
 import routes
