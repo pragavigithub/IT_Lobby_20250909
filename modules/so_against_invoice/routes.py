@@ -62,7 +62,7 @@ def index():
             page=page, per_page=per_page, error_out=False
         )
         
-        return render_template('so_against_invoice/index.html',
+        return render_template('index.html',
                              documents=documents_paginated.items,
                              pagination=documents_paginated,
                              search=search,
@@ -72,7 +72,7 @@ def index():
     except Exception as e:
         logging.error(f"Error in SO Against Invoice index: {str(e)}")
         flash(f'Error loading documents: {str(e)}', 'error')
-        return render_template('so_against_invoice/index.html',
+        return render_template('index.html',
                              documents=[],
                              pagination=None,
                              search='',
@@ -85,7 +85,7 @@ def index():
 def create():
     """Create new SO Against Invoice document"""
     if request.method == 'GET':
-        return render_template('so_against_invoice/create.html')
+        return render_template('create.html')
     
     try:
         # Generate document number
@@ -108,7 +108,7 @@ def create():
         db.session.rollback()
         logging.error(f"Error creating SO Against Invoice: {str(e)}")
         flash(f'Error creating document: {str(e)}', 'error')
-        return render_template('so_against_invoice/create.html')
+        return render_template('create.html')
 
 
 @so_invoice_bp.route('/detail/<int:doc_id>')
@@ -123,7 +123,7 @@ def detail(doc_id):
             flash('Access denied - You can only view your own documents', 'error')
             return redirect(url_for('so_against_invoice.index'))
         
-        return render_template('so_against_invoice/detail.html', 
+        return render_template('detail.html', 
                              document=document,
                              current_user=current_user)
     
