@@ -18,10 +18,10 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "WMS Flask Server"
+args = "WMS Application"
 
 [[workflows.workflow]]
-name = "WMS Flask Server"
+name = "WMS Application"
 author = "agent"
 
 [[workflows.workflow.tasks]]
@@ -35,10 +35,6 @@ outputType = "webview"
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 44067
-externalPort = 3001
 
 [[ports]]
 localPort = 44091
