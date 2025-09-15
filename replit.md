@@ -114,6 +114,12 @@ Location: `C:/tmp/sap_login/credential.json` (Primary) or `/tmp/sap_login/creden
   - **SAP B1 JSON SERIALNUMBERS ARRAY**: Modified non-serial items to have empty SerialNumbers array instead of placeholder entries for cleaner SAP B1 integration
   - **SAP B1 DOCNUM DISPLAY**: Added SAP B1 document number display to both detail and index screens after successful posting
   - Improved user experience with real-time stock validation and seamless item addition
+- **SO Against Invoice Template Mapping Fix** (September 15, 2025)
+  - Fixed critical template mapping issue where module was looking for 'so_against_invoice/index.html' but templates were stored directly in templates/
+  - Updated all render_template calls to use direct template names: 'index.html', 'create.html', 'detail.html'
+  - Added template_folder='templates' parameter to blueprint declaration for proper template resolution
+  - Module now fully functional with all endpoints working correctly
+  - Verified all MySQL migration files are up-to-date with SO Against Invoice models
 - **Fresh GitHub Import Configuration** (September 11, 2025)
   - Successfully imported GitHub repository and configured for Replit environment
   - All Python dependencies installed from req.txt (46 packages including Flask, gunicorn, SQLAlchemy)
