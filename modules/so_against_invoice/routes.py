@@ -14,7 +14,7 @@ from .models import SOInvoiceDocument, SOInvoiceItem, SOInvoiceSerial, SOSeries
 from sap_integration import SAPIntegration
 
 # Create blueprint for SO Against Invoice module
-so_invoice_bp = Blueprint('so_against_invoice', __name__, url_prefix='/so-against-invoice')
+so_invoice_bp = Blueprint('so_against_invoice', __name__, template_folder='templates', url_prefix='/so-against-invoice')
 
 
 def generate_so_invoice_number():
