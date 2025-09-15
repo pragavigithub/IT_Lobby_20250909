@@ -26,7 +26,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "SESSION_SECRET=f5d0194304526e4271f5e4594acc6763c86f6772773addf7a8cb5152f48832ed gunicorn --bind 0.0.0.0:5000 --timeout 120 --reload main:app"
+args = "gunicorn --bind 0.0.0.0:5000 --timeout 120 --reload main:app"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
@@ -35,10 +35,6 @@ outputType = "webview"
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 32953
-externalPort = 3000
 
 [[ports]]
 localPort = 35573
