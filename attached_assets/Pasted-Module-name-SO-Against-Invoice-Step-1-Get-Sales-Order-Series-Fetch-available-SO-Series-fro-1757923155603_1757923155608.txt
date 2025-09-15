@@ -1,0 +1,154 @@
+Module name : SO Against Invoice
+
+Step 1 – Get Sales Order Series
+•	Fetch available SO Series from SAP B1.
+•	Display SeriesName as a dropdown list for user selection.
+API:
+URL     : https://192.168.0.117:50000/b1s/v1/SQLQueries('Get_SO_Series')/List  
+Method  : POST
+Response Example:
+{
+  "value": [
+    { "Series": 11, "SeriesName": "Primary" },
+    { "Series": 243, "SeriesName": "SO2526" },
+    { "Series": 173, "SeriesName": "SO AVS23" }
+  ]
+}
+✅ User selects SeriesName from the dropdown.
+________________________________________
+Step 2 – Validate SO Number with Series
+•	User enters SO Number in a text box.
+•	Send Series + SO Number to fetch DocEntry.
+API:
+URL     : https://192.168.0.117:50000/b1s/v1/SQLQueries('Get_SO_Details')/List  
+Method  : POST
+Request Body:
+{
+  "ParamList": "SONumber='252600006'&Series='243'"
+}
+Response Example:
+{
+  "value": [
+    { "DocEntry": 1248 }
+  ]
+}
+✅ Now we have the DocEntry of the SO.
+________________________________________
+Step 3 – Fetch Sales Order Details
+•	Use the DocEntry to fetch the full SO details.
+API:
+URL     : https://192.168.0.117:50000/b1s/v1/Orders?$filter=DocEntry eq 1248  
+Method  : GET
+Response Example (trimmed):
+{
+  "value": [
+    {
+      "DocEntry": 1248,
+      "CardCode": "3D SEALS",
+      "CardName": "3D SEALS PRIVATE LIMITED",
+      "Address": "Sai Indu Tower, Mumbai City-400078, IN",
+      "DocumentLines": [
+        {
+          "LineNum": 0,
+          "ItemCode": "IPhone",
+          "ItemDescription": "12 Series 8GB RAM/250 GB ROM Black",
+          "Quantity": 10,
+          "WarehouseCode": "7000-FG"
+        },
+        {
+          "LineNum": 1,
+          "ItemCode": "RedmiNote4",
+          "ItemDescription": "8GBRAM/250GBROM Black",
+          "Quantity": 10,
+          "WarehouseCode": "7000-FG"
+        }
+      ]
+    }
+  ]
+}
+✅ At Header Level, display:
+•	CardCode
+•	CardName
+•	Address
+✅ At Line Item Level, display:
+•	ItemCode
+•	ItemDescription
+•	Quantity
+•	WarehouseCode
+________________________________________
+Step 4 – Validation Rules
+Scenario 1 – Serial Number Managed Items
+•	Validate:
+1.	ItemCode
+2.	WarehouseCode
+3.	Serial Number
+API:
+URL     : https://192.168.0.117:50000/b1s/v1/SQLQueries('Series_Validation')/List  
+Method  : POST
+Request Body:
+{
+  "ParamList": "whsCode='7000-FG'&itemCode='IPhone'&series='IP309'"
+}
+Response Example:
+{
+  "value": [
+    {
+      "DistNumber": "IP309",
+      "ItemCode": "IPhone",
+      "WhsCode": "7000-FG"
+    }
+  ]
+}
+✅ If valid → Auto populate line item with serial.
+________________________________________
+Scenario 2 – Non-Serial Items
+•	Validate:
+1.	ItemCode
+2.	WarehouseCode
+3.	Entered Quantity ≤ Available Quantity
+✅ If valid → Auto populate line item with entered quantity.
+________________________________________
+Step 5 – Post Invoice
+•	After successful validation, user clicks Submit.
+•	System posts invoice to SAP B1.
+API:
+URL     : https://192.168.0.117:50000/b1s/v1/Invoices  
+Method  : POST
+Request Body Example:
+{
+  "DocDate": "2025-08-31T13:07:56Z",
+  "DocDueDate": "2025-09-30T13:07:56Z",
+  "BPLID": 5,
+  "CardCode": "3D SEALS",
+  "U_EA_CREATEDBy": "admin",
+  "U_EA_Approved": "admin",
+  "Comments": "Serial Number Transfer",
+  "DocumentLines": [
+    {
+      "ItemCode": "IPhone",
+      "ItemDescription": "12 Series 8GB RAM/250 GB ROM Black",
+      "Quantity": 1,
+      "WarehouseCode": "7000-FG",
+      "SerialNumbers": [
+        {
+          "InternalSerialNumber": "IP761",
+          "Quantity": 1,
+          "BaseLineNumber": 0
+        }
+      ]
+    }
+  ]
+}
+✅ Invoice successfully created in SAP B1.
+________________________________________
+🔑 Summary
+1.	Get SO Series → User selects.
+2.	Enter SO Number + Series → Get DocEntry.
+3.	Fetch SO Details using DocEntry.
+4.	Show Header & Line Item details.
+5.	Validate Items:
+o	Serial Items → Check Serial No.
+o	Non-Serial Items → Check Stock Quantity.
+6.	If valid → Auto Populate Line Items.
+7.	Submit → Post Invoice in SAP B1.
+
