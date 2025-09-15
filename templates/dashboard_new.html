@@ -57,6 +57,19 @@
             </div>
         </div>
         {% endif %}
+        {% if current_user.has_permission('so_against_invoice') %}
+        <div class="col-md-3 mb-3">
+            <div class="card dashboard-card" onclick="window.location.href='/so-against-invoice/'">
+                <div class="card-body text-center">
+                    <div class="stat-icon">
+                        <i data-feather="dollar-sign" style="color: white; width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3>{{ stats.so_against_invoice_count }}</h3>
+                    <p class="mb-0">SO Against Invoice</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
         {% if current_user.has_permission('qc_dashboard') %}
         <div class="col-md-3 mb-3">
             <div class="card dashboard-card" onclick="window.location.href='/qc_dashboard'">
@@ -80,7 +93,7 @@
             <div class="card dashboard-card">
                 <div class="card-header">
                     <h5 class="mb-0">Monthly Reports</h5>
-                    <small class="text-muted">Activity across three modules</small>
+                    <small class="text-muted">Activity across four modules</small>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -217,6 +230,14 @@
                     backgroundColor: 'rgba(245, 158, 11, 0.1)',
                     tension: 0.4,
                     fill: true
+                },
+                {
+                    label: 'SO Against Invoice',
+                    data: {{ stats.so_invoice_data|safe }},
+                    borderColor: '#EF4444',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    tension: 0.4,
+                    fill: true
                 }
             ]
         },
@@ -249,13 +270,14 @@
     const distributionChart = new Chart(distributionCtx, {
         type: 'doughnut',
         data: {
-            labels: ['Line Item Transfer', 'Bulk Item Transfer', 'Invoice Creation'],
+            labels: ['Line Item Transfer', 'Bulk Item Transfer', 'Invoice Creation', 'SO Against Invoice'],
             datasets: [{
-                data: [{{ stats.serial_transfer_count }}, {{ stats.serial_item_transfer_count }}, {{ stats.invoice_count }}],
+                data: [{{ stats.serial_transfer_count }}, {{ stats.serial_item_transfer_count }}, {{ stats.invoice_count }}, {{ stats.so_against_invoice_count }}],
                 backgroundColor: [
                     '#4F46E5',
                     '#10B981',
-                    '#F59E0B'
+                    '#F59E0B',
+                    '#EF4444'
                 ],
                 borderWidth: 0
             }]
