@@ -6,6 +6,7 @@ from flask import Flask
 from modules.grpo.routes import grpo_bp
 from modules.inventory_transfer.routes import transfer_bp
 from modules.invoice_creation.routes import invoice_bp
+from modules.serial_item_transfer.routes import serial_item_bp
 from modules.so_against_invoice.routes import so_invoice_bp
 
 def register_modules(app: Flask):
@@ -20,6 +21,9 @@ def register_modules(app: Flask):
     # Register Invoice Creation module
     app.register_blueprint(invoice_bp)
     
+    # Register Serial Item Transfer module
+    app.register_blueprint(serial_item_bp)
+    
     # Register SO Against Invoice module
     app.register_blueprint(so_invoice_bp)
     
@@ -29,6 +33,7 @@ def register_modules(app: Flask):
             'modules/grpo/templates',
             'modules/inventory_transfer/templates',
             'modules/invoice_creation/templates',
+            'modules/serial_item_transfer/templates',
             'modules/so_against_invoice/templates'
         ])
     
@@ -37,6 +42,7 @@ def register_modules(app: Flask):
     print("   - GRPO Module: /grpo/*")
     print("   - Inventory Transfer Module: /inventory_transfer/*")
     print("   - Invoice Creation Module: /invoice_creation/*")
+    print("   - Serial Item Transfer Module: /serial-item-transfer/*")
     print("   - SO Against Invoice Module: /so-against-invoice/*")
     print("   - Shared Models: modules/shared/models.py")
 
