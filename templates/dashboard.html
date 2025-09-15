@@ -93,6 +93,17 @@
         </div>
     </div>
     {% endif %}
+
+    {% if current_user.has_permission('so_against_invoice') %}
+    <div class="col-md-2 col-sm-6 mb-3">
+        <div class="card dashboard-card" data-url="{{ url_for('so_against_invoice.index') }}">
+            <div class="card-body text-center">
+                <i data-feather="file-text" class="mb-3" style="width: 48px; height: 48px;"></i>
+                <p>SO Against Invoice</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     {% if current_user.has_permission('qc_dashboard') %}
     <div class="col-md-2 col-sm-6 mb-3">
         <div class="card dashboard-card" data-url="{{ url_for('qc_dashboard') }}">
@@ -399,6 +410,52 @@
                             
                             <div class="text-center">
                                 <small class="text-muted">Completion Rate: <span class="fw-semibold">{{ analytics.invoice_creation.completion_rate or '0' }}%</span></small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- SO Against Invoice -->
+                    {% if current_user.has_permission('so_against_invoice') %}
+                    <div class="col-lg-4">
+                        <div class="bg-white rounded-3 p-4 h-100" style="border: 1px solid #e9ecef;">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="bg-warning bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i data-feather="shopping-cart" class="text-warning" style="width: 24px; height: 24px;"></i>
+                                </div>
+                                <h6 class="mb-0 fw-semibold text-dark">SO Against Invoice</h6>
+                            </div>
+                            
+                            <div class="row text-center mb-4">
+                                <div class="col-4">
+                                    <div class="text-primary">
+                                        <h4 class="mb-1 fw-bold">{{ analytics.so_against_invoice.total or 0 }}</h4>
+                                        <small class="text-muted">Total</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-success">
+                                        <h4 class="mb-1 fw-bold">{{ analytics.so_against_invoice.posted or 0 }}</h4>
+                                        <small class="text-muted">Posted</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-warning">
+                                        <h4 class="mb-1 fw-bold">{{ analytics.so_against_invoice.draft or 0 }}</h4>
+                                        <small class="text-muted">Draft</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Progress Bar -->
+                            <div class="progress mb-3" style="height: 8px; border-radius: 10px;">
+                                {% set total = analytics.so_against_invoice.total or 1 %}
+                                {% set posted_pct = (analytics.so_against_invoice.posted or 0) * 100 // total %}
+                                <div class="progress-bar bg-success" style="width: {{ posted_pct }}%; border-radius: 10px;"></div>
+                            </div>
+                            
+                            <div class="text-center">
+                                <small class="text-muted">Completion Rate: <span class="fw-semibold">{{ analytics.so_against_invoice.completion_rate or '0' }}%</span></small>
                             </div>
                         </div>
                     </div>

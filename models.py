@@ -55,7 +55,8 @@ class User(UserMixin, db.Model):
             'serial_transfer': False,
             'user_management': False,
             'qc_dashboard': False,
-            'invoice_creation': False
+            'invoice_creation': False,
+            'so_against_invoice': False
         }
 
         if self.role == 'admin':
@@ -69,7 +70,8 @@ class User(UserMixin, db.Model):
                 'serial_transfer': True,
                 'user_management': True,
                 'qc_dashboard': True,
-                'invoice_creation': True
+                'invoice_creation': True,
+                'so_against_invoice': True
             })
         elif self.role == 'qc':
             permissions.update({
@@ -80,7 +82,8 @@ class User(UserMixin, db.Model):
                 'inventory_transfer': True,
                 'serial_item_transfer': True,
                 'serial_transfer': True,
-                'invoice_creation': True
+                'invoice_creation': True,
+                'so_against_invoice': True
             })
 
         return permissions

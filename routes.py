@@ -514,18 +514,21 @@ def dashboard():
         # Import required modules
         from models import SerialNumberTransfer, SerialItemTransfer
         from modules.invoice_creation.models import InvoiceDocument
+        from modules.so_against_invoice.models import SOInvoiceDocument
         from sqlalchemy import func, extract
         from datetime import datetime, timedelta
 
-        # Get dashboard statistics for the three modules only
+        # Get dashboard statistics for the four modules
         serial_transfer_count = SerialNumberTransfer.query.filter_by(user_id=current_user.id).count()
         serial_item_transfer_count = SerialItemTransfer.query.filter_by(user_id=current_user.id).count()
         invoice_count = InvoiceDocument.query.filter_by(user_id=current_user.id).count()
+        so_against_invoice_count = SOInvoiceDocument.query.filter_by(user_id=current_user.id).count()
         invoice_status = InvoiceDocument.query.filter_by(status='posted').count()
+        so_invoice_status = SOInvoiceDocument.query.filter_by(status='posted').count()
         serial_no_transfer = SerialNumberTransfer.query.filter_by(status='qc_approved').count()
         serial_item_transfer = SerialItemTransfer.query.filter_by(status='posted').count()
         serial_item_transfers = SerialItemTransfer.query.filter_by(status='qc_approved').count()
-        qc_count = invoice_status + serial_no_transfer + serial_item_transfer + serial_item_transfers;
+        qc_count = invoice_status + so_invoice_status + serial_no_transfer + serial_item_transfer + serial_item_transfers;
         # Monthly analytics data for the last 12 months
         twelve_months_ago = datetime.utcnow() - timedelta(days=365)
 
@@ -556,6 +559,15 @@ def dashboard():
             InvoiceDocument.created_at >= twelve_months_ago
         ).group_by(extract('month', InvoiceDocument.created_at)).all()
 
+        # SO Against Invoice monthly data
+        so_invoice_monthly = db.session.query(
+            extract('month', SOInvoiceDocument.created_at).label('month'),
+            func.count(SOInvoiceDocument.id).label('count')
+        ).filter(
+            SOInvoiceDocument.user_id == current_user.id,
+            SOInvoiceDocument.created_at >= twelve_months_ago
+        ).group_by(extract('month', SOInvoiceDocument.created_at)).all()
+
         # Convert to monthly arrays (12 months)
         months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -563,6 +575,7 @@ def dashboard():
         serial_transfer_data = [0] * 12
         serial_item_transfer_data = [0] * 12
         invoice_data = [0] * 12
+        so_invoice_data = [0] * 12
 
         for month, count in serial_transfer_monthly:
             serial_transfer_data[int(month) - 1] = count
@@ -573,18 +586,23 @@ def dashboard():
         for month, count in invoice_monthly:
             invoice_data[int(month) - 1] = count
 
+        for month, count in so_invoice_monthly:
+            so_invoice_data[int(month) - 1] = count
+
         stats = {
             'serial_transfer_count': serial_transfer_count,
             'serial_item_transfer_count': serial_item_transfer_count,
             'invoice_count': invoice_count,
+            'so_against_invoice_count': so_against_invoice_count,
             'qc_count': qc_count,
             'months': months,
             'serial_transfer_data': serial_transfer_data,
             'serial_item_transfer_data': serial_item_transfer_data,
-            'invoice_data': invoice_data
+            'invoice_data': invoice_data,
+            'so_invoice_data': so_invoice_data
         }
 
-        # Get recent activity - focused on the three modules only
+        # Get recent activity - focused on the four modules
         recent_activities = []
 
         # Get recent Serial Number Transfers
@@ -620,6 +638,17 @@ def dashboard():
                 'status': invoice.status
             })
 
+        # Get recent SO Against Invoice documents
+        recent_so_invoices = SOInvoiceDocument.query.filter_by(user_id=current_user.id).order_by(
+            SOInvoiceDocument.created_at.desc()).limit(5).all()
+        for so_invoice in recent_so_invoices:
+            recent_activities.append({
+                'type': 'SO Against Invoice',
+                'description': f"SO Invoice: {so_invoice.document_number}",
+                'created_at': so_invoice.created_at,
+                'status': so_invoice.status
+            })
+
         # Sort all activities by creation date and get top 10
         recent_activities = sorted(recent_activities, key=lambda x: x['created_at'], reverse=True)[:10]
 
@@ -630,11 +659,14 @@ def dashboard():
             'serial_transfer_count': 0,
             'serial_item_transfer_count': 0,
             'invoice_count': 0,
+            'so_against_invoice_count': 0,
+            'qc_count': 0,
             'months': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             'serial_transfer_data': [0] * 12,
             'serial_item_transfer_data': [0] * 12,
-            'invoice_data': [0] * 12
+            'invoice_data': [0] * 12,
+            'so_invoice_data': [0] * 12
         }
         recent_activities = []
         flash('Database needs to be updated. Please run: python migrate_database.py', 'warning')
