@@ -25,7 +25,7 @@ login_manager = LoginManager()
 # Create Flask app
 app = Flask(__name__)
 # Configure session secret key (required for Flask-Login)
-session_secret = os.environ.get("SESSION_SECRET")
+session_secret = get_credential(credentials,"SESSION_SECRET")
 if not session_secret:
     if app.debug or os.environ.get("FLASK_ENV") == "development":
         import os as _os
