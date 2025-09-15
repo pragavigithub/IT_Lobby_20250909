@@ -24,7 +24,16 @@ login_manager = LoginManager()
 
 # Create Flask app
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET")
+# Configure session secret key (required for Flask-Login)
+session_secret = os.environ.get("SESSION_SECRET")
+if not session_secret:
+    if app.debug or os.environ.get("FLASK_ENV") == "development":
+        import os as _os
+        session_secret = _os.urandom(32)
+        logging.warning("⚠️ SESSION_SECRET not set; using ephemeral development key")
+    else:
+        raise SystemExit("❌ SESSION_SECRET environment variable is required in production")
+app.secret_key = session_secret
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # -------------------------------
