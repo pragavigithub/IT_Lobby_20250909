@@ -110,6 +110,13 @@ Location: `C:/tmp/sap_login/credential.json` (Primary) or `/tmp/sap_login/creden
   - Workflow configured with webview output on port 5000
   - Deployment settings configured for autoscale production environment
   - Application fully operational with default admin user (admin/admin123)
+- **Module Registration Fix** (September 15, 2025)
+  - Fixed critical routing issue where serial_item_transfer blueprint was not registered
+  - Added missing blueprint import and registration in main_controller.py
+  - Updated template searchpath to include serial_item_transfer templates
+  - So_against_Invoice module confirmed fully operational and up-to-date
+  - MySQL migration files verified as comprehensive and current
+  - All modules now properly registered and accessible via navigation
 - **Updated JSON Credential System** (September 9, 2025)
   - Updated SAP B1 credentials to use sap.itlobby.com server
   - Modified SAPIntegration class to read credentials exclusively from JSON file
