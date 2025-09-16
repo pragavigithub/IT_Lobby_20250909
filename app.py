@@ -4,7 +4,7 @@ import logging
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from flask_wtf.csrf import CSRFProtect
+# from flask_wtf.csrf import CSRFProtect  # Disabled per user request
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 from credential_loader import load_credentials_from_json, get_credential
@@ -129,21 +129,21 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'  # type: ignore
 login_manager.login_message = 'Please log in to access this page.'
 
-# Initialize CSRF protection
-csrf = CSRFProtect(app)
+# CSRF protection disabled per user request
+# csrf = CSRFProtect(app)
 
-# CSRF error handler for API routes
-@app.errorhandler(400)
-def handle_csrf_error(e):
-    from flask import request, jsonify
-    # Return JSON error for API routes
-    if request.path.startswith('/so-against-invoice/api/') or request.path.startswith('/api/'):
-        return jsonify({
-            'success': False,
-            'error': 'CSRF token validation failed. Please refresh the page and try again.'
-        }), 400
-    # Return default error for non-API routes
-    return e
+# CSRF error handler disabled - CSRF protection removed per user request
+# @app.errorhandler(400)
+# def handle_csrf_error(e):
+#     from flask import request, jsonify
+#     # Return JSON error for API routes
+#     if request.path.startswith('/so-against-invoice/api/') or request.path.startswith('/api/'):
+#         return jsonify({
+#             'success': False,
+#             'error': 'CSRF token validation failed. Please refresh the page and try again.'
+#         }), 400
+#     # Return default error for non-API routes
+#     return e
 
 # SAP B1 Configuration (from JSON credentials)
 app.config['SAP_B1_SERVER'] = get_credential(credentials, 'SAP_B1_SERVER', 'https://10.112.253.173:50000')
