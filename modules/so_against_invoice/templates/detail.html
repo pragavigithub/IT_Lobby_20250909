@@ -439,6 +439,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCSRFToken()
             },
+            credentials: 'same-origin',
             body: JSON.stringify({ so_number: soNumber, series: soSeries })
         })
         .then(response => response.json())
@@ -451,6 +452,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': getCSRFToken()
                     },
+                    credentials: 'same-origin',
                     body: JSON.stringify({ doc_entry: data.doc_entry })
                 });
             } else {
@@ -470,6 +472,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': getCSRFToken()
                     },
+                    credentials: 'same-origin',
                     body: JSON.stringify({
                         doc_id: docId,
                         so_details: {
@@ -582,6 +585,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCSRFToken()
             },
+            credentials: 'same-origin',
             body: JSON.stringify({
                 item_code: itemCode,
                 warehouse_code: warehouseCode
@@ -660,6 +664,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCSRFToken()
             },
+            credentials: 'same-origin',
             body: JSON.stringify({
                 item_code: itemCode,
                 warehouse_code: warehouse,
@@ -765,6 +770,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCSRFToken()
             },
+            credentials: 'same-origin',
             body: JSON.stringify(requestData)
         })
         .then(response => response.json())
@@ -797,6 +803,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': getCSRFToken()
                     },
+                    credentials: 'same-origin',
                     body: JSON.stringify({ item_id: itemId })
                 })
                 .then(response => response.json())
@@ -841,6 +848,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCSRFToken()
             },
+            credentials: 'same-origin',
             body: JSON.stringify({ doc_id: docId })
         })
         .then(response => response.json())
