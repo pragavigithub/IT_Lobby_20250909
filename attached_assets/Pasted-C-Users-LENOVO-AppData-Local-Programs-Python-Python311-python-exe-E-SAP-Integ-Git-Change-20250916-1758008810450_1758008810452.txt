@@ -1,0 +1,206 @@
+C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\python.exe "E:\SAP_Integ\Git Change\20250916\4\IT_Lobby_20250909\main.py" 
+INFO:root:✅ Credentials loaded from C:/tmp/sap_login/credential.json
+INFO:root:Using DATABASE_URL from JSON credentials
+INFO:root:✅ MYSQL database connection successful
+INFO:root:SAP B1 Server: https://192.168.0.120:50000
+INFO:root:SAP B1 Username: manager
+INFO:root:SAP B1 Company DB: EINV-TESTDB-LIVE-HUST
+INFO:root:✅ Database tables created
+INFO:root:✅ Default data initialized
+2025-09-16 13:16:25,609 - root - INFO - Logging initialized - Level: INFO, Path: C:/tmp/wms_logs
+2025-09-16 13:16:25,609 - root - INFO - Log files: C:/tmp/wms_logs/wms.log and C:/tmp/wms_logs/wms_error.log
+2025-09-16 13:16:25,610 - logging_config - INFO - 🚀 WMS Application starting with file-based logging
+2025-09-16 13:16:25,719 - root - INFO - ✅ Credentials loaded from C:/tmp/sap_login/credential.json
+All modules registered successfully
+Module structure:
+   - GRPO Module: /grpo/*
+   - Inventory Transfer Module: /inventory_transfer/*
+   - Invoice Creation Module: /invoice_creation/*
+   - Serial Item Transfer Module: /serial-item-transfer/*
+   - SO Against Invoice Module: /so-against-invoice/*
+   - Shared Models: modules/shared/models.py
+2025-09-16 13:16:25,865 - root - INFO - ✅ All module models verified/created
+ * Serving Flask app 'app'
+ * Debug mode: on
+2025-09-16 13:16:26,075 - werkzeug - INFO - WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.120:5000
+2025-09-16 13:16:26,076 - werkzeug - INFO - Press CTRL+C to quit
+2025-09-16 13:16:26,078 - werkzeug - INFO -  * Restarting with stat
+INFO:root:✅ Credentials loaded from C:/tmp/sap_login/credential.json
+INFO:root:Using DATABASE_URL from JSON credentials
+INFO:root:✅ MYSQL database connection successful
+INFO:root:SAP B1 Server: https://192.168.0.120:50000
+INFO:root:SAP B1 Username: manager
+INFO:root:SAP B1 Company DB: EINV-TESTDB-LIVE-HUST
+INFO:root:✅ Database tables created
+INFO:root:✅ Default data initialized
+2025-09-16 13:16:27,809 - root - INFO - Logging initialized - Level: INFO, Path: /tmp/wms_logs
+2025-09-16 13:16:27,810 - root - INFO - Log files: /tmp/wms_logs/wms.log and /tmp/wms_logs/wms_error.log
+2025-09-16 13:16:27,810 - logging_config - INFO - 🚀 WMS Application starting with file-based logging
+2025-09-16 13:16:28,001 - root - INFO - ✅ Credentials loaded from C:/tmp/sap_login/credential.json
+All modules registered successfully
+Module structure:
+   - GRPO Module: /grpo/*
+   - Inventory Transfer Module: /inventory_transfer/*
+   - Invoice Creation Module: /invoice_creation/*
+   - Serial Item Transfer Module: /serial-item-transfer/*
+   - SO Against Invoice Module: /so-against-invoice/*
+   - Shared Models: modules/shared/models.py
+2025-09-16 13:16:28,322 - root - INFO - ✅ All module models verified/created
+2025-09-16 13:16:28,619 - werkzeug - WARNING -  * Debugger is active!
+2025-09-16 13:16:28,627 - werkzeug - INFO -  * Debugger PIN: 888-243-362
+2025-09-16 13:16:37,707 - werkzeug - INFO - 192.168.0.120 - - [16/Sep/2025 13:16:37] "GET / HTTP/1.1" 302 -
+2025-09-16 13:16:38,267 - werkzeug - INFO - 192.168.0.120 - - [16/Sep/2025 13:16:38] "GET /dashboard HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1458, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\SAP_Integ\Git Change\20250916\4\IT_Lobby_20250909\routes.py", line 826, in dashboard
+    return render_template('dashboard_new.html',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\templating.py", line 152, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\templating.py", line 133, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\jinja2\environment.py", line 1301, in render
+    self.environment.handle_exception()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\jinja2\environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "E:\SAP_Integ\Git Change\20250916\4\IT_Lobby_20250909\templates\dashboard_new.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "E:\SAP_Integ\Git Change\20250916\4\IT_Lobby_20250909\templates\base.html", line 12, in top-level template code
+    <!-- <meta name="csrf-token" content="{{ csrf_token() }}"> -->
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\jinja2\utils.py", line 83, in from_obj
+    if hasattr(obj, "jinja_pass_arg"):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'csrf_token' is undefined
+2025-09-16 13:16:38,519 - werkzeug - INFO - 192.168.0.120 - - [16/Sep/2025 13:16:38] "GET /dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 304 -
+2025-09-16 13:16:38,528 - werkzeug - INFO - 192.168.0.120 - - [16/Sep/2025 13:16:38] "GET /dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 304 -
+2025-09-16 13:16:38,618 - werkzeug - INFO - 192.168.0.120 - - [16/Sep/2025 13:16:38] "GET /dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 304 -
+2025-09-16 13:16:40,750 - werkzeug - INFO - 192.168.0.120 - - [16/Sep/2025 13:16:40] "GET /dashboard HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1458, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\SAP_Integ\Git Change\20250916\4\IT_Lobby_20250909\routes.py", line 826, in dashboard
+    return render_template('dashboard_new.html',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\templating.py", line 152, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\templating.py", line 133, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\jinja2\environment.py", line 1301, in render
+    self.environment.handle_exception()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\jinja2\environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "E:\SAP_Integ\Git Change\20250916\4\IT_Lobby_20250909\templates\dashboard_new.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "E:\SAP_Integ\Git Change\20250916\4\IT_Lobby_20250909\templates\base.html", line 12, in top-level template code
+    <!-- <meta name="csrf-token" content="{{ csrf_token() }}"> -->
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\jinja2\utils.py", line 83, in from_obj
+    if hasattr(obj, "jinja_pass_arg"):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'csrf_token' is undefined
+2025-09-16 13:16:40,770 - werkzeug - INFO - 192.168.0.120 - - [16/Sep/2025 13:16:40] "GET /dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 304 -
+2025-09-16 13:16:40,771 - werkzeug - INFO - 192.168.0.120 - - [16/Sep/2025 13:16:40] "GET /dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 304 -
+2025-09-16 13:16:40,795 - werkzeug - INFO - 192.168.0.120 - - [16/Sep/2025 13:16:40] "GET /dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 304 -
+2025-09-16 13:16:40,833 - werkzeug - INFO - 192.168.0.120 - - [16/Sep/2025 13:16:40] "GET /dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 304 -
+2025-09-16 13:16:41,327 - werkzeug - INFO - 192.168.0.120 - - [16/Sep/2025 13:16:41] "GET /dashboard HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\werkzeug\middleware\proxy_fix.py", line 182, in __call__
+    return self.app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1458, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\SAP_Integ\Git Change\20250916\4\IT_Lobby_20250909\routes.py", line 826, in dashboard
+    return render_template('dashboard_new.html',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\templating.py", line 152, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\flask\templating.py", line 133, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\jinja2\environment.py", line 1301, in render
+    self.environment.handle_exception()
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\jinja2\environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "E:\SAP_Integ\Git Change\20250916\4\IT_Lobby_20250909\templates\dashboard_new.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "E:\SAP_Integ\Git Change\20250916\4\IT_Lobby_20250909\templates\base.html", line 12, in top-level template code
+    <!-- <meta name="csrf-token" content="{{ csrf_token() }}"> -->
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\site-packages\jinja2\utils.py", line 83, in from_obj
+    if hasattr(obj, "jinja_pass_arg"):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'csrf_token' is undefined
+2025-09-16 13:16:41,341 - werkzeug - INFO - 192.168.0.120 - - [16/Sep/2025 13:16:41] "GET /dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 304 -
+2025-09-16 13:16:41,343 - werkzeug - INFO - 192.168.0.120 - - [16/Sep/2025 13:16:41] "GET /dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 304 -
+2025-09-16 13:16:41,352 - werkzeug - INFO - 192.168.0.120 - - [16/Sep/2025 13:16:41] "GET /dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 304 -
+2025-09-16 13:16:41,387 - werkzeug - INFO - 192.168.0.120 - - [16/Sep/2025 13:16:41] "GET /dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 304 -
