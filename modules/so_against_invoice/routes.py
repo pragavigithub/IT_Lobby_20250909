@@ -4,9 +4,11 @@ Implements the complete workflow for creating invoices against Sales Orders
 """
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_login import login_required, current_user
+from flask_wtf.csrf import validate_csrf
 from datetime import datetime, timedelta
 import logging
 import json
+import os
 
 from app import app, db
 from models import User, DocumentNumberSeries
@@ -20,6 +22,26 @@ so_invoice_bp = Blueprint('so_against_invoice', __name__, template_folder='templ
 def generate_so_invoice_number():
     """Generate unique document number for SO Against Invoice"""
     return DocumentNumberSeries.get_next_number('SO_AGAINST_INVOICE')
+
+
+def is_production_environment():
+    """Check if running in production environment"""
+    return not (app.debug or os.environ.get('FLASK_ENV') == 'development')
+
+
+def validate_json_csrf():
+    """Validate CSRF token for JSON requests"""
+    try:
+        token = request.headers.get('X-CSRFToken') or request.json.get('csrf_token')
+        if token:
+            validate_csrf(token)
+            return True
+        else:
+            logging.warning("Missing CSRF token in JSON request")
+            return False
+    except Exception as e:
+        logging.error(f"CSRF validation failed: {str(e)}")
+        return False
 
 
 @so_invoice_bp.route('/', methods=['GET'])
@@ -181,12 +203,21 @@ def get_so_series():
                 'series': series_list
             })
         
-        # Return mock data for offline mode
+        # Return error in production if no cached data available
+        if is_production_environment():
+            return jsonify({
+                'success': False,
+                'error': 'SAP B1 service unavailable and no cached series data found'
+            }), 503
+        
+        # Return minimal mock data for development only
         return jsonify({
             'success': True,
             'series': [
-
-            ]
+                {'Series': 'DEV001', 'SeriesName': 'Development SO Series'},
+                {'Series': 'DEV002', 'SeriesName': 'Test SO Series'}
+            ],
+            'development_mode': True
         })
     
     except Exception as e:
@@ -203,6 +234,12 @@ def get_so_series():
 def validate_so_number():
     """Validate SO Number with Series and get DocEntry"""
     try:
+        # Validate CSRF token for JSON requests
+        if not validate_json_csrf():
+            return jsonify({
+                'success': False,
+                'error': 'CSRF validation failed'
+            }), 403
         data = request.get_json()
         so_number = data.get('so_number')
         series = data.get('series')
@@ -244,11 +281,21 @@ def validate_so_number():
             except Exception as e:
                 logging.error(f"Error validating SO with SAP: {str(e)}")
         
-        # Return mock validation for offline mode
+        # Strict production check - never allow mock validation in production
+        if is_production_environment():
+            return jsonify({
+                'success': False,
+                'error': 'SAP B1 service unavailable - cannot validate SO numbers in production without live connection'
+            }), 503
+        
+        # Development mode only - with clear warnings
+        logging.warning(f"DEVELOPMENT MODE: Mock validation for SO {so_number}")
         return jsonify({
             'success': True,
             'doc_entry': 1248,
-            'message': f'SO {so_number} validated successfully (offline mode)'
+            'development_mode': True,
+            'warning': 'This is a development mode response - not validated against real data',
+            'message': f'SO {so_number} mock validation (DEVELOPMENT ONLY)'
         })
     
     except Exception as e:
@@ -265,6 +312,12 @@ def validate_so_number():
 def fetch_so_details():
     """Fetch full SO details using DocEntry"""
     try:
+        # Validate CSRF token for JSON requests
+        if not validate_json_csrf():
+            return jsonify({
+                'success': False,
+                'error': 'CSRF validation failed'
+            }), 403
         data = request.get_json()
         doc_entry = data.get('doc_entry')
         
@@ -301,15 +354,37 @@ def fetch_so_details():
             except Exception as e:
                 logging.error(f"Error fetching SO details from SAP: {str(e)}")
         
-        # Return mock data for offline mode
+        # Strict production check - never return empty mock orders in production
+        if is_production_environment():
+            return jsonify({
+                'success': False,
+                'error': 'SAP B1 service unavailable - cannot fetch SO details in production without live connection'
+            }), 503
+        
+        # Development mode only - return structured mock data
         mock_order = {
-
+            'DocEntry': doc_entry,
+            'DocNum': f'DEV-{doc_entry}',
+            'CardCode': 'DEV-CUSTOMER',
+            'CardName': 'Development Customer',
+            'Address': 'Development Address',
+            'DocumentLines': [
+                {
+                    'LineNum': 0,
+                    'ItemCode': 'DEV-ITEM-001',
+                    'ItemDescription': 'Development Item 1',
+                    'Quantity': 5,
+                    'WarehouseCode': 'DEV-WH'
+                }
+            ]
         }
         
+        logging.warning(f"DEVELOPMENT MODE: Mock SO data for DocEntry {doc_entry}")
         return jsonify({
             'success': True,
             'order': mock_order,
-            'offline_mode': True
+            'development_mode': True,
+            'warning': 'This is development mode mock data - not real SAP data'
         })
     
     except Exception as e:
@@ -326,6 +401,12 @@ def fetch_so_details():
 def validate_item():
     """Validate item details (Serial Number or Quantity)"""
     try:
+        # Validate CSRF token for JSON requests
+        if not validate_json_csrf():
+            return jsonify({
+                'success': False,
+                'error': 'CSRF validation failed'
+            }), 403
         data = request.get_json()
         item_code = data.get('item_code')
         warehouse_code = data.get('warehouse_code')
@@ -373,7 +454,15 @@ def validate_item():
                 except Exception as e:
                     logging.error(f"Error validating serial with SAP: {str(e)}")
             
-            # Return mock validation for offline mode
+            # Strict production check for serial validation
+            if is_production_environment():
+                return jsonify({
+                    'success': False,
+                    'error': 'SAP B1 service unavailable - cannot validate serial numbers in production without live connection'
+                }), 503
+            
+            # Development mode only - with clear warnings
+            logging.warning(f"DEVELOPMENT MODE: Mock serial validation for {serial_number}")
             return jsonify({
                 'success': True,
                 'validated': True,
@@ -383,20 +472,69 @@ def validate_item():
                     'ItemCode': item_code,
                     'WhsCode': warehouse_code
                 },
-                'offline_mode': True,
-                'message': f'Serial {serial_number} validated successfully (offline mode)'
+                'development_mode': True,
+                'warning': 'Development mode - serial not validated against real data',
+                'message': f'Serial {serial_number} mock validation (DEVELOPMENT ONLY)'
             })
         
         elif item_type == 'non_serial':
             # Scenario 2: Non-Serial Items - validate quantity against available stock
-            # For now, return success with entered quantity
-            # In production, you would check available stock from SAP B1
+            if sap.ensure_logged_in():
+                try:
+                    # Use proper Quantity_Check SAP API
+                    url = f"{sap.base_url}/b1s/v1/SQLQueries('Quantity_Check')/List"
+                    request_body = {
+                        "ParamList": f"whCode='{warehouse_code}'&itemCode='{item_code}'"
+                    }
+                    response = sap.session.post(url, json=request_body, timeout=10)
+                    
+                    if response.status_code == 200:
+                        data = response.json()
+                        stock_info = data.get('value', [])
+                        
+                        if stock_info:
+                            available_qty = stock_info[0].get('OnHand', 0)
+                            if quantity <= available_qty:
+                                return jsonify({
+                                    'success': True,
+                                    'validated': True,
+                                    'item_type': 'non_serial',
+                                    'quantity': quantity,
+                                    'available_qty': available_qty,
+                                    'message': f'Quantity {quantity} validated for item {item_code}'
+                                })
+                            else:
+                                return jsonify({
+                                    'success': False,
+                                    'error': f'Insufficient stock. Available: {available_qty}, Requested: {quantity}'
+                                }), 400
+                        else:
+                            return jsonify({
+                                'success': False,
+                                'error': f'No stock information found for item {item_code}'
+                            }), 404
+                            
+                except Exception as e:
+                    logging.error(f"Error checking stock with SAP: {str(e)}")
+            
+            # Production environment - require SAP connection
+            if is_production_environment():
+                return jsonify({
+                    'success': False,
+                    'error': 'SAP B1 service unavailable - cannot validate non-serial items in production'
+                }), 503
+            
+            # Development mode fallback
+            logging.warning(f"DEVELOPMENT MODE: Mock quantity validation for {item_code}")
             return jsonify({
                 'success': True,
                 'validated': True,
                 'item_type': 'non_serial',
                 'quantity': quantity,
-                'message': f'Quantity {quantity} validated for item {item_code}'
+                'available_qty': 999,  # Mock high availability
+                'development_mode': True,
+                'warning': 'Development mode - quantity not validated against real stock',
+                'message': f'Quantity {quantity} mock validation for item {item_code} (DEVELOPMENT ONLY)'
             })
         
         else:
@@ -419,6 +557,12 @@ def validate_item():
 def post_invoice():
     """Post validated invoice to SAP B1"""
     try:
+        # Validate CSRF token for JSON requests
+        if not validate_json_csrf():
+            return jsonify({
+                'success': False,
+                'error': 'CSRF validation failed'
+            }), 403
         data = request.get_json()
         doc_id = data.get('doc_id')
         
@@ -524,17 +668,31 @@ def post_invoice():
                     'error': error_msg
                 }), 500
         
-        # Offline mode - simulate successful posting
-        document.sap_invoice_number = f"INV{document.id:06d}"
+        # CRITICAL: Never allow fake posting in production
+        if is_production_environment():
+            document.posting_error = "SAP B1 service unavailable - invoice posting failed"
+            document.status = 'failed'
+            db.session.commit()
+            
+            return jsonify({
+                'success': False,
+                'error': 'SAP B1 service unavailable - cannot post invoices in production without live connection',
+                'critical_error': True
+            }), 503
+        
+        # Development mode only - with clear simulation markers
+        document.sap_invoice_number = f"DEV-INV{document.id:06d}"
         document.status = 'posted'
         document.updated_at = datetime.utcnow()
         db.session.commit()
         
+        logging.warning(f"DEVELOPMENT MODE: Simulated invoice posting for document {document.id}")
         return jsonify({
             'success': True,
             'sap_doc_num': document.sap_invoice_number,
-            'offline_mode': True,
-            'message': f'Invoice posted successfully (offline mode). DocNum: {document.sap_invoice_number}'
+            'development_mode': True,
+            'warning': 'SIMULATED POSTING - This invoice was NOT posted to real SAP system',
+            'message': f'Invoice simulated successfully (DEVELOPMENT ONLY). DocNum: {document.sap_invoice_number}'
         })
     
     except Exception as e:
@@ -551,6 +709,12 @@ def post_invoice():
 def save_so_details():
     """Save SO details to document after validation"""
     try:
+        # Validate CSRF token for JSON requests
+        if not validate_json_csrf():
+            return jsonify({
+                'success': False,
+                'error': 'CSRF validation failed'
+            }), 403
         data = request.get_json()
         doc_id = data.get('doc_id')
         so_details = data.get('so_details')
@@ -615,6 +779,12 @@ def save_so_details():
 def check_item_stock():
     """Check item stock and management type using Quantity_Check API"""
     try:
+        # Validate CSRF token for JSON requests
+        if not validate_json_csrf():
+            return jsonify({
+                'success': False,
+                'error': 'CSRF validation failed'
+            }), 403
         data = request.get_json()
         item_code = data.get('item_code')
         warehouse_code = data.get('warehouse_code')
@@ -657,13 +827,22 @@ def check_item_stock():
             except Exception as e:
                 logging.error(f"Error checking stock with SAP: {str(e)}")
         
-        # Return mock data for offline mode
+        # Production check for stock information
+        if is_production_environment():
+            return jsonify({
+                'success': False,
+                'error': 'SAP B1 service unavailable - cannot check stock in production without live connection'
+            }), 503
+        
+        # Development mode mock data
+        logging.warning(f"DEVELOPMENT MODE: Mock stock check for {item_code}")
         return jsonify({
             'success': True,
             'item_code': item_code,
             'man_ser_num': 'Y' if 'serial' in item_code.lower() else 'N',
             'on_hand': 100,  # Mock available quantity
-            'offline_mode': True
+            'development_mode': True,
+            'warning': 'Development mode - stock data is simulated'
         })
     
     except Exception as e:
@@ -679,6 +858,12 @@ def check_item_stock():
 def validate_serial():
     """Validate a single serial number"""
     try:
+        # Validate CSRF token for JSON requests
+        if not validate_json_csrf():
+            return jsonify({
+                'success': False,
+                'error': 'CSRF validation failed'
+            }), 403
         data = request.get_json()
         item_code = data.get('item_code')
         warehouse_code = data.get('warehouse_code')
@@ -720,12 +905,21 @@ def validate_serial():
             except Exception as e:
                 logging.error(f"Error validating serial with SAP: {str(e)}")
         
-        # Return mock validation for offline mode
+        # Production check for serial validation
+        if is_production_environment():
+            return jsonify({
+                'success': False,
+                'error': 'SAP B1 service unavailable - cannot validate serials in production without live connection'
+            }), 503
+        
+        # Development mode mock validation
+        logging.warning(f"DEVELOPMENT MODE: Mock serial validation for {serial_number}")
         return jsonify({
             'success': True,
             'serial_number': serial_number,
-            'offline_mode': True,
-            'message': f'Serial {serial_number} validated successfully (offline mode)'
+            'development_mode': True,
+            'warning': 'Development mode - serial not validated against real data',
+            'message': f'Serial {serial_number} mock validation (DEVELOPMENT ONLY)'
         })
     
     except Exception as e:
@@ -741,6 +935,12 @@ def validate_serial():
 def add_validated_item():
     """Add item to validated grid"""
     try:
+        # Validate CSRF token for JSON requests
+        if not validate_json_csrf():
+            return jsonify({
+                'success': False,
+                'error': 'CSRF validation failed'
+            }), 403
         data = request.get_json()
         item_id = data.get('item_id')
         validated_quantity = data.get('validated_quantity', 0)
@@ -803,6 +1003,12 @@ def add_validated_item():
 def remove_validated_item():
     """Remove item from validated grid"""
     try:
+        # Validate CSRF token for JSON requests
+        if not validate_json_csrf():
+            return jsonify({
+                'success': False,
+                'error': 'CSRF validation failed'
+            }), 403
         data = request.get_json()
         item_id = data.get('item_id')
         
