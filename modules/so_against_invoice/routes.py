@@ -943,7 +943,14 @@ def add_validated_item():
             }), 403
         data = request.get_json()
         item_id = data.get('item_id')
-        validated_quantity = data.get('validated_quantity', 0)
+        # Fix 1: Cast to float to prevent string vs int comparison error
+        try:
+            validated_quantity = float(data.get('validated_quantity', 0))
+        except (ValueError, TypeError):
+            return jsonify({
+                'success': False,
+                'error': 'Invalid quantity format'
+            }), 400
         serial_numbers = data.get('serial_numbers', [])
         
         if not item_id or validated_quantity <= 0:
@@ -961,6 +968,24 @@ def add_validated_item():
                 'success': False,
                 'error': 'Access denied'
             }), 403
+        
+        # Fix 2: Validate quantity against SO quantity
+        if item.is_serial_managed:
+            # For serial items, check number of serial numbers against SO quantity
+            if len(serial_numbers) > item.so_quantity:
+                return jsonify({
+                    'success': False,
+                    'error': f'Serial count ({len(serial_numbers)}) exceeds SO quantity ({item.so_quantity}). Maximum allowed: {int(item.so_quantity)}'
+                }), 400
+            # For serial items, validated quantity should match number of serials
+            validated_quantity = float(len(serial_numbers))
+        else:
+            # For non-serial items, check validated quantity against SO quantity
+            if validated_quantity > item.so_quantity:
+                return jsonify({
+                    'success': False,
+                    'error': f'Validated quantity ({validated_quantity}) exceeds SO quantity ({item.so_quantity}). Maximum allowed: {item.so_quantity}'
+                }), 400
         
         # Update validated quantity
         item.validated_quantity = validated_quantity
