@@ -387,6 +387,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     const docId = {{ document.id }};
     
+    // Get CSRF token from meta tag
+    function getCSRFToken() {
+        return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    }
+    
     // Load SO Series when page loads
     {% if document.status == 'draft' %}
     loadSOSeries();
@@ -430,7 +435,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Step 1: Validate SO Number with Series
         fetch('/so-against-invoice/api/validate-so-number', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
             body: JSON.stringify({ so_number: soNumber, series: soSeries })
         })
         .then(response => response.json())
@@ -439,7 +447,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Step 2: Fetch SO Details
                 return fetch('/so-against-invoice/api/fetch-so-details', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken()
+                    },
                     body: JSON.stringify({ doc_entry: data.doc_entry })
                 });
             } else {
@@ -455,7 +466,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 return fetch('/so-against-invoice/api/save-so-details', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken()
+                    },
                     body: JSON.stringify({
                         doc_id: docId,
                         so_details: {
@@ -564,7 +578,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Use the new check-item-stock API endpoint
         fetch('/so-against-invoice/api/check-item-stock', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
             body: JSON.stringify({
                 item_code: itemCode,
                 warehouse_code: warehouseCode
@@ -639,7 +656,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         fetch('/so-against-invoice/api/validate-serial', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
             body: JSON.stringify({
                 item_code: itemCode,
                 warehouse_code: warehouse,
@@ -741,7 +761,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         fetch('/so-against-invoice/api/add-validated-item', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
             body: JSON.stringify(requestData)
         })
         .then(response => response.json())
@@ -770,7 +793,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (confirm('Remove this item from validated grid?')) {
                 fetch('/so-against-invoice/api/remove-validated-item', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken()
+                    },
                     body: JSON.stringify({ item_id: itemId })
                 })
                 .then(response => response.json())
@@ -811,7 +837,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         fetch('/so-against-invoice/api/post-invoice', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
             body: JSON.stringify({ doc_id: docId })
         })
         .then(response => response.json())
