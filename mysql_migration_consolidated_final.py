@@ -715,6 +715,30 @@ from datetime import datetime
 # =============================================================================
 
 # =============================================================================
+# SO AGAINST INVOICE DUAL-GRID ENHANCEMENT - Updated: 2025-09-16
+# =============================================================================
+# Enhanced SO Against Invoice module with dual-grid validation system
+# 
+# Key Enhancements:
+# 1. Dual-Grid System: SO Line Items Grid + Validated Items Grid
+# 2. Enhanced API Integration: New SAP B1 Quantity_Check endpoint support
+# 3. Auto-Population Logic: Serial number and quantity validation with auto-populate
+# 4. Validation Rules: 
+#    - Non-Serial Items: Quantity validation against OnHand stock
+#    - Serial Items: Individual serial number validation with auto-population
+# 5. New API Endpoints:
+#    - /api/check-item-stock - Stock and management type validation
+#    - /api/validate-serial - Individual serial number validation  
+#    - /api/add-validated-item - Add items to validated grid
+#    - /api/remove-validated-item - Remove items from validated grid
+# 6. Enhanced UI: Auto-disable serial input when limit reached, real-time validation
+# 7. SAP B1 Integration: Only validated items are posted to SAP B1
+#
+# Database Schema Status: ✅ Current - No schema changes required
+# All existing tables (so_invoice_documents, so_invoice_items, so_invoice_serials, so_series_cache) 
+# support the enhanced functionality without modifications.
+#
+# =============================================================================
 # SCHEMA AUTO-UPDATE SECTION - Last Updated: 2025-09-15 11:54:36
 # =============================================================================
 # This section contains the latest database schema extracted from models
