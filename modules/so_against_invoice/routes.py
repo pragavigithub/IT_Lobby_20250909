@@ -185,9 +185,7 @@ def get_so_series():
         return jsonify({
             'success': True,
             'series': [
-                {'Series': 11, 'SeriesName': 'Primary'},
-                {'Series': 243, 'SeriesName': 'SO2526'},
-                {'Series': 173, 'SeriesName': 'SO AVS23'}
+
             ]
         })
     
@@ -305,26 +303,7 @@ def fetch_so_details():
         
         # Return mock data for offline mode
         mock_order = {
-            "DocEntry": doc_entry,
-            "CardCode": "3D SEALS",
-            "CardName": "3D SEALS PRIVATE LIMITED",
-            "Address": "Sai Indu Tower, Mumbai City-400078, IN",
-            "DocumentLines": [
-                {
-                    "LineNum": 0,
-                    "ItemCode": "IPhone",
-                    "ItemDescription": "12 Series 8GB RAM/250 GB ROM Black",
-                    "Quantity": 10,
-                    "WarehouseCode": "7000-FG"
-                },
-                {
-                    "LineNum": 1,
-                    "ItemCode": "RedmiNote4",
-                    "ItemDescription": "8GBRAM/250GBROM Black",
-                    "Quantity": 10,
-                    "WarehouseCode": "7000-FG"
-                }
-            ]
+
         }
         
         return jsonify({
@@ -450,7 +429,7 @@ def post_invoice():
             }), 400
         
         document = SOInvoiceDocument.query.get_or_404(doc_id)
-        
+
         # Check permissions
         if current_user.role not in ['admin', 'manager'] and document.user_id != current_user.id:
             return jsonify({
@@ -464,12 +443,13 @@ def post_invoice():
                 'success': False,
                 'error': 'Cannot post invoice without line items'
             }), 400
-        
+        sap = SAPIntegration()
         # Build invoice request for SAP B1
+        #bplId = sap.get_warehouse_business_place_id(item.warehouse_code)
         invoice_data = {
             "DocDate": document.doc_date.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "DocDueDate": (document.doc_due_date or document.doc_date + timedelta(days=30)).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "BPLID": document.bplid,
+            "BPL_IDAssignedToInvoice": document.bplid,
             "CardCode": document.card_code,
             "U_EA_CREATEDBy": current_user.username,
             "U_EA_Approved": current_user.username,
@@ -479,6 +459,7 @@ def post_invoice():
         
         # Add line items
         for item in document.items:
+
             line_data = {
                 "ItemCode": item.item_code,
                 "ItemDescription": item.item_description,
@@ -497,9 +478,7 @@ def post_invoice():
                     })
             
             invoice_data["DocumentLines"].append(line_data)
-        
-        sap = SAPIntegration()
-        
+        print(invoice_data)
         # Try to post to SAP B1
         if sap.ensure_logged_in():
             try:

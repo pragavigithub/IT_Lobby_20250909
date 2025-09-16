@@ -3086,11 +3086,7 @@ class SAPIntegration:
             return {
                 'success': True,
                 'items': [
-                    {'ItemCode': 'SAMPLE001', 'itemName': 'Sample Serial Item 1'},
-                    {'ItemCode': 'SAMPLE002', 'itemName': 'Sample Non-Serial Item 2'},
-                    {'ItemCode': 'TEST-SERIAL-001', 'itemName': 'Test Serial Product'},
-                    {'ItemCode': 'TEST-NORMAL-001', 'itemName': 'Test Normal Product'},
-                    {'ItemCode': 'DEMO-ITEM-001', 'itemName': 'Demo Item for Testing'}
+
                 ]
             }
 
