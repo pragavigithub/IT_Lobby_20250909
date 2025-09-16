@@ -4,7 +4,7 @@ Implements the complete workflow for creating invoices against Sales Orders
 """
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_login import login_required, current_user
-from flask_wtf.csrf import validate_csrf
+# from flask_wtf.csrf import validate_csrf  # Disabled per user request
 from datetime import datetime, timedelta
 import logging
 import json
@@ -30,18 +30,9 @@ def is_production_environment():
 
 
 def validate_json_csrf():
-    """Validate CSRF token for JSON requests"""
-    try:
-        token = request.headers.get('X-CSRFToken') or request.json.get('csrf_token')
-        if token:
-            validate_csrf(token)
-            return True
-        else:
-            logging.warning("Missing CSRF token in JSON request")
-            return False
-    except Exception as e:
-        logging.error(f"CSRF validation failed: {str(e)}")
-        return False
+    """CSRF validation disabled per user request"""
+    # CSRF protection has been disabled globally - always return True
+    return True
 
 
 @so_invoice_bp.route('/', methods=['GET'])

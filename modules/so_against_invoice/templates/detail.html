@@ -436,8 +436,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/so-against-invoice/api/validate-so-number', {
             method: 'POST',
             headers: { 
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCSRFToken()
+                'Content-Type': 'application/json'
             },
             credentials: 'same-origin',
             body: JSON.stringify({ so_number: soNumber, series: soSeries })
@@ -449,8 +448,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return fetch('/so-against-invoice/api/fetch-so-details', {
                     method: 'POST',
                     headers: { 
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCSRFToken()
+                        'Content-Type': 'application/json'
                     },
                     credentials: 'same-origin',
                     body: JSON.stringify({ doc_entry: data.doc_entry })
@@ -469,8 +467,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return fetch('/so-against-invoice/api/save-so-details', {
                     method: 'POST',
                     headers: { 
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCSRFToken()
+                        'Content-Type': 'application/json'
                     },
                     credentials: 'same-origin',
                     body: JSON.stringify({
