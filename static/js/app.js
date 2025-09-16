@@ -19,17 +19,17 @@ class WMSApp {
             return new bootstrap.Modal(modalTriggerEl);
         });
 
-        // Setup CSRF token for AJAX requests
-        const csrfToken = document.querySelector('meta[name="csrf-token"]');
-        if (csrfToken) {
-            $.ajaxSetup({
-                beforeSend: function(xhr, settings) {
-                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader("X-CSRFToken", csrfToken.getAttribute('content'));
-                    }
-                }
-            });
-        }
+        // CSRF protection disabled per user request
+        // const csrfToken = document.querySelector('meta[name="csrf-token"]');
+        // if (csrfToken) {
+        //     $.ajaxSetup({
+        //         beforeSend: function(xhr, settings) {
+        //             if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+        //                 xhr.setRequestHeader("X-CSRFToken", csrfToken.getAttribute('content'));
+        //             }
+        //         }
+        //     });
+        // }
     }
 
     setupEventListeners() {
