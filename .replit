@@ -6,7 +6,7 @@ packages = ["cacert", "cargo", "freetype", "lcms2", "libffi", "libiconv", "libim
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["uv", "run", "gunicorn", "--bind", "0.0.0.0:5000", "--reuse-port", "main:app"]
+run = ["uv", "run", "gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
 
 [workflows]
 runButton = "Project"
@@ -37,7 +37,7 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 37137
+localPort = 39231
 externalPort = 3000
 
 [agent]
