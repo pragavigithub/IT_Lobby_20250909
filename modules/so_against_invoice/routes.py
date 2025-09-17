@@ -710,6 +710,7 @@ def save_so_details():
         document.so_series_name = series_info.get('series_name')
         document.so_number = so_details.get('so_number')
         document.so_doc_entry = so_details.get('doc_entry')
+        document.bplid=so_details.get('order',{}).get('BPL_IDAssignedToInvoice')
         document.card_code = so_details.get('order', {}).get('CardCode')
         document.card_name = so_details.get('order', {}).get('CardName')
         document.customer_address = so_details.get('order', {}).get('Address')
