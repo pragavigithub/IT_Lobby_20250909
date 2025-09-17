@@ -205,8 +205,7 @@ def get_so_series():
         return jsonify({
             'success': True,
             'series': [
-                {'Series': 'DEV001', 'SeriesName': 'Development SO Series'},
-                {'Series': 'DEV002', 'SeriesName': 'Test SO Series'}
+
             ],
             'development_mode': True
         })
@@ -354,20 +353,7 @@ def fetch_so_details():
         
         # Development mode only - return structured mock data
         mock_order = {
-            'DocEntry': doc_entry,
-            'DocNum': f'DEV-{doc_entry}',
-            'CardCode': 'DEV-CUSTOMER',
-            'CardName': 'Development Customer',
-            'Address': 'Development Address',
-            'DocumentLines': [
-                {
-                    'LineNum': 0,
-                    'ItemCode': 'DEV-ITEM-001',
-                    'ItemDescription': 'Development Item 1',
-                    'Quantity': 5,
-                    'WarehouseCode': 'DEV-WH'
-                }
-            ]
+
         }
         
         logging.warning(f"DEVELOPMENT MODE: Mock SO data for DocEntry {doc_entry}")
@@ -1167,7 +1153,7 @@ def post_invoice_to_sap():
             "AuthorizationStatus": "dasPending",
             "DocumentLines": document_lines
         }
-
+        print(request_body)
         # Post to SAP B1 Drafts endpoint
         try:
             draft_url = f"{sap.base_url}/b1s/v1/Drafts"
