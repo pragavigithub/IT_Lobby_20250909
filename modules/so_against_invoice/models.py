@@ -13,14 +13,14 @@ class SOInvoiceDocument(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     document_number = db.Column(db.String(50), nullable=False, unique=True)
     sap_invoice_number = db.Column(db.String(50))  # SAP B1 generated invoice number
-    so_series = db.Column(db.Integer, nullable=False)  # Selected SO Series
-    so_series_name = db.Column(db.String(100), nullable=False)  # Series name for display
-    so_number = db.Column(db.String(50), nullable=False)  # Entered SO Number
-    so_doc_entry = db.Column(db.Integer, nullable=False)  # SAP B1 DocEntry of SO
+    so_series = db.Column(db.Integer, nullable=True)  # Selected SO Series
+    so_series_name = db.Column(db.String(100), nullable=True)  # Series name for display
+    so_number = db.Column(db.String(50), nullable=True)  # Entered SO Number
+    so_doc_entry = db.Column(db.Integer, nullable=True)  # SAP B1 DocEntry of SO
     
     # Customer details from SO
-    card_code = db.Column(db.String(50), nullable=False)
-    card_name = db.Column(db.String(200), nullable=False)
+    card_code = db.Column(db.String(50), nullable=True)
+    card_name = db.Column(db.String(200), nullable=True)
     customer_address = db.Column(db.Text)
     
     # Invoice details
