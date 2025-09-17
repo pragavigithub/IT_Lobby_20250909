@@ -387,9 +387,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     const docId = {{ document.id }};
     
-    // Get CSRF token from meta tag
+    // CSRF protection disabled - no token needed
     function getCSRFToken() {
-        return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        return null;
     }
     
     // Load SO Series when page loads
@@ -579,8 +579,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/so-against-invoice/api/check-item-stock', {
             method: 'POST',
             headers: { 
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCSRFToken()
+                'Content-Type': 'application/json'
             },
             credentials: 'same-origin',
             body: JSON.stringify({
@@ -658,8 +657,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/so-against-invoice/api/validate-serial', {
             method: 'POST',
             headers: { 
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCSRFToken()
+                'Content-Type': 'application/json'
             },
             credentials: 'same-origin',
             body: JSON.stringify({
@@ -839,11 +837,10 @@ document.addEventListener('DOMContentLoaded', function() {
         this.disabled = true;
         this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
         
-        fetch('/so-against-invoice/api/post-invoice', {
+        fetch('/so-against-invoice/api/post-invoice-to-sap', {
             method: 'POST',
             headers: { 
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCSRFToken()
+                'Content-Type': 'application/json'
             },
             credentials: 'same-origin',
             body: JSON.stringify({ doc_id: docId })
@@ -851,7 +848,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert(`Invoice posted successfully! SAP DocNum: ${data.sap_doc_num}`);
+                alert(`Invoice posted successfully as SAP B1 Draft! Draft Number: ${data.sap_draft_number}`);
                 window.location.reload();
             } else {
                 alert(`Error posting invoice: ${data.error}`);

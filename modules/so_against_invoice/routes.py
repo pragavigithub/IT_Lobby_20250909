@@ -1066,3 +1066,180 @@ def remove_validated_item():
             'success': False,
             'error': str(e)
         }), 500
+
+
+@so_invoice_bp.route('/api/post-invoice-to-sap', methods=['POST'])
+@login_required
+def post_invoice_to_sap():
+    """Post validated line items to SAP B1 as Draft Invoice"""
+    try:
+        # Validate CSRF token for JSON requests
+        if not validate_json_csrf():
+            return jsonify({
+                'success': False,
+                'error': 'CSRF validation failed'
+            }), 403
+
+        data = request.get_json()
+        doc_id = data.get('doc_id')
+        
+        if not doc_id:
+            return jsonify({
+                'success': False,
+                'error': 'Document ID is required'
+            }), 400
+
+        document = SOInvoiceDocument.query.get_or_404(doc_id)
+        
+        # Check if document is ready for posting
+        if document.status != 'validated':
+            return jsonify({
+                'success': False,
+                'error': 'Document must be validated before posting'
+            }), 400
+
+        # Get validated items
+        validated_items = SOInvoiceItem.query.filter(
+            SOInvoiceItem.so_invoice_id == doc_id,
+            SOInvoiceItem.validated_quantity > 0
+        ).all()
+
+        if not validated_items:
+            return jsonify({
+                'success': False,
+                'error': 'No validated items found for posting'
+            }), 400
+
+        # Initialize SAP integration
+        sap = SAPIntegration()
+        
+        if not sap.ensure_logged_in():
+            return jsonify({
+                'success': False,
+                'error': 'Failed to connect to SAP B1'
+            }), 503
+
+        # Prepare document lines for SAP B1 Draft
+        document_lines = []
+        
+        for idx, item in enumerate(validated_items):
+            # Get serial numbers for this item
+            serial_numbers = SOInvoiceSerial.query.filter_by(
+                so_invoice_item_id=item.id,
+                validation_status='validated'
+            ).all()
+
+            # Prepare line data
+            line_data = {
+                "LineNum": idx,
+                "ItemCode": item.item_code,
+                "ItemDescription": item.item_description,
+                "Quantity": float(item.validated_quantity),
+                "WarehouseCode": item.warehouse_code,
+                "BaseType": 17,  # Sales Order
+                "BaseEntry": document.so_doc_entry,
+                "BaseLine": item.line_num
+            }
+
+            # Add serial numbers if item is serial managed
+            if serial_numbers:
+                line_data["SerialNumbers"] = [
+                    {
+                        "InternalSerialNumber": serial.serial_number,
+                        "Quantity": 1.0
+                    } for serial in serial_numbers
+                ]
+            
+            document_lines.append(line_data)
+
+        # Prepare the complete request body for SAP B1 Drafts
+        request_body = {
+            "DocObjectCode": "oInvoices",
+            "DocType": "dDocument_Items",
+            "DocDate": document.doc_date.strftime('%Y-%m-%d') if document.doc_date else datetime.utcnow().strftime('%Y-%m-%d'),
+            "DocDueDate": document.doc_due_date.strftime('%Y-%m-%d') if document.doc_due_date else (datetime.utcnow().replace(month=12, day=14)).strftime('%Y-%m-%d'),
+            "CardCode": document.card_code,
+            "CardName": document.card_name,
+            "Comments": f"Based On Sales Orders {document.so_number}.",
+            "JournalMemo": f"A/R Invoices - {document.card_code}",
+            "DocumentStatus": "bost_Open",
+            "BPL_IDAssignedToInvoice": document.bplid,
+            "AuthorizationStatus": "dasPending",
+            "DocumentLines": document_lines
+        }
+
+        # Post to SAP B1 Drafts endpoint
+        try:
+            draft_url = f"{sap.base_url}/b1s/v1/Drafts"
+            logging.info(f"Posting to SAP B1 Drafts endpoint: {draft_url}")
+            logging.debug(f"Request body: {request_body}")
+            
+            response = sap.session.post(draft_url, json=request_body, timeout=30)
+            
+            if response.status_code in [200, 201]:
+                response_data = response.json()
+                draft_doc_entry = response_data.get('DocEntry')
+                draft_doc_num = response_data.get('DocNum', draft_doc_entry)
+                
+                # Update document status
+                document.status = 'posted'
+                document.sap_invoice_number = f"DRAFT-{draft_doc_num}"
+                document.posting_error = None
+                document.comments = f"Posted to SAP B1 as Draft {draft_doc_num} (DocEntry: {draft_doc_entry})"
+                
+                db.session.commit()
+                
+                logging.info(f"Successfully posted SO Invoice {document.document_number} to SAP B1 as Draft {draft_doc_num} (DocEntry: {draft_doc_entry})")
+                
+                return jsonify({
+                    'success': True,
+                    'message': f'Invoice posted to SAP B1 successfully as Draft {draft_doc_num}',
+                    'draft_doc_entry': draft_doc_entry,
+                    'sap_draft_number': f"DRAFT-{draft_doc_num}"
+                })
+            else:
+                # Handle SAP B1 API error - sanitize error message
+                error_message = f"SAP B1 API returned status {response.status_code}"
+                try:
+                    error_data = response.json()
+                    if 'error' in error_data and 'message' in error_data['error']:
+                        if 'value' in error_data['error']['message']:
+                            error_message += f": {error_data['error']['message']['value']}"
+                        else:
+                            error_message += f": {error_data['error']['message']}"
+                except:
+                    error_message += ": Unable to parse error response"
+                
+                logging.error(f"SAP B1 posting failed: {error_message}. Response: {response.text[:500]}")
+                
+                document.status = 'failed'
+                document.posting_error = error_message
+                db.session.commit()
+                
+                return jsonify({
+                    'success': False,
+                    'error': error_message
+                }), 500
+                
+        except Exception as sap_error:
+            # Sanitize error message for client
+            error_message = "SAP B1 connection or posting error occurred"
+            full_error = f"SAP B1 posting error: {str(sap_error)}"
+            logging.error(full_error)
+            
+            document.status = 'failed'
+            document.posting_error = full_error
+            db.session.commit()
+            
+            return jsonify({
+                'success': False,
+                'error': error_message
+            }), 500
+
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"Error in post_invoice_to_sap API: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
