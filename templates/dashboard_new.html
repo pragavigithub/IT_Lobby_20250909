@@ -44,19 +44,19 @@
             </div>
         </div>
         {% endif %}
-        {% if current_user.has_permission('invoice_creation') %}
-        <div class="col-md-3 mb-3">
-            <div class="card dashboard-card" onclick="window.location.href='/invoice_creation'">
-                <div class="card-body text-center">
-                    <div class="stat-icon">
-                        <i data-feather="file-text" style="color: white; width: 24px; height: 24px;"></i>
-                    </div>
-                    <h3>{{ stats.invoice_count }}</h3>
-                    <p class="mb-0">Invoice Creation</p>
-                </div>
-            </div>
-        </div>
-        {% endif %}
+<!--        {% if current_user.has_permission('invoice_creation') %}-->
+<!--        <div class="col-md-3 mb-3">-->
+<!--            <div class="card dashboard-card" onclick="window.location.href='/invoice_creation'">-->
+<!--                <div class="card-body text-center">-->
+<!--                    <div class="stat-icon">-->
+<!--                        <i data-feather="file-text" style="color: white; width: 24px; height: 24px;"></i>-->
+<!--                    </div>-->
+<!--                    <h3>{{ stats.invoice_count }}</h3>-->
+<!--                    <p class="mb-0">Invoice Creation</p>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        {% endif %}-->
         {% if current_user.has_permission('so_against_invoice') %}
         <div class="col-md-3 mb-3">
             <div class="card dashboard-card" onclick="window.location.href='/so-against-invoice/'">

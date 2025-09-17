@@ -7,7 +7,7 @@
     <meta name="description" content="Complete Warehouse Management System with SAP B1 integration">
     <meta name="keywords" content="warehouse, management, SAP, B1, inventory, barcode">
     <meta name="author" content="WMS Team">
-    
+
     <!-- CSRF Token disabled per user request -->
 
     <!-- PWA Meta Tags -->
@@ -91,11 +91,19 @@
                     </a>
                 </li>
                 {% endif %}
-                {% if current_user.has_permission('invoice_creation') %}
+<!--                {% if current_user.has_permission('invoice_creation') %}-->
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="{{ url_for('invoice_creation.index') }}">-->
+<!--                        <i data-feather="file-text"></i> Invoice Creation-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                {% endif %}-->
+                {% if current_user.has_permission('so_against_invoice') %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('invoice_creation.index') }}">
-                        <i data-feather="file-text"></i> Invoice Creation
+                    <a class="nav-link" onclick="window.location.href='/so-against-invoice/'">
+                        <i data-feather="dollar-sign"></i> SO Against Invoice
                     </a>
+
                 </li>
                 {% endif %}
                 <!--                    {% if current_user.has_permission('pick_list') %}-->
@@ -181,8 +189,8 @@
                         <i data-feather="user"></i> {{ current_user.first_name }} {{ current_user.last_name }}
                     </a>
                     <ul class="dropdown-menu">
-<!--                        <li><a class="dropdown-item" href="#">Profile</a></li>-->
-<!--                        <li><a class="dropdown-item" href="#">Settings</a></li>-->
+                        <!--                        <li><a class="dropdown-item" href="#">Profile</a></li>-->
+                        <!--                        <li><a class="dropdown-item" href="#">Settings</a></li>-->
                         <li>
                             <hr class="dropdown-divider">
                         </li>
