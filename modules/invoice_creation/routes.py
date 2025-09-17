@@ -798,7 +798,7 @@ def create_invoice():
                 'success': False,
                 'message': 'SAP connection failed'
             }), 500
-
+        print (sap_invoice)
         try:
             url = f"{sap.base_url}/b1s/v1/Invoices"
             response = sap.session.post(url, json=sap_invoice, timeout=60)
