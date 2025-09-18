@@ -3797,37 +3797,37 @@ def delete_user(user_id):
 
         # Check for foreign key constraints before deletion
         from sqlalchemy import text
-        
+
         # Check if user has related records that would prevent deletion
         fk_checks = []
-        
+
         # Check for records in common tables that might reference users
         tables_to_check = [
             ('grpo_documents', 'user_id'),
-            ('inventory_transfers', 'user_id'), 
+            ('inventory_transfers', 'user_id'),
             ('serial_item_transfers', 'user_id'),
             ('so_invoice_documents', 'user_id'),
             ('invoice_documents', 'user_id'),
             ('pick_lists', 'created_by'),
             ('pick_lists', 'updated_by')
         ]
-        
+
         for table, column in tables_to_check:
             try:
-                result = db.session.execute(text(f"SELECT COUNT(*) as count FROM {table} WHERE {column} = :user_id"), 
+                result = db.session.execute(text(f"SELECT COUNT(*) as count FROM {table} WHERE {column} = :user_id"),
                                           {'user_id': user_id}).fetchone()
                 if result and result.count > 0:
                     fk_checks.append(f"{table} ({result.count} records)")
             except Exception:
                 # Table might not exist, skip check
                 pass
-        
+
         if fk_checks:
             # Instead of hard delete, deactivate the user
             user.active = False
             user.updated_at = datetime.utcnow()
             db.session.commit()
-            
+
             logging.info(f"User {user.username} (ID: {user_id}) deactivated instead of deleted due to FK references: {', '.join(fk_checks)}")
             flash(f'User {user.username} has been deactivated instead of deleted due to existing records in: {", ".join(fk_checks)}', 'warning')
         else:
@@ -3835,15 +3835,15 @@ def delete_user(user_id):
             username = user.username
             db.session.delete(user)
             db.session.commit()
-            
+
             logging.info(f"User {username} (ID: {user_id}) deleted successfully by {current_user.username}")
             flash(f'User {username} deleted successfully!', 'success')
-        
+
     except Exception as e:
         db.session.rollback()
         logging.error(f"Error deleting user {user_id}: {str(e)}")
         flash(f'Error deleting user: {str(e)}', 'error')
-        
+
     return redirect(url_for('user_management'))
 
 
@@ -3860,15 +3860,15 @@ def activate_user(user_id):
         user.updated_at = datetime.utcnow()
 
         db.session.commit()
-        
+
         logging.info(f"User {user.username} (ID: {user_id}) activated successfully by {current_user.username}")
         flash(f'User {user.username} activated successfully!', 'success')
-        
+
     except Exception as e:
         db.session.rollback()
         logging.error(f"Error activating user {user_id}: {str(e)}")
         flash(f'Error activating user: {str(e)}', 'error')
-        
+
     return redirect(url_for('user_management'))
 
 
@@ -3891,15 +3891,15 @@ def deactivate_user(user_id):
         user.updated_at = datetime.utcnow()
 
         db.session.commit()
-        
+
         logging.info(f"User {user.username} (ID: {user_id}) deactivated successfully by {current_user.username}")
         flash(f'User {user.username} deactivated successfully!', 'success')
-        
+
     except Exception as e:
         db.session.rollback()
         logging.error(f"Error deactivating user {user_id}: {str(e)}")
         flash(f'Error deactivating user: {str(e)}', 'error')
-        
+
     return redirect(url_for('user_management'))
 
 
@@ -4539,15 +4539,15 @@ def get_items_by_warehouse():
     """Get items available in specified warehouse using SAP B1 SQLQueries('Get_Item')/List"""
     try:
         warehouse_code = request.args.get('warehouse_code')
-        
+
         if not warehouse_code:
             return jsonify({'success': False, 'error': 'Warehouse code is required'}), 400
-        
+
         sap = SAPIntegration()
         result = sap.get_items_by_warehouse(warehouse_code)
-        
+
         return jsonify(result)
-        
+
     except Exception as e:
         logging.error(f"Error in get_items_by_warehouse API: {str(e)}")
         return jsonify({'success': False, 'error': str(e)}), 500
@@ -4558,22 +4558,22 @@ def validate_serial_number():
     """Validate serial number using SAP B1 SQLQueries('Series_Validation')/List"""
     try:
         data = request.get_json()
-        
+
         warehouse_code = data.get('warehouse_code')
         serial_number = data.get('serial_number')
         item_code = data.get('item_code')
-        
+
         if not all([warehouse_code, serial_number, item_code]):
             return jsonify({
-                'success': False, 
+                'success': False,
                 'error': 'Warehouse code, serial number, and item code are required'
             }), 400
-        
+
         sap = SAPIntegration()
         result = sap.validate_serial_number(warehouse_code, serial_number, item_code)
-        
+
         return jsonify(result)
-        
+
     except Exception as e:
         logging.error(f"Error in validate_serial_number API: {str(e)}")
         return jsonify({'success': False, 'error': str(e)}), 500
