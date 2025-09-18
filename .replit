@@ -6,7 +6,7 @@ packages = ["cacert", "cargo", "freetype", "lcms2", "libffi", "libiconv", "libim
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
+run = ["uv", "run", "gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
 
 [workflows]
 runButton = "Project"
