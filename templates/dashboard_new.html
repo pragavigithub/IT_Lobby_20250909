@@ -223,14 +223,14 @@
                     tension: 0.4,
                     fill: true
                 },
-                {
-                    label: 'Invoice Creation',
-                    data: {{ stats.invoice_data|safe }},
-                    borderColor: '#F59E0B',
-                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                },
+<!--                {-->
+<!--                    label: 'Invoice Creation',-->
+<!--                    data: {{ stats.invoice_data|safe }},-->
+<!--                    borderColor: '#F59E0B',-->
+<!--                    backgroundColor: 'rgba(245, 158, 11, 0.1)',-->
+<!--                    tension: 0.4,-->
+<!--                    fill: true-->
+<!--                },-->
                 {
                     label: 'SO Against Invoice',
                     data: {{ stats.so_invoice_data|safe }},
@@ -264,15 +264,15 @@
             }
         }
     });
-
+//data:{{ stats.invoice_count }} labels: 'Invoice Creation',
     // Module Distribution Doughnut Chart
     const distributionCtx = document.getElementById('distributionChart').getContext('2d');
     const distributionChart = new Chart(distributionCtx, {
         type: 'doughnut',
         data: {
-            labels: ['Line Item Transfer', 'Bulk Item Transfer', 'Invoice Creation', 'SO Against Invoice'],
+            labels: ['Line Item Transfer', 'Bulk Item Transfer','SO Against Invoice'],
             datasets: [{
-                data: [{{ stats.serial_transfer_count }}, {{ stats.serial_item_transfer_count }}, {{ stats.invoice_count }}, {{ stats.so_against_invoice_count }}],
+                data: [{{ stats.serial_transfer_count }}, {{ stats.serial_item_transfer_count }},  {{ stats.so_against_invoice_count }}],
                 backgroundColor: [
                     '#4F46E5',
                     '#10B981',
