@@ -348,7 +348,7 @@
                         <div class="mb-3">
                             <label for="serialNumber" class="form-label">Serial Number:</label>
                             <input type="text" id="serialNumber" class="form-control" 
-                                   placeholder="Enter serial number and press Enter">
+                                   placeholder="Enter serial number (auto-validates)">
                             <small class="form-text text-muted">Each valid serial will auto-populate below. Input will be disabled when limit reached.</small>
                         </div>
                         
@@ -638,19 +638,46 @@ document.addEventListener('DOMContentLoaded', function() {
         quantityInput.focus();
     }
     
-    // Serial number input handler (auto-validate on Enter)
+    // Serial number input handler (auto-validate on input with debounce)
+    let serialValidationTimeout;
+    let validationRequestId = 0;
+    
+    document.getElementById('serialNumber').addEventListener('input', function(e) {
+        const serialNumber = this.value.trim().toUpperCase(); // Normalize to uppercase
+        
+        // Clear previous timeout
+        if (serialValidationTimeout) {
+            clearTimeout(serialValidationTimeout);
+        }
+        
+        // If serial number is not empty and not already validated, validate after a short delay
+        if (serialNumber && !currentValidatedSerials.includes(serialNumber)) {
+            serialValidationTimeout = setTimeout(() => {
+                validationRequestId++; // Increment request ID to handle out-of-order responses
+                validateSerialNumber(serialNumber, validationRequestId);
+            }, 500); // 500ms delay for better responsiveness
+        }
+    });
+    
+    // Keep Enter key functionality for immediate validation (optional)
     document.getElementById('serialNumber').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            const serialNumber = this.value.trim();
+            const serialNumber = this.value.trim().toUpperCase(); // Normalize consistently
+            
+            // Clear any pending timeout since user pressed Enter
+            if (serialValidationTimeout) {
+                clearTimeout(serialValidationTimeout);
+            }
             
             if (serialNumber && !currentValidatedSerials.includes(serialNumber)) {
-                validateSerialNumber(serialNumber);
+                validationRequestId++; // Increment request ID for consistency
+                validateSerialNumber(serialNumber, validationRequestId);
             }
         }
     });
     
-    function validateSerialNumber(serialNumber) {
+    function validateSerialNumber(serialNumber, requestId = null) {
         const itemCode = document.getElementById('modalItemCode').value;
         const warehouse = document.getElementById('modalWarehouse').value;
         
@@ -668,10 +695,20 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
+            // Check if this response is still relevant (not superseded by newer request)
+            if (requestId && requestId !== validationRequestId) {
+                return; // Ignore out-of-order response
+            }
+            
             if (data.success) {
-                // Add to validated serials
-                currentValidatedSerials.push(serialNumber);
-                addSerialToList(serialNumber);
+                // Normalize serial number before adding
+                const normalizedSerial = serialNumber.trim().toUpperCase();
+                
+                // Add to validated serials if not already present
+                if (!currentValidatedSerials.includes(normalizedSerial)) {
+                    currentValidatedSerials.push(normalizedSerial);
+                    addSerialToList(normalizedSerial);
+                }
                 
                 // Clear input
                 document.getElementById('serialNumber').value = '';
@@ -719,7 +756,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Re-enable input if we were at limit
             if (currentValidatedSerials.length < currentOnHand) {
                 document.getElementById('serialNumber').disabled = false;
-                document.getElementById('serialNumber').placeholder = 'Enter serial number and press Enter';
+                document.getElementById('serialNumber').placeholder = 'Enter serial number (auto-validates)';
             }
             
             // Hide add button if no serials
