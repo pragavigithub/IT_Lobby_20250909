@@ -28,9 +28,9 @@ import api_cascading_dropdowns
 
 if __name__ == "__main__":
     # Use relative path so it works in exe or project folder
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    pub_key_path = os.path.join(base_dir, "Lic", "public_key.pem")
-    license_path = os.path.join(base_dir, "Lic", "license.lic")
+    #base_dir = os.path.dirname(os.path.abspath(__file__))
+    pub_key_path = os.path.join("C:\\tmp\\", "sap_login", "public_key.pem")
+    license_path = os.path.join("C:\\tmp\\", "sap_login", "license.lic")
 
     try:
         pub = load_public_key(pub_key_path)
