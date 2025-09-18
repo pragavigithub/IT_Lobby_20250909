@@ -94,6 +94,11 @@ class User(UserMixin, db.Model):
             return True
         return self.get_permissions().get(screen, False)
 
+    @property
+    def is_active(self):
+        """Property to return the active status - for template compatibility"""
+        return self.active
+
     # Relationships
     grpo_documents = relationship('GRPODocument',
                                   back_populates='user',
