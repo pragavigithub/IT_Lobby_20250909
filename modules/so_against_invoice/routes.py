@@ -39,6 +39,10 @@ def validate_json_csrf():
 @login_required
 def index():
     """SO Against Invoice main page with document listing"""
+    if not current_user.has_permission('so_against_invoice'):
+        flash('Access denied - SO Against Invoice permissions required', 'error')
+        return redirect(url_for('dashboard'))
+    
     try:
         # Get pagination parameters
         page = request.args.get('page', 1, type=int)
@@ -97,6 +101,10 @@ def index():
 @login_required 
 def create():
     """Create new SO Against Invoice document"""
+    if not current_user.has_permission('so_against_invoice'):
+        flash('Access denied - SO Against Invoice permissions required', 'error')
+        return redirect(url_for('dashboard'))
+    
     if request.method == 'GET':
         return render_template('create.html')
     
@@ -128,6 +136,10 @@ def create():
 @login_required
 def detail(doc_id):
     """SO Against Invoice detail page"""
+    if not current_user.has_permission('so_against_invoice'):
+        flash('Access denied - SO Against Invoice permissions required', 'error')
+        return redirect(url_for('dashboard'))
+    
     try:
         document = SOInvoiceDocument.query.get_or_404(doc_id)
         
@@ -151,6 +163,12 @@ def detail(doc_id):
 @login_required
 def get_so_series():
     """Get available SO Series from SAP B1"""
+    if not current_user.has_permission('so_against_invoice'):
+        return jsonify({
+            'success': False,
+            'error': 'Access denied - SO Against Invoice permissions required'
+        }), 403
+    
     try:
         sap = SAPIntegration()
         
@@ -223,6 +241,12 @@ def get_so_series():
 @login_required
 def validate_so_number():
     """Validate SO Number with Series and get DocEntry"""
+    if not current_user.has_permission('so_against_invoice'):
+        return jsonify({
+            'success': False,
+            'error': 'Access denied - SO Against Invoice permissions required'
+        }), 403
+    
     try:
         # Validate CSRF token for JSON requests
         if not validate_json_csrf():
@@ -301,6 +325,12 @@ def validate_so_number():
 @login_required
 def fetch_so_details():
     """Fetch full SO details using DocEntry"""
+    if not current_user.has_permission('so_against_invoice'):
+        return jsonify({
+            'success': False,
+            'error': 'Access denied - SO Against Invoice permissions required'
+        }), 403
+    
     try:
         # Validate CSRF token for JSON requests
         if not validate_json_csrf():
@@ -377,6 +407,12 @@ def fetch_so_details():
 @login_required
 def validate_item():
     """Validate item details (Serial Number or Quantity)"""
+    if not current_user.has_permission('so_against_invoice'):
+        return jsonify({
+            'success': False,
+            'error': 'Access denied - SO Against Invoice permissions required'
+        }), 403
+    
     try:
         # Validate CSRF token for JSON requests
         if not validate_json_csrf():
@@ -533,6 +569,12 @@ def validate_item():
 @login_required
 def post_invoice():
     """Post validated invoice to SAP B1"""
+    if not current_user.has_permission('so_against_invoice'):
+        return jsonify({
+            'success': False,
+            'error': 'Access denied - SO Against Invoice permissions required'
+        }), 403
+    
     try:
         # Validate CSRF token for JSON requests
         if not validate_json_csrf():
@@ -685,6 +727,12 @@ def post_invoice():
 @login_required
 def save_so_details():
     """Save SO details to document after validation"""
+    if not current_user.has_permission('so_against_invoice'):
+        return jsonify({
+            'success': False,
+            'error': 'Access denied - SO Against Invoice permissions required'
+        }), 403
+    
     try:
         # Validate CSRF token for JSON requests
         if not validate_json_csrf():
@@ -756,6 +804,12 @@ def save_so_details():
 @login_required
 def check_item_stock():
     """Check item stock and management type using Quantity_Check API"""
+    if not current_user.has_permission('so_against_invoice'):
+        return jsonify({
+            'success': False,
+            'error': 'Access denied - SO Against Invoice permissions required'
+        }), 403
+    
     try:
         # Validate CSRF token for JSON requests
         if not validate_json_csrf():
@@ -835,6 +889,12 @@ def check_item_stock():
 @login_required
 def validate_serial():
     """Validate a single serial number"""
+    if not current_user.has_permission('so_against_invoice'):
+        return jsonify({
+            'success': False,
+            'error': 'Access denied - SO Against Invoice permissions required'
+        }), 403
+    
     try:
         # Validate CSRF token for JSON requests
         if not validate_json_csrf():
@@ -912,6 +972,12 @@ def validate_serial():
 @login_required
 def add_validated_item():
     """Add item to validated grid"""
+    if not current_user.has_permission('so_against_invoice'):
+        return jsonify({
+            'success': False,
+            'error': 'Access denied - SO Against Invoice permissions required'
+        }), 403
+    
     try:
         # Validate CSRF token for JSON requests
         if not validate_json_csrf():
@@ -1005,6 +1071,12 @@ def add_validated_item():
 @login_required
 def remove_validated_item():
     """Remove item from validated grid"""
+    if not current_user.has_permission('so_against_invoice'):
+        return jsonify({
+            'success': False,
+            'error': 'Access denied - SO Against Invoice permissions required'
+        }), 403
+    
     try:
         # Validate CSRF token for JSON requests
         if not validate_json_csrf():
@@ -1059,6 +1131,12 @@ def remove_validated_item():
 @login_required
 def post_invoice_to_sap():
     """Post validated line items to SAP B1 as Draft Invoice"""
+    if not current_user.has_permission('so_against_invoice'):
+        return jsonify({
+            'success': False,
+            'error': 'Access denied - SO Against Invoice permissions required'
+        }), 403
+    
     try:
         # Validate CSRF token for JSON requests
         if not validate_json_csrf():

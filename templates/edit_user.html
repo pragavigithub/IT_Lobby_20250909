@@ -117,6 +117,10 @@
                                     <input class="form-check-input" type="checkbox" id="invoice_creation" name="invoice_creation" {{ 'checked' if user.has_permission('invoice_creation') else '' }}>
                                     <label class="form-check-label" for="invoice_creation">Invoice Creation</label>
                                 </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="so_against_invoice" name="so_against_invoice" {{ 'checked' if user.has_permission('so_against_invoice') else '' }}>
+                                    <label class="form-check-label" for="so_against_invoice">SO Against Invoice</label>
+                                </div>
                             </div>
                         </div>
                     </div>
