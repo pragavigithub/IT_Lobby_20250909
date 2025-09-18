@@ -174,7 +174,7 @@ def get_batches():
 
         # Use default warehouse if none provided
         if not warehouse_code:
-            warehouse_code = 'WH001'
+            warehouse_code = ''
 
         sap = SAPIntegration()
 
