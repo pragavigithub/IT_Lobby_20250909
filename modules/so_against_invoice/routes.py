@@ -321,16 +321,97 @@ def validate_so_number():
 
 
 # Step 3: Fetch Sales Order Details
+# @so_invoice_bp.route('/api/fetch-so-details', methods=['POST'])
+# @login_required
+# def fetch_so_details():
+#     """Fetch full SO details using DocEntry"""
+#     if not current_user.has_permission('so_against_invoice'):
+#         return jsonify({
+#             'success': False,
+#             'error': 'Access denied - SO Against Invoice permissions required'
+#         }), 403
+#
+#     try:
+#         # Validate CSRF token for JSON requests
+#         if not validate_json_csrf():
+#             return jsonify({
+#                 'success': False,
+#                 'error': 'CSRF validation failed'
+#             }), 403
+#         data = request.get_json()
+#         doc_entry = data.get('doc_entry')
+#
+#         if not doc_entry:
+#             return jsonify({
+#                 'success': False,
+#                 'error': 'DocEntry is required'
+#             }), 400
+#
+#         sap = SAPIntegration()
+#
+#         # Try to fetch from SAP B1
+#         if sap.ensure_logged_in():
+#             try:
+#                 url = f"{sap.base_url}/b1s/v1/Orders?$filter=DocEntry eq {doc_entry}"
+#                 response = sap.session.get(url, timeout=10)
+#
+#                 if response.status_code == 200:
+#                     data = response.json()
+#                     orders = data.get('value', [])
+#
+#                     if orders:
+#                         order = orders[0]
+#                         return jsonify({
+#                             'success': True,
+#                             'order': order
+#                         })
+#                     else:
+#                         return jsonify({
+#                             'success': False,
+#                             'error': f'SO with DocEntry {doc_entry} not found'
+#                         }), 404
+#
+#             except Exception as e:
+#                 logging.error(f"Error fetching SO details from SAP: {str(e)}")
+#
+#         # Strict production check - never return empty mock orders in production
+#         if is_production_environment():
+#             return jsonify({
+#                 'success': False,
+#                 'error': 'SAP B1 service unavailable - cannot fetch SO details in production without live connection'
+#             }), 503
+#
+#         # Development mode only - return structured mock data
+#         mock_order = {
+#
+#         }
+#
+#         logging.warning(f"DEVELOPMENT MODE: Mock SO data for DocEntry {doc_entry}")
+#         return jsonify({
+#             'success': True,
+#             'order': mock_order,
+#             'development_mode': True,
+#             'warning': 'This is development mode mock data - not real SAP data'
+#         })
+#
+#     except Exception as e:
+#         logging.error(f"Error in fetch_so_details API: {str(e)}")
+#         return jsonify({
+#             'success': False,
+#             'error': str(e)
+#         }), 500
+#
+# Step 3: Fetch Sales Order Details
 @so_invoice_bp.route('/api/fetch-so-details', methods=['POST'])
 @login_required
 def fetch_so_details():
-    """Fetch full SO details using DocEntry"""
+    """Fetch full SO details using DocEntry, filter open documents and lines"""
     if not current_user.has_permission('so_against_invoice'):
         return jsonify({
             'success': False,
             'error': 'Access denied - SO Against Invoice permissions required'
         }), 403
-    
+
     try:
         # Validate CSRF token for JSON requests
         if not validate_json_csrf():
@@ -338,29 +419,44 @@ def fetch_so_details():
                 'success': False,
                 'error': 'CSRF validation failed'
             }), 403
+
         data = request.get_json()
         doc_entry = data.get('doc_entry')
-        
+
         if not doc_entry:
             return jsonify({
                 'success': False,
                 'error': 'DocEntry is required'
             }), 400
-        
+
         sap = SAPIntegration()
-        
-        # Try to fetch from SAP B1
+
         if sap.ensure_logged_in():
             try:
                 url = f"{sap.base_url}/b1s/v1/Orders?$filter=DocEntry eq {doc_entry}"
                 response = sap.session.get(url, timeout=10)
-                
+
                 if response.status_code == 200:
                     data = response.json()
                     orders = data.get('value', [])
-                    
+
                     if orders:
                         order = orders[0]
+
+                        # ✅ Check DocumentStatus
+                        if order.get("DocumentStatus") != "bost_Open":
+                            return jsonify({
+                                'success': False,
+                                'Warning': f"SO {doc_entry} is already closed"
+                            }), 400
+
+                        # ✅ Filter only open lines
+                        open_lines = [
+                            line for line in order.get("DocumentLines", [])
+                            if line.get("LineStatus") == "bost_Open"
+                        ]
+                        order["DocumentLines"] = open_lines
+
                         return jsonify({
                             'success': True,
                             'order': order
@@ -370,22 +466,18 @@ def fetch_so_details():
                             'success': False,
                             'error': f'SO with DocEntry {doc_entry} not found'
                         }), 404
-                        
+
             except Exception as e:
                 logging.error(f"Error fetching SO details from SAP: {str(e)}")
-        
-        # Strict production check - never return empty mock orders in production
+
         if is_production_environment():
             return jsonify({
                 'success': False,
                 'error': 'SAP B1 service unavailable - cannot fetch SO details in production without live connection'
             }), 503
-        
-        # Development mode only - return structured mock data
-        mock_order = {
 
-        }
-        
+        # Dev mode mock
+        mock_order = {}
         logging.warning(f"DEVELOPMENT MODE: Mock SO data for DocEntry {doc_entry}")
         return jsonify({
             'success': True,
@@ -393,7 +485,7 @@ def fetch_so_details():
             'development_mode': True,
             'warning': 'This is development mode mock data - not real SAP data'
         })
-    
+
     except Exception as e:
         logging.error(f"Error in fetch_so_details API: {str(e)}")
         return jsonify({
