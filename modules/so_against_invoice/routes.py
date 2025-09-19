@@ -758,6 +758,7 @@ def save_so_details():
         document.so_series_name = series_info.get('series_name')
         document.so_number = so_details.get('so_number')
         document.so_doc_entry = so_details.get('doc_entry')
+        document.userSign=so_details.get('order',{}).get('UserSign')
         document.bplid=so_details.get('order',{}).get('BPL_IDAssignedToInvoice')
         document.card_code = so_details.get('order', {}).get('CardCode')
         document.card_name = so_details.get('order', {}).get('CardName')
@@ -1228,6 +1229,7 @@ def post_invoice_to_sap():
             "Comments": f"Based On Sales Orders {document.so_number}.",
             "JournalMemo": f"A/R Invoices - {document.card_code}",
             "DocumentStatus": "bost_Open",
+            "UserSign": document.userSign,
             "BPL_IDAssignedToInvoice": document.bplid,
             "AuthorizationStatus": "dasPending",
             "DocumentLines": document_lines

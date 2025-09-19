@@ -27,6 +27,7 @@ class SOInvoiceDocument(db.Model):
     doc_date = db.Column(db.DateTime, default=datetime.utcnow)
     doc_due_date = db.Column(db.DateTime)
     bplid = db.Column(db.Integer)  # Branch/Plant ID
+    userSign=db.Column(db.Integer)
     
     status = db.Column(db.String(20), default='draft')  # draft, validated, posted, failed
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
