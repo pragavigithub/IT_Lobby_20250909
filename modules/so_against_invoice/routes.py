@@ -447,7 +447,7 @@ def fetch_so_details():
                         if order.get("DocumentStatus") != "bost_Open":
                             return jsonify({
                                 'success': False,
-                                'Warning': f"SO {doc_entry} is already closed"
+                                'error': f"SO {doc_entry} is already closed"
                             }), 400
 
                         # ✅ Filter only open lines

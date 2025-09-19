@@ -498,7 +498,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             document.getElementById('soValidationResult').innerHTML = 
-                `<div class="alert alert-danger">Error: ${error.message}</div>`;
+                `<div class="alert alert-danger">Warning: ${error.message}</div>`;
             document.getElementById('soValidationResult').style.display = 'block';
         });
     });
